@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import grandpaCollection from './GrandpaCollection.json';
 import uncleCollection from './UncleCollection.json';
 import AddCard from './AddCard';
+import Nav from './Nav';
 
 function CardCollection({}) {
     const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -35,6 +36,7 @@ function CardCollection({}) {
                 )
             })}
         </div>
+        <Nav/>
     </>
   )
 }
