@@ -4,7 +4,7 @@ import TradingCard from './TradingCard';
 import { useLocation } from "react-router-dom";
 import grandpaCollection from './GrandpaCollection.json';
 import uncleCollection from './UncleCollection.json';
-import PropTypes from 'prop-types';
+import AddCard from './AddCard';
 
 function CardCollection({}) {
     const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -21,6 +21,7 @@ function CardCollection({}) {
   return (
     <>
         <h2>{collectionName.toUpperCase()}</h2>
+        <AddCard tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
             {tradingCardCollection.map((card, index) => {
                 let cardClass = 'unsold';
@@ -37,24 +38,5 @@ function CardCollection({}) {
     </>
   )
 }
-
-TradingCard.propTypes = {
-    tradingCardCollection: PropTypes.arrayOf(
-        PropTypes.shape({
-            year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-            brand: PropTypes.string,
-            cardSet: PropTypes.string,
-            cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-            player: PropTypes.string,
-            gradingCompany: PropTypes.string,
-            grade: PropTypes.string,
-            certificationNumber: PropTypes.string,
-            frontCardImageLink: PropTypes.string,
-            backCardImageLink: PropTypes.string,
-            sold: PropTypes.bool
-        })
-    ),
-    setTradingCardCollection: PropTypes.func.isRequired
-};
 
 export default CardCollection;
