@@ -4,3 +4,76 @@
   padding: 2rem;
   text-align: center;
 }
+
+.hidden {
+  display: none;
+}
+
+.img-small {
+  max-width: 300px;
+}
+
+.div-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+.div-card {
+  align-items: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+.div-cards-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.div-input-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.div-input-label {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.3rem;
+}
+
+.div-navigation {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: lightgray;
+  padding: 0.5rem;
+}
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.sold{
+  background-color:  lightblue;
+  background-blend-mode: normal;
+}
+
+.unsold{
+  background-color: lightgray;
+  background-blend-mode: normal;
+}
