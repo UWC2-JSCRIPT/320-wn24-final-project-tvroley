@@ -7,18 +7,30 @@ import uncleCollection from './UncleCollection.json';
 import AddCard from './AddCard';
 import Nav from './Nav';
 import db from './db';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, onSnapshot, query, collection, orderBy } from "firebase/firestore";
 
 function CardCollection({}) {
-    const [tradingCardCollection, setTradingCardCollection] = useState([]);
-    const collectionName = useLocation().pathname.split("/")[1];
+  const [tradingCardCollection, setTradingCardCollection] = useState([]);
+  const collectionName = useLocation().pathname.split("/")[1];
 
   useEffect(() => {
-    if(collectionName === 'grandpa') {
-      setTradingCardCollection(grandpaCollection);
-    } else if (collectionName === 'uncle') {
-      setTradingCardCollection(uncleCollection);
+    const getData = async () => {
+      try {
+          const cards = [];
+          const journalQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
+          onSnapshot(journalQuery, snapshot => { snapshot.docs.forEach(x => {cards.push(x.data())})
+              setTradingCardCollection(cards);
+          });
+          
+          //setIsLoading(false);
+      } catch {
+          //setHasError(true);
+          //setIsLoading(false);
+      }
     }
+
+    getData();
+    return () => onSnapshot;
   }, [collectionName]);
 
   const restoreFromJson = () => {
