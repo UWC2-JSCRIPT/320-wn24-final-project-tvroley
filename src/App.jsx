@@ -6,7 +6,6 @@ import Nav from './Nav';
 import db from './db';
 
 function App() {
-  console.log(db);
   return (
     <div>
       <h1>My Cards</h1>
