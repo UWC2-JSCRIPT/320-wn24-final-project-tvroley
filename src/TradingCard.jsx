@@ -34,10 +34,6 @@ function TradingCard({tradingCard, index, tradingCardCollection, setTradingCardC
         <p>{card.cardSet} #{card.cardNumber} {card.player}</p>
         <p>{card.gradingCompany} {card.grade} #{card.certificationNumber}</p>
         <div className='div-cards-buttons'>
-          <div>
-            <label htmlFor={`${card.certificationNumber}soldCheckbox`}>Sold</label>
-            <input type='checkbox' checked={card.sold} onChange={(event) => toggleSold(event)} id={`${card.certificationNumber}soldCheckbox`} />
-          </div>
           <button onClick={(event) => flipImage(event)}>Flip Image</button>
         </div>
       </>
