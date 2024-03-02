@@ -27,11 +27,19 @@ function TradingCard({tradingCard, index, tradingCardCollection, setTradingCardC
     const el = event.target;
     el.classList.toggle('img-small');
   }
+
+  const getCardNumberText = () => { 
+    let currentCardNumber = " ";
+    if(card.cardNumber) {
+      currentCardNumber = ` #${card.cardNumber} `;
+    }
+    return currentCardNumber;
+  }
   
   return (
       <>
         <img src={card.frontCardImageLink} alt={`picture of a ${card.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
-        <p>{card.cardSet} #{card.cardNumber} {card.player}</p>
+        <p>{`${card.cardSet}${getCardNumberText()}${card.player}`}</p>
         <p>{card.gradingCompany} {card.grade} #{card.certificationNumber}</p>
         <div className='div-cards-buttons'>
           <button onClick={(event) => flipImage(event)}>Flip Image</button>
