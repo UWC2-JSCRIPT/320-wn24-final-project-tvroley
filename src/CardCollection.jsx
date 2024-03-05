@@ -18,9 +18,15 @@ function CardCollection({}) {
     const getData = async () => {
       try {
           const cards = [];
-          const journalQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
-          onSnapshot(journalQuery, snapshot => { snapshot.docs.forEach(x => {cards.push(x.data())})
-              setTradingCardCollection(cards);
+          const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
+          onSnapshot(cardQuery, snapshot => {
+            snapshot.docChanges().forEach((change) => {
+              if(change.type === "added") {
+                cards.push(change.doc.data());
+              }
+            });
+            console.log(cards);
+            setTradingCardCollection(cards);
           });  
           //setIsLoading(false);
       } catch {
@@ -58,9 +64,9 @@ function CardCollection({}) {
 
   return (
     <>
-        <h2>{collectionName.toUpperCase()}</h2>
+        <h2>{collectionName.toUpperCase()}: {tradingCardCollection.length} Cards</h2>
         <button onClick={restoreFromJson}>Restore Collection To Default</button>
-        <AddCard tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
+        <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
             {tradingCardCollection.map((card, index) => {
