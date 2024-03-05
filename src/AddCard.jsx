@@ -1,8 +1,10 @@
 import './App.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { doc, setDoc, } from "firebase/firestore";
+import db from './db';
 
-function AddCard({tradingCardCollection, setTradingCardCollection}) {
+function AddCard({collectionName, tradingCardCollection, setTradingCardCollection}) {
     const [year, setYear] = useState(0);
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -14,9 +16,25 @@ function AddCard({tradingCardCollection, setTradingCardCollection}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
 
-    const addCard = () => {
+    const addCard = async(event) => {
+        event.preventDefault();
         const card = {year: year, brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
-        setTradingCardCollection([...tradingCardCollection, card]);
+        const cards = [...tradingCardCollection, card];
+        setTradingCardCollection(cards);
+        await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
+            year: card.year,
+            brand: card.brand,
+            cardSet: card.cardSet,
+            cardNumber: card.cardNumber,
+            player: card.player,
+            gradingCompany: card.gradingCompany,
+            grade: card.grade,
+            certificationNumber: card.certificationNumber,
+            frontCardImageLink: card.frontCardImageLink,
+            backCardImageLink: card.backCardImageLink,
+            sold: card.sold
+        });
+
         setYear(0);
         setBrand('');
         setCardNumber('');
