@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import grandpaCollection from './GrandpaCollection.json';
 import uncleCollection from './UncleCollection.json';
 import AddCard from './AddCard';
+import SortButtons from './SortButtons';
 import Nav from './Nav';
 import db from './db';
 import { doc, setDoc, onSnapshot, query, collection, orderBy } from "firebase/firestore";
@@ -55,57 +56,12 @@ function CardCollection({}) {
     });
   }
 
-  const sortCards = async(event) => {
-    let sortBy = 'year';
-    const buttonId = event.target.id;
-    switch(buttonId){
-      case 'sort-cert-button': 
-        sortBy = 'certificationNumber';
-        break;
-      case 'sort-year-button': 
-        sortBy = 'year';
-        break;
-      case 'sort-player-button': 
-        sortBy = 'player';
-        break;
-      case 'sort-sold-button': 
-        sortBy = 'sold';
-        break;
-      case 'sort-brand-button': 
-        sortBy = 'brand';
-        break;
-      case 'sort-set-button': 
-        sortBy = 'cardSet';
-        break;
-      default:
-        console.log("unkown button pressed");
-        return;
-    }
-
-    try {
-      const cards = [];
-      const journalQuery = await query(collection(db, collectionName), orderBy(sortBy, 'asc'));
-      onSnapshot(journalQuery, snapshot => { snapshot.docs.forEach(x => {cards.push(x.data())})
-          setTradingCardCollection(cards);
-      });  
-      //setIsLoading(false);
-    } catch {
-        //setHasError(true);
-        //setIsLoading(false);
-    }
-  }
-
   return (
     <>
         <h2>{collectionName.toUpperCase()}</h2>
         <button onClick={restoreFromJson}>Restore Collection To Default</button>
         <AddCard tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
-        <button id='sort-cert-button' onClick={sortCards}>Sort By Certification Number</button>
-        <button id='sort-year-button' onClick={sortCards}>Sort By Year</button>
-        <button id='sort-player-button' onClick={sortCards}>Sort By Player</button>
-        <button id='sort-sold-button' onClick={sortCards}>Sort By Sold Status</button>
-        <button id='sort-brand-button' onClick={sortCards}>Sort By Brand</button>
-        <button id='sort-set-button' onClick={sortCards}>Sort By Card Set</button>
+        <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
             {tradingCardCollection.map((card, index) => {
                 let cardClass = 'unsold';
@@ -119,6 +75,7 @@ function CardCollection({}) {
                 )
             })}
         </div>
+        <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <Nav/>
     </>
   )
