@@ -20,8 +20,7 @@ function CardCollection({}) {
           const journalQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
           onSnapshot(journalQuery, snapshot => { snapshot.docs.forEach(x => {cards.push(x.data())})
               setTradingCardCollection(cards);
-          });
-          
+          });  
           //setIsLoading(false);
       } catch {
           //setHasError(true);
@@ -34,8 +33,13 @@ function CardCollection({}) {
   }, [collectionName]);
 
   const restoreFromJson = () => {
+    if(collectionName === "grandpa"){
+      setTradingCardCollection(grandpaCollection);
+    } else if(collectionName === "uncle"){
+      setTradingCardCollection(uncleCollection);
+    }
     tradingCardCollection.map(async (card) => {
-      const docRef =  await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
+      await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
         year: card.year,
         brand: card.brand,
         cardSet: card.cardSet,
