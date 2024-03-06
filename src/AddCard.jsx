@@ -18,7 +18,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
 
     const addCard = async(event) => {
         event.preventDefault();
-        const card = {year: year, brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
+        const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
         const cards = [...tradingCardCollection, card];
         setTradingCardCollection(cards);
         await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
