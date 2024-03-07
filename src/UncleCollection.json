@@ -145,6 +145,19 @@
     {
         "year": 2019,
         "brand": "Panini",
+        "cardSet": "2019 Panini Donruss Optic",
+        "cardNumber": 34,
+        "player": "Sue Bird",
+        "gradingCompany": "CSG",
+        "grade": "9.5",
+        "certificationNumber": "1035029008",
+        "frontCardImageLink": "https://ccg-imaging-csg-cards-production.s3.amazonaws.com/1fecf4be-11eb-4731-b83e-3787c236f139/CSG1035029-008_OBV.jpg",
+        "backCardImageLink": "https://ccg-imaging-csg-cards-production.s3.amazonaws.com/1fecf4be-11eb-4731-b83e-3787c236f139/CSG1035029-008_REV.jpg",
+        "sold": false
+    },
+    {
+        "year": 2019,
+        "brand": "Panini",
         "cardSet": "2019 Panini Donruss Optic Holo",
         "cardNumber": 34,
         "player": "Sue Bird",
@@ -179,6 +192,19 @@
         "certificationNumber": "71257023",
         "frontCardImageLink": "https://d1htnxwo4o0jhw.cloudfront.net/cert/135908645/small/olKMwPKwRkuUAVC-oKn1rw.jpg",
         "backCardImageLink": "https://d1htnxwo4o0jhw.cloudfront.net/cert/135908645/small/AzvbCgx3NECT-pwd5KzR1Q.jpg",
+        "sold": false
+    },
+    {
+        "year": 2021,
+        "brand": "Panini",
+        "cardSet": "2021 Prizm Widescreen Gold",
+        "cardNumber": 5,
+        "player": "Sue Bird",
+        "gradingCompany": "SGC",
+        "grade": "10",
+        "certificationNumber": "6522060",
+        "frontCardImageLink": "https://sgcimagprodstorage.blob.core.windows.net/mycollections/c8393bab-7d8e-4e70-941a-ad394797a007/h275/front/c8393bab-7d8e-4e70-941a-ad394797a007.jpg",
+        "backCardImageLink": "https://sgcimagprodstorage.blob.core.windows.net/mycollections/c8393bab-7d8e-4e70-941a-ad394797a007/h275/back/c8393bab-7d8e-4e70-941a-ad394797a007.jpg",
         "sold": false
     },
     {
@@ -296,6 +322,19 @@
         "certificationNumber": "71438323",
         "frontCardImageLink": "https://d1htnxwo4o0jhw.cloudfront.net/cert/136513686/pwLyGELaFUqsVJSxxCsAcQ.jpg",
         "backCardImageLink": "https://d1htnxwo4o0jhw.cloudfront.net/cert/136513686/50kZ2ZrJrE6ecqWbAJn2Dg.jpg",
+        "sold": false
+    },
+    {
+        "year": 2022,
+        "brand": "Panini",
+        "cardSet": "2022 Revolution Rookie Revolution Cubic",
+        "cardNumber": 4,
+        "player": "Rhyne Howard",
+        "gradingCompany": "SGC",
+        "grade": "10",
+        "certificationNumber": "8761701",
+        "frontCardImageLink": "https://sgcimagprodstorage.blob.core.windows.net/mycollections/f3711461-aea6-4e4b-91f4-27e907383152/h275/front/f3711461-aea6-4e4b-91f4-27e907383152.jpg",
+        "backCardImageLink": "https://sgcimagprodstorage.blob.core.windows.net/mycollections/f3711461-aea6-4e4b-91f4-27e907383152/h275/back/f3711461-aea6-4e4b-91f4-27e907383152.jpg",
         "sold": false
     },
     {
