@@ -61,4 +61,9 @@ function SortButtons({collectionName, setTradingCardCollection}) {
     )
 }
 
+SortButtons.propTypes = {
+  collectionName: PropTypes.string.isRequired,
+  setTradingCardCollection: PropTypes.func.isRequired
+}
+
 export default SortButtons;
