@@ -1,6 +1,7 @@
 import './App.css';
 import db from './db';
 import { doc, query, collection, orderBy, getDocs, } from "firebase/firestore";
+import PropTypes from 'prop-types';
 
 function SortButtons({collectionName, setTradingCardCollection}) {
     
@@ -59,6 +60,11 @@ function SortButtons({collectionName, setTradingCardCollection}) {
             </div>
         </>
     )
+}
+
+SortButtons.propTypes = {
+  collectionName: PropTypes.string.isRequired,
+  setTradingCardCollection: PropTypes.func.isRequired
 }
 
 export default SortButtons;
