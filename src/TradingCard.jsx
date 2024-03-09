@@ -38,7 +38,7 @@ function TradingCard({tradingCard, index, tradingCardCollection, setTradingCardC
   
   return (
       <>
-        <img src={card.frontCardImageLink} alt={`picture of a ${card.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
+        <img src={card.frontCardImageLink} alt={`picture of a ${card.year} ${card.brand} ${card.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
         <p>{`${card.cardSet}${getCardNumberText()}${card.player}`}</p>
         <p>{card.gradingCompany} {card.grade} #{card.certificationNumber}</p>
         <div className='div-cards-buttons'>
