@@ -33,4 +33,11 @@ describe('TradingCard component tests', ()=>{
         const btnEl = screen.getByText(text);
         expect(btnEl.tagName).toEqual('BUTTON');
     });
+
+    it('should have a paragraph element with the text: 2002 Fleer Ultra #101 Sue Bird', ()=>{
+        render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
+        const text = `2002 Fleer Ultra #101 Sue Bird`;
+        const pEl = screen.getByText(text);
+        expect(pEl.tagName).toEqual('P');
+    });
 });
