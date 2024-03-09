@@ -22,10 +22,15 @@ describe('TradingCard component tests', ()=>{
     const setTradingCardCollection = () => {};
     it('should have an image with the alt text: picture of a 2002 Fleer Sue Bird card', ()=>{
         render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
-        screen.debug();
         const altText = `picture of a 2002 Fleer Sue Bird card`;
         const imgEl = screen.getByAltText(altText);
-        console.log(imgEl);
         expect(imgEl.tagName).toEqual('IMG');
+    });
+
+    it('should have a button with the text: Flip Image', ()=>{
+        render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
+        const text = `Flip Image`;
+        const btnEl = screen.getByText(text);
+        expect(btnEl.tagName).toEqual('BUTTON');
     });
 });
