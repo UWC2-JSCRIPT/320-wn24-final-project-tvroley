@@ -194,6 +194,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
 }
 
 AddCard.propTypes = {
+    collectionName: PropTypes.string.isRequired,
     tradingCardCollection: PropTypes.arrayOf(
         PropTypes.shape({
             year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
