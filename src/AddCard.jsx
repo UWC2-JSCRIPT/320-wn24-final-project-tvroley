@@ -48,7 +48,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
     }
 
     return (
-        <div>
+        <div className='div-add-cards'>
           <h3>Add Card</h3>
           <form id='card-form' className="form-card">
             <div className='div-input-group'>
@@ -187,7 +187,9 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     />
                 </div>
             </div>
-            <input className="btn" type="submit" value="Submit Card" onClick={addCard} />
+            <div className='div-input-group'>
+                <input className="btn" type="submit" value="Submit Card" onClick={addCard} />
+            </div>
           </form>
         </div>
     )
