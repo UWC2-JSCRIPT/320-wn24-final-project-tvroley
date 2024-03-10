@@ -69,6 +69,15 @@
   padding: 0.5rem;
 }
 
+.div-home-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: lightblue;
+  padding: 0.5rem;
+}
+
 .form-card {
   display: flex;
   flex-direction: column;

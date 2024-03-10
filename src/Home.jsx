@@ -12,7 +12,7 @@ export default function Home() {
     }
 
     return (
-        <div className="div-cards-buttons">
+        <div className="div-home-buttons">
           <button onClick={goGrandpa}>Grandpa's Collection</button>
           <button onClick={goUncle}>Uncle's Collection</button>
         </div>

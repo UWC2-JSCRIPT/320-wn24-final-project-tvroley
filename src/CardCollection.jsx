@@ -65,7 +65,7 @@ function CardCollection({}) {
   return (
     <>
         <h2>{collectionName.toUpperCase()}: {tradingCardCollection.length} Cards</h2>
-        <button onClick={restoreFromJson}>Restore Collection To Default</button>
+        <button onClick={restoreFromJson}>Restore Collection From Backup</button>
         <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
