@@ -18,33 +18,91 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
 
     const addCard = async(event) => {
         event.preventDefault();
-        const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
-        const cards = [...tradingCardCollection, card];
-        setTradingCardCollection(cards);
-        await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
-            year: card.year,
-            brand: card.brand,
-            cardSet: card.cardSet,
-            cardNumber: card.cardNumber,
-            player: card.player,
-            gradingCompany: card.gradingCompany,
-            grade: card.grade,
-            certificationNumber: card.certificationNumber,
-            frontCardImageLink: card.frontCardImageLink,
-            backCardImageLink: card.backCardImageLink,
-            sold: card.sold
-        });
+        if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
+            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
+            const cards = [...tradingCardCollection, card];
+            setTradingCardCollection(cards);
+            await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
+                year: card.year,
+                brand: card.brand,
+                cardSet: card.cardSet,
+                cardNumber: card.cardNumber,
+                player: card.player,
+                gradingCompany: card.gradingCompany,
+                grade: card.grade,
+                certificationNumber: card.certificationNumber,
+                frontCardImageLink: card.frontCardImageLink,
+                backCardImageLink: card.backCardImageLink,
+                sold: card.sold
+            });
 
-        setYear(0);
-        setBrand('');
-        setCardNumber('');
-        setCardSet('');
-        setPlayer('');
-        setGradingCompany('');
-        setGrade('');
-        setCertificationNumber('');
-        setFrontCardImageLink('');
-        setBackCardImageLink('');
+            setYear(0);
+            setBrand('');
+            setCardNumber('');
+            setCardSet('');
+            setPlayer('');
+            setGradingCompany('');
+            setGrade('');
+            setCertificationNumber('');
+            setFrontCardImageLink('');
+            setBackCardImageLink('');
+
+            const yearEl = document.getElementById('year-input');
+            yearEl.classList.remove('invalid');
+            const brandEl = document.getElementById('brand-input');
+            brandEl.classList.remove('invalid');
+            const cardNumberEl = document.getElementById('card-set-input');
+            cardNumberEl.classList.remove('invalid');
+            const playerEl = document.getElementById('player-input');
+            playerEl.classList.remove('invalid');
+            const gradingCompanyEl = document.getElementById('grading-company-input');
+            gradingCompanyEl.classList.remove('invalid');
+            const gradeEl = document.getElementById('grade-input');
+            gradeEl.classList.remove('invalid');
+            const certEl = document.getElementById('certification-number-input');
+            certEl.classList.remove('invalid');
+            const frontEl = document.getElementById('front-image-link-input');
+            frontEl.classList.remove('invalid');
+            const backEl = document.getElementById('back-image-link-input');
+            backEl.classList.remove('invalid');
+        } else {
+            if(!year){
+                const yearEl = document.getElementById('year-input');
+                yearEl.classList.add('invalid');
+            }
+            if(!brand){
+                const brandEl = document.getElementById('brand-input');
+                brandEl.classList.add('invalid');
+            }
+            if(!cardSet){
+                const cardNumberEl = document.getElementById('card-set-input');
+                cardNumberEl.classList.add('invalid');
+            }
+            if(!player){
+                const playerEl = document.getElementById('player-input');
+                playerEl.classList.add('invalid');
+            }
+            if(!gradingCompany){
+                const gradingCompanyEl = document.getElementById('grading-company-input');
+                gradingCompanyEl.classList.add('invalid');
+            }
+            if(!grade){
+                const gradeEl = document.getElementById('grade-input');
+                gradeEl.classList.add('invalid');
+            }
+            if(!certificationNumber){
+                const certEl = document.getElementById('certification-number-input');
+                certEl.classList.add('invalid');
+            }
+            if(!frontCardImageLink){
+                const frontEl = document.getElementById('front-image-link-input');
+                frontEl.classList.add('invalid');
+            }
+            if(!backCardImageLink){
+                const backEl = document.getElementById('back-image-link-input');
+                backEl.classList.add('invalid');
+            }
+        }
     }
 
     return (
@@ -56,7 +114,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="year-input">Year</label>
                     <input
                       id="year-input"
-                      className="validate-input"
                       type="number"
                       min="0"
                       max="2050"
@@ -70,7 +127,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="brand-input">Brand</label>
                     <input
                         id="brand-input"
-                        className="validate-input"
                         type="text"
                         required
                         minLength="1"
@@ -83,7 +139,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="card-number-input">Card Number</label>
                     <input
                         id="card-number-input"
-                        className="validate-input"
                         type="text"
                         maxLength="15"
                         onChange={e => setCardNumber(e.target.value)} 
@@ -96,18 +151,17 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="card-set-input">Set</label>
                     <input
                         id="card-set-input"
-                        className="validate-input"
                         type="text"
                         maxLength="100"
                         onChange={e => setCardSet(e.target.value)} 
                         value={cardSet}
+                        required
                     />
                 </div>
                 <div className='div-input-label'>
                     <label htmlFor="player-input">Player</label>
                     <input
                         id="player-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="100"
@@ -122,7 +176,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="grading-company-input">Grading Company</label>
                     <input
                         id="grading-company-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="50"
@@ -135,7 +188,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="grade-input">Grade</label>
                     <input
                         id="grade-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="50"
@@ -148,7 +200,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="certification-number-input">Certification Number</label>
                     <input
                         id="certification-number-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="50"
@@ -164,7 +215,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="front-image-link-input">Front Image Link</label>
                     <input
                         id="front-image-link-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="400"
@@ -177,7 +227,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                     <label htmlFor="back-image-link-input">Back Image Link</label>
                     <input
                         id="back-image-link-input"
-                        className="validate-input"
                         type="text"
                         minLength="1"
                         maxLength="400"
