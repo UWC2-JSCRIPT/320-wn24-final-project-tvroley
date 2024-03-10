@@ -35,6 +35,16 @@
   align-items: baseline;
 }
 
+.div-add-cards {
+  border: solid gray 1px;
+  border-style: groove;
+  gap: 10px;
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: lightcyan;
+}
+
 .div-input-group {
   display: flex;
   flex-direction: row;
@@ -58,6 +68,8 @@
   justify-content: space-around;
   background-color: lightgray;
   padding: 0.5rem;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .div-sort-buttons {
@@ -66,6 +78,17 @@
   flex-wrap: wrap;
   justify-content: space-around;
   background-color: lightblue;
+  padding: 0.5rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.div-restore-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: lightseagreen;
   padding: 0.5rem;
 }
 
