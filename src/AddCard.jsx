@@ -69,38 +69,65 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
             if(!year){
                 const yearEl = document.getElementById('year-input');
                 yearEl.classList.add('invalid');
+            } else {
+                const yearEl = document.getElementById('year-input');
+                yearEl.classList.remove('invalid');
             }
             if(!brand){
                 const brandEl = document.getElementById('brand-input');
                 brandEl.classList.add('invalid');
+            } else {
+                const brandEl = document.getElementById('brand-input');
+                brandEl.classList.remove('invalid');
             }
             if(!cardSet){
                 const cardNumberEl = document.getElementById('card-set-input');
                 cardNumberEl.classList.add('invalid');
+            } else {
+                const cardNumberEl = document.getElementById('card-set-input');
+                cardNumberEl.classList.remove('invalid');
             }
             if(!player){
                 const playerEl = document.getElementById('player-input');
                 playerEl.classList.add('invalid');
+            } else {
+                const playerEl = document.getElementById('player-input');
+                playerEl.classList.remove('invalid');
             }
             if(!gradingCompany){
                 const gradingCompanyEl = document.getElementById('grading-company-input');
                 gradingCompanyEl.classList.add('invalid');
+            } else {
+                const gradingCompanyEl = document.getElementById('grading-company-input');
+                gradingCompanyEl.classList.remove('invalid');
             }
             if(!grade){
                 const gradeEl = document.getElementById('grade-input');
                 gradeEl.classList.add('invalid');
+            } else {
+                const gradeEl = document.getElementById('grade-input');
+                gradeEl.classList.remove('invalid');
             }
             if(!certificationNumber){
                 const certEl = document.getElementById('certification-number-input');
                 certEl.classList.add('invalid');
+            } else {
+                const certEl = document.getElementById('certification-number-input');
+                certEl.classList.remove('invalid');
             }
             if(!frontCardImageLink){
                 const frontEl = document.getElementById('front-image-link-input');
                 frontEl.classList.add('invalid');
+            } else {
+                const frontEl = document.getElementById('front-image-link-input');
+                frontEl.classList.remove('invalid');
             }
             if(!backCardImageLink){
                 const backEl = document.getElementById('back-image-link-input');
                 backEl.classList.add('invalid');
+            } else {
+                const backEl = document.getElementById('back-image-link-input');
+                backEl.classList.remove('invalid');
             }
         }
     }
