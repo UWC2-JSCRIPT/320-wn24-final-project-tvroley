@@ -1,9 +1,7 @@
   - The public facing url: https://my-cards-2e97d.web.app/
   
   - a brief summary of your project:
-      
-      This is a new version of my website for displaying graded traded cards from different grading companies from the user's collection
-    This new version uses React components and stores the cards in Firestore.  It also has multiple card collections using routes.
+      This is a new version of my website for displaying graded traded cards from different grading companies from the user's collection.  This new version uses React components and stores the cards in Firestore.  It also has multiple card collections using routes.
   
   - The answers to the following questions Fill out each of these with a few sentences (50 characters minimum):
   
