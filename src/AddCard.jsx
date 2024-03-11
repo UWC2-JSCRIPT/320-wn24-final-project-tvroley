@@ -22,7 +22,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
             const cards = [...tradingCardCollection, card];
             setTradingCardCollection(cards);
-            await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
+            const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
                 cardSet: card.cardSet,
@@ -34,7 +34,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
                 frontCardImageLink: card.frontCardImageLink,
                 backCardImageLink: card.backCardImageLink,
                 sold: card.sold
-            });
+            }).catch(error => console.log(error));
 
             setYear(0);
             setBrand('');
