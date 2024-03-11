@@ -13,6 +13,8 @@ import { doc, setDoc, onSnapshot, query, collection, orderBy } from "firebase/fi
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
   const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorCode, setErrorCode] = useState('');
   
   const collectionName = useLocation().pathname.split("/")[1];
 
@@ -31,6 +33,8 @@ function CardCollection({}) {
             },
             onerror => {
                 setHasError(true);
+                setErrorCode(onerror.code);
+                setErrorMessage(onerror.message);
             }
         );  
     }
@@ -62,7 +66,7 @@ function CardCollection({}) {
   }
 
   if(hasError){
-    return <p className='hidden'>Error connecting to database</p>
+    return <p>Error code: {errorCode} Error message: {errorMessage}</p>
   }
 
   return (
