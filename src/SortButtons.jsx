@@ -32,20 +32,14 @@ function SortButtons({collectionName, setTradingCardCollection}) {
             return;
         }
     
-        try {
-          const cards = [];
-          const cardsQuery = await query(collection(db, collectionName), orderBy(sortBy, 'asc'));
-          const querySnapshot = await getDocs(cardsQuery);
-          querySnapshot.docs.forEach(
-            x => {cards.push(x.data());}
-          );
+        const cards = [];
+        const cardsQuery = query(collection(db, collectionName), orderBy(sortBy, 'asc'));
+        const querySnapshot = await getDocs(cardsQuery).catch(error => console.log(error));
+        querySnapshot.docs.forEach(
+          x => {cards.push(x.data());}
+        );
 
-          setTradingCardCollection(cards);  
-          //setIsLoading(false);
-        } catch {
-            //setHasError(true);
-            //setIsLoading(false);
-        }
+        setTradingCardCollection(cards);
     }
     
     return (
