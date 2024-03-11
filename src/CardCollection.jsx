@@ -90,7 +90,7 @@ function CardCollection({}) {
                 }
                 return (
                     <div key={card.certificationNumber} className={`div-card ${cardClass}`}>
-                        <TradingCard tradingCard={card} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
+                        <TradingCard tradingCard={card}/>
                     </div>
                 )
             })}
