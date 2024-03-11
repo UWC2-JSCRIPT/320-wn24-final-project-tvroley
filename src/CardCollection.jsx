@@ -12,29 +12,28 @@ import { doc, setDoc, onSnapshot, query, collection, orderBy } from "firebase/fi
 
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
+  const [hasError, setHasError] = useState(false);
+  
   const collectionName = useLocation().pathname.split("/")[1];
 
   useEffect(() => {
     const getData = async () => {
-      try {
-          const cards = [];
-          const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
-          onSnapshot(cardQuery, snapshot => {
+        const cards = [];
+        const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
+        const unsubscribe = onSnapshot(cardQuery, snapshot => {
+            setHasError(false);
             snapshot.docChanges().forEach((change) => {
-              if(change.type === "added") {
-                cards.push(change.doc.data());
-              }
+                if(change.type === "added") {
+                    cards.push(change.doc.data());
+                }
             });
-            console.log(cards);
             setTradingCardCollection(cards);
-          });  
-          //setIsLoading(false);
-      } catch {
-          //setHasError(true);
-          //setIsLoading(false);
-      }
+            },
+            onerror => {
+                setHasError(true);
+            }
+        );  
     }
-
     getData();
     return () => onSnapshot;
   }, [collectionName]);
@@ -60,6 +59,10 @@ function CardCollection({}) {
         sold: card.sold
       });
     });
+  }
+
+  if(hasError){
+    return <p className='hidden'>Error connecting to database</p>
   }
 
   return (
