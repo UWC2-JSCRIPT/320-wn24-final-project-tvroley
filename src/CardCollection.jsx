@@ -73,9 +73,9 @@ function CardCollection({}) {
     <>
         <h2>{collectionName.toUpperCase()}: {tradingCardCollection.length} Cards</h2>
         <div>
-          <p>Click on card images for full size</p>
-          <p className='sold'>SOLD</p>
-          <p className='unsold'>NOT SOLD</p>
+          <p className='p-instructions'>Click on card images for full size</p>
+          <p className='sold p-legend'>SOLD</p>
+          <p className='unsold p-legend'>NOT SOLD</p>
         </div>
         <div className='div-restore-buttons'>
           <button onClick={restoreFromJson}>Restore Collection From Backup</button>
