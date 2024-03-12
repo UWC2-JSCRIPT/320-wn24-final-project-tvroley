@@ -83,7 +83,7 @@ function CardCollection({}) {
         <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
-            {tradingCardCollection.map((card, index) => {
+            {tradingCardCollection.map((card) => {
                 let cardClass = 'unsold';
                 if(card.sold) {
                     cardClass = 'sold';
