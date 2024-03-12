@@ -18,9 +18,9 @@ function TradingCard({tradingCard}) {
   }
 
   const getCardNumberText = () => { 
-    let currentCardNumber = " ";
+    let currentCardNumber = "";
     if(tradingCard.cardNumber) {
-      currentCardNumber = ` #${tradingCard.cardNumber} `;
+      currentCardNumber = `#${tradingCard.cardNumber} `;
     }
     return currentCardNumber;
   }
@@ -28,8 +28,11 @@ function TradingCard({tradingCard}) {
   return (
       <>
         <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
-        <p>{`${tradingCard.cardSet}${getCardNumberText()}${tradingCard.player}`}</p>
-        <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
+        <div>
+          <p>{`${tradingCard.cardSet}`}</p>
+          <p>{`${getCardNumberText()}${tradingCard.player}`}</p>
+          <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
+        </div>
         <div className='div-cards-buttons'>
           <button onClick={(event) => flipImage(event)}>Flip Image</button>
         </div>
