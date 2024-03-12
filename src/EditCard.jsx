@@ -34,6 +34,17 @@ function EditCard({}) {
         getData();
     }, [id]);
 
+    const populateFields = () => {
+        setYear(tradingCard.year);
+        setBrand(tradingCard.brand);
+        setCardNumber(tradingCard.cardNumber);
+        setCardSet(tradingCard.cardSet);
+        setPlayer(tradingCard.player);
+        setGrade(tradingCard.grade);
+        setFrontCardImageLink(tradingCard.frontCardImageLink);
+        setBackCardImageLink(tradingCard.backCardImageLink);
+    }
+
     const editCard = async(event) => {
         event.preventDefault();
         if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
@@ -125,6 +136,9 @@ function EditCard({}) {
           <img src={tradingCard.frontCardImageLink} className='img-small'></img>
           <img src={tradingCard.backCardImageLink} className='img-small'></img>
           <p>{tradingCard.gradingCompany}: {tradingCard.certificationNumber}</p>
+          <div>
+            <button onClick={populateFields}>Populate Fields</button>
+          </div>
           <form id='card-form' className="form-card">
             <div className='div-input-group'>
                 <div className='div-input-label'>
