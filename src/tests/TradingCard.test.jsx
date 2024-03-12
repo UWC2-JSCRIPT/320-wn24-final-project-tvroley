@@ -7,7 +7,7 @@ describe('TradingCard component tests', ()=>{
     const tradingCard = {
         "year": 2002,
         "brand": "Fleer",
-        "cardSet": "2002 Fleer Ultra",
+        "cardSet": "2002 Ultra WNBA",
         "cardNumber": 101,
         "player": "Sue Bird",
         "gradingCompany": "PSA",
@@ -39,7 +39,7 @@ describe('TradingCard component tests', ()=>{
 
     it('should have a paragraph element with the text: 2002 Fleer Ultra #101 Sue Bird', ()=>{
         render(<TradingCard tradingCard={tradingCard}/>);
-        const text = `2002 Fleer Ultra #101 Sue Bird`;
+        const text = `2002 Ultra WNBA`;
         const pEl = screen.getByText(text);
         expect(pEl.tagName).toEqual('P');
     });
