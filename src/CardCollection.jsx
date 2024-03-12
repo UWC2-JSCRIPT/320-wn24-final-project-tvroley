@@ -22,9 +22,9 @@ function CardCollection({}) {
     const getData = async () => {
         const cards = [];
         const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
-        const unsubscribe = onSnapshot(cardQuery, snapshot => {
+        onSnapshot(cardQuery, snapshot => {
             setHasError(false);
-            snapshot.docChanges().forEach((change) => {
+            snapshot.docChanges().map((change) => {
                 if(change.type === "added") {
                     cards.push(change.doc.data());
                 }
@@ -83,7 +83,7 @@ function CardCollection({}) {
         <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
-            {tradingCardCollection.map((card, index) => {
+            {tradingCardCollection.map((card) => {
                 let cardClass = 'unsold';
                 if(card.sold) {
                     cardClass = 'sold';

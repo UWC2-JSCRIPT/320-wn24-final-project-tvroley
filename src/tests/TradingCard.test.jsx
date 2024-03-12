@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { screen, render } from "@testing-library/react";
 import TradingCard from "../TradingCard";
-import uncleCollection from '../UncleCollection.json';
 
 describe('TradingCard component tests', ()=>{
     const tradingCard = {
@@ -18,18 +17,15 @@ describe('TradingCard component tests', ()=>{
         "backCardImageLink": "https://d1htnxwo4o0jhw.cloudfront.net/cert/126428695/355819081.jpg",
         "sold": false
     };
-    const index = 1;
-    const tradingCardCollection = uncleCollection;
-    const setTradingCardCollection = () => {};
     it('should have an image with the alt text: picture of a 2002 Fleer Sue Bird card', ()=>{
-        render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
+        render(<TradingCard tradingCard={tradingCard}/>);
         const altText = `picture of a 2002 Fleer Sue Bird card`;
         const imgEl = screen.getByAltText(altText);
         expect(imgEl.tagName).toEqual('IMG');
     });
 
     it('should have a button that flips the card image with the text: Flip Image', async ()=>{
-        render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
+        render(<TradingCard tradingCard={tradingCard}/>);
         const text = `Flip Image`;
         const btnEl = screen.getByText(text);
         expect(btnEl.tagName).toEqual('BUTTON');
@@ -42,7 +38,7 @@ describe('TradingCard component tests', ()=>{
     });
 
     it('should have a paragraph element with the text: 2002 Fleer Ultra #101 Sue Bird', ()=>{
-        render(<TradingCard tradingCard={tradingCard} index={index} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>);
+        render(<TradingCard tradingCard={tradingCard}/>);
         const text = `2002 Fleer Ultra #101 Sue Bird`;
         const pEl = screen.getByText(text);
         expect(pEl.tagName).toEqual('P');
