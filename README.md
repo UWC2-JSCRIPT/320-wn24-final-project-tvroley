@@ -12,7 +12,7 @@
       The basic Firestore query I was using was getting all the database events and turning them into cards, so it would display deleted cards.  Also, deleting cards using the Firebase console, and then trying to understand when it updated the cards website.  Also, it wasn't easy to find documentation on Firestore error handling.  Trying to implement nested routing for the AddCard component was hard when I needed to pass the AddCard component multiple arguments.
   
   - What changes would you make to this project now that it's deployed?
-      I would try to pass a complete card collection to less React components.
+      Not having the uncle and grandpa collections hard coded in the website.  Make an all cards collection and then the user could separate the cards into collections.
   
   - What would you improve and/or add to this project now that it's deployed?"
-      Different logins for different collections, nested routes for adding to and editing collections, not having the uncle and grandpa collections hard coded.
+      Different logins for different collections, and nested routes for adding to and editing collections, edit button on card component that goes to an edit form that has the card's data populated.

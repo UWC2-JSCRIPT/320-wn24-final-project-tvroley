@@ -22,9 +22,9 @@ function CardCollection({}) {
     const getData = async () => {
         const cards = [];
         const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
-        const unsubscribe = onSnapshot(cardQuery, snapshot => {
+        onSnapshot(cardQuery, snapshot => {
             setHasError(false);
-            snapshot.docChanges().forEach((change) => {
+            snapshot.docChanges().map((change) => {
                 if(change.type === "added") {
                     cards.push(change.doc.data());
                 }
@@ -36,7 +36,7 @@ function CardCollection({}) {
                 setErrorCode(onerror.code);
                 setErrorMessage(onerror.message);
             }
-        );  
+        );
     }
     getData();
     return () => onSnapshot;
@@ -90,7 +90,7 @@ function CardCollection({}) {
                 }
                 return (
                     <div key={card.certificationNumber} className={`div-card ${cardClass}`}>
-                        <TradingCard tradingCard={card}/>
+                      <TradingCard tradingCard={card}/>
                     </div>
                 )
             })}
