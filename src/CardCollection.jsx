@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import TradingCard from './TradingCard';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import grandpaCollection from './GrandpaCollection.json';
 import uncleCollection from './UncleCollection.json';
-import AddCard from './AddCard';
 import SortButtons from './SortButtons';
 import Nav from './Nav';
 import db from './db';
@@ -15,7 +14,8 @@ function CardCollection({}) {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorCode, setErrorCode] = useState('');
-  
+
+  const navigate = useNavigate();
   const collectionName = useLocation().pathname.split("/")[1];
 
   useEffect(() => {
@@ -41,6 +41,10 @@ function CardCollection({}) {
     getData();
     return () => onSnapshot;
   }, [collectionName]);
+
+  const goAdd = () => {
+    navigate(`/${collectionName}/add`);
+  }
 
   const restoreFromJson = () => {
     if(collectionName === "grandpa"){
@@ -80,7 +84,9 @@ function CardCollection({}) {
         <div className='div-restore-buttons'>
           <button onClick={restoreFromJson}>Restore Collection From Backup</button>
         </div>
-        <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
+        <div className='div-add-button'>
+          <button onClick={goAdd}>Add Card</button>
+        </div>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
             {tradingCardCollection.map((card) => {

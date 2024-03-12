@@ -1,10 +1,10 @@
 import './App.css';
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { doc, setDoc, } from "firebase/firestore";
 import db from './db';
+import { useLocation } from 'react-router-dom';
 
-function AddCard({collectionName, tradingCardCollection, setTradingCardCollection}) {
+function AddCard({}) {
     const [year, setYear] = useState(0);
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -15,13 +15,12 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
     const [certificationNumber, setCertificationNumber] = useState('');
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
+    const collectionName = useLocation().pathname.split("/")[1];
 
     const addCard = async(event) => {
         event.preventDefault();
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
-            const cards = [...tradingCardCollection, card];
-            setTradingCardCollection(cards);
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
@@ -134,7 +133,7 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
 
     return (
         <div className='div-add-cards'>
-          <h3>Add Card</h3>
+          <h3>Add card to {collectionName} collection</h3>
           <form id='card-form' className="form-card">
             <div className='div-input-group'>
                 <div className='div-input-label'>
@@ -269,26 +268,6 @@ function AddCard({collectionName, tradingCardCollection, setTradingCardCollectio
           </form>
         </div>
     )
-}
-
-AddCard.propTypes = {
-    collectionName: PropTypes.string.isRequired,
-    tradingCardCollection: PropTypes.arrayOf(
-        PropTypes.shape({
-            year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-            brand: PropTypes.string,
-            cardSet: PropTypes.string,
-            cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-            player: PropTypes.string,
-            gradingCompany: PropTypes.string,
-            grade: PropTypes.string,
-            certificationNumber: PropTypes.string,
-            frontCardImageLink: PropTypes.string,
-            backCardImageLink: PropTypes.string,
-            sold: PropTypes.bool
-        })
-    ),
-    setTradingCardCollection: PropTypes.func.isRequired
 }
 
 export default AddCard;
