@@ -77,9 +77,6 @@ function CardCollection({}) {
           <p className='sold p-legend'>SOLD</p>
           <p className='unsold p-legend'>NOT SOLD</p>
         </div>
-        <div className='div-restore-buttons'>
-          <button onClick={restoreFromJson}>Restore Collection From Backup</button>
-        </div>
         <AddCard collectionName={collectionName} tradingCardCollection={tradingCardCollection} setTradingCardCollection={setTradingCardCollection}/>
         <SortButtons collectionName={collectionName} setTradingCardCollection={setTradingCardCollection}/>
         <div className='div-cards'>
