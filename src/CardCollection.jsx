@@ -69,6 +69,11 @@ function CardCollection({}) {
     });
   }
 
+  const saveLocal = () => {
+      const cardsWord = JSON.stringify(tradingCardCollection);
+      localStorage.setItem('cards', cardsWord);
+  }
+
   if(hasError){
     return <p>Error code: {errorCode} Error message: {errorMessage}</p>
   }
@@ -82,6 +87,7 @@ function CardCollection({}) {
           <p className='unsold p-legend'>NOT SOLD</p>
         </div>
         <div className='div-restore-buttons'>
+          <button onClick={saveLocal}>Save Cards Locally</button>
           <button onClick={restoreFromJson}>Restore Collection From Backup</button>
         </div>
         <div className='div-add-button'>
