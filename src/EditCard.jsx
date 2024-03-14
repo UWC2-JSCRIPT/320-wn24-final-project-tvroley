@@ -1,10 +1,11 @@
 import './App.css';
-import { useState } from 'react';
-import { doc, setDoc, } from "firebase/firestore";
+import { useState, useEffect } from 'react';
+import { doc, getDoc, setDoc} from "firebase/firestore";
 import db from './db';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from "react-router-dom";
 
-function AddCard({}) {
+function EditCard({}) {
+    const [tradingCard, setTradingCard] = useState({});
     const [year, setYear] = useState(0);
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -16,11 +17,38 @@ function AddCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
+    const { id } = useParams();
 
-    const addCard = async(event) => {
+    useEffect(() => {
+        const getData = async () => {
+            const docRef = doc(db, collectionName, id);
+            const docSnap = await getDoc(docRef).catch(error => console.log(error));
+            if (docSnap.exists()) {
+                const myCard = docSnap.data();
+                setTradingCard(myCard);
+            } else {
+                console.log("No such document!");
+            }
+        }
+
+        getData();
+    }, [id]);
+
+    const populateFields = () => {
+        setYear(tradingCard.year);
+        setBrand(tradingCard.brand);
+        setCardNumber(tradingCard.cardNumber);
+        setCardSet(tradingCard.cardSet);
+        setPlayer(tradingCard.player);
+        setGrade(tradingCard.grade);
+        setFrontCardImageLink(tradingCard.frontCardImageLink);
+        setBackCardImageLink(tradingCard.backCardImageLink);
+    }
+
+    const editCard = async(event) => {
         event.preventDefault();
-        if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
+        if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
+            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
@@ -35,17 +63,6 @@ function AddCard({}) {
                 sold: card.sold
             }).catch(error => console.log(error));
 
-            setYear(0);
-            setBrand('');
-            setCardNumber('');
-            setCardSet('');
-            setPlayer('');
-            setGradingCompany('');
-            setGrade('');
-            setCertificationNumber('');
-            setFrontCardImageLink('');
-            setBackCardImageLink('');
-
             const yearEl = document.getElementById('year-input');
             yearEl.classList.remove('invalid');
             const brandEl = document.getElementById('brand-input');
@@ -54,12 +71,8 @@ function AddCard({}) {
             cardNumberEl.classList.remove('invalid');
             const playerEl = document.getElementById('player-input');
             playerEl.classList.remove('invalid');
-            const gradingCompanyEl = document.getElementById('grading-company-input');
-            gradingCompanyEl.classList.remove('invalid');
             const gradeEl = document.getElementById('grade-input');
             gradeEl.classList.remove('invalid');
-            const certEl = document.getElementById('certification-number-input');
-            certEl.classList.remove('invalid');
             const frontEl = document.getElementById('front-image-link-input');
             frontEl.classList.remove('invalid');
             const backEl = document.getElementById('back-image-link-input');
@@ -93,26 +106,12 @@ function AddCard({}) {
                 const playerEl = document.getElementById('player-input');
                 playerEl.classList.remove('invalid');
             }
-            if(!gradingCompany){
-                const gradingCompanyEl = document.getElementById('grading-company-input');
-                gradingCompanyEl.classList.add('invalid');
-            } else {
-                const gradingCompanyEl = document.getElementById('grading-company-input');
-                gradingCompanyEl.classList.remove('invalid');
-            }
             if(!grade){
                 const gradeEl = document.getElementById('grade-input');
                 gradeEl.classList.add('invalid');
             } else {
                 const gradeEl = document.getElementById('grade-input');
                 gradeEl.classList.remove('invalid');
-            }
-            if(!certificationNumber){
-                const certEl = document.getElementById('certification-number-input');
-                certEl.classList.add('invalid');
-            } else {
-                const certEl = document.getElementById('certification-number-input');
-                certEl.classList.remove('invalid');
             }
             if(!frontCardImageLink){
                 const frontEl = document.getElementById('front-image-link-input');
@@ -133,7 +132,13 @@ function AddCard({}) {
 
     return (
         <div className='div-add-cards'>
-          <h3>Add card to {collectionName} collection</h3>
+          <h3>Edit Card</h3>
+          <img src={tradingCard.frontCardImageLink} className='img-small'></img>
+          <img src={tradingCard.backCardImageLink} className='img-small'></img>
+          <p>{tradingCard.gradingCompany}: {tradingCard.certificationNumber}</p>
+          <div>
+            <button onClick={populateFields}>Populate Fields</button>
+          </div>
           <form id='card-form' className="form-card">
             <div className='div-input-group'>
                 <div className='div-input-label'>
@@ -199,18 +204,6 @@ function AddCard({}) {
             </div>
             <div className='div-input-group'>
                 <div className='div-input-label'>
-                    <label htmlFor="grading-company-input">Grading Company</label>
-                    <input
-                        id="grading-company-input"
-                        type="text"
-                        minLength="1"
-                        maxLength="50"
-                        required
-                        onChange={e => setGradingCompany(e.target.value)} 
-                        value={gradingCompany}
-                    />
-                </div>
-                <div className='div-input-label'>
                     <label htmlFor="grade-input">Grade</label>
                     <input
                         id="grade-input"
@@ -221,19 +214,6 @@ function AddCard({}) {
                         onChange={e => setGrade(e.target.value)} 
                         value={grade}
                     />
-                </div>
-                <div className='div-input-label'>
-                    <label htmlFor="certification-number-input">Certification Number</label>
-                    <input
-                        id="certification-number-input"
-                        type="text"
-                        minLength="1"
-                        maxLength="50"
-                        required
-                        onChange={e => setCertificationNumber(e.target.value)} 
-                        value={certificationNumber}
-                    />
-                    <span className="invalid hidden" id="certification-error"/>
                 </div>
             </div>
             <div className='div-input-group'>
@@ -263,11 +243,11 @@ function AddCard({}) {
                 </div>
             </div>
             <div className='div-input-group'>
-                <input className="btn" type="submit" value="Submit Card" onClick={addCard} />
+                <input className="btn" type="submit" value="Edit Card" onClick={editCard} />
             </div>
           </form>
         </div>
     )
 }
 
-export default AddCard;
+export default EditCard;

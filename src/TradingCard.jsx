@@ -1,7 +1,14 @@
 import './App.css';
 import PropTypes from 'prop-types';
+import { useLocation, useNavigate } from "react-router-dom";
 
 function TradingCard({tradingCard}) {
+  const navigate = useNavigate();
+  const collectionName = useLocation().pathname.split("/")[1];
+
+  const goEdit = () => {
+      navigate(`/${collectionName}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}`);
+  }
 
   const flipImage = (event) => {
     const el = event.target.parentElement.parentElement.firstChild;
@@ -34,6 +41,7 @@ function TradingCard({tradingCard}) {
           <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
         </div>
         <div className='div-cards-buttons'>
+          <button onClick={(event) => goEdit(event)}>Edit</button>
           <button onClick={(event) => flipImage(event)}>Flip Image</button>
         </div>
       </>
