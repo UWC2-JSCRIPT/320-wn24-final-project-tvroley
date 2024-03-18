@@ -16,6 +16,8 @@ function EditCard({}) {
     const [certificationNumber, setCertificationNumber] = useState('');
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
+    const [sold, setSold] = useState(false);
+    const handleCheck = () => {setSold(!sold)};
     const collectionName = useLocation().pathname.split("/")[1];
     const { id } = useParams();
 
@@ -43,12 +45,13 @@ function EditCard({}) {
         setGrade(tradingCard.grade);
         setFrontCardImageLink(tradingCard.frontCardImageLink);
         setBackCardImageLink(tradingCard.backCardImageLink);
+        setSold(tradingCard.sold);
     }
 
     const editCard = async(event) => {
         event.preventDefault();
         if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
+            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
@@ -240,6 +243,10 @@ function EditCard({}) {
                         onChange={e => setBackCardImageLink(e.target.value)} 
                         value={backCardImageLink}
                     />
+                </div>
+                <div className='div-input-label'>
+                    <label htmlFor="sold-input">Sold</label>
+                    <input type="checkbox" id="sold-input" checked={sold} onChange={handleCheck}/>
                 </div>
             </div>
             <div className='div-input-group'>
