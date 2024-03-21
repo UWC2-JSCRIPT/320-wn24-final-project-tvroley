@@ -1,8 +1,11 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { doc, setDoc, } from "firebase/firestore";
 import db from './db';
 import { useLocation } from 'react-router-dom';
+import firebaseConfig from './firebaseConfig';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 function AddCard({}) {
     const [year, setYear] = useState(0);
@@ -16,6 +19,12 @@ function AddCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
+
+    firebase.initializeApp(firebaseConfig);
+
+    useEffect(() => {
+        const unregisteredAuthObserver = firebase.auth().onAuthStateChanged(user => console.log(user));
+    }, []);
 
     const addCard = async(event) => {
         event.preventDefault();
