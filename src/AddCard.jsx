@@ -20,7 +20,7 @@ function AddCard({}) {
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
     let uID = '';
-    const rightUID = import.meta.env.UID;
+    const rightUID = import.meta.env.VITE_UID;
 
     firebase.initializeApp(firebaseConfig);
 
