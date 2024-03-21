@@ -25,7 +25,11 @@ function AddCard({}) {
 
     const addCard = async(event) => {
         event.preventDefault();
-        const uID = firebase.auth().currentUser.uid;
+        const user = firebase.auth().currentUser;
+        if(!user) {
+            return;
+        }
+        const uID = user.uid;
         console.log(rightUID);
         console.log(uID);
         if(uID !== rightUID) {
