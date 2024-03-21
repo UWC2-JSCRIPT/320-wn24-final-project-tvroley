@@ -19,19 +19,13 @@ function AddCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
-    let uID = '';
     const rightUID = import.meta.env.VITE_UID;
 
     firebase.initializeApp(firebaseConfig);
 
-    useEffect(() => {
-        const unregisteredAuthObserver = firebase.auth().onAuthStateChanged(user => {uID = user.uid});
-
-        return () => unregisteredAuthObserver;
-    }, []);
-
     const addCard = async(event) => {
         event.preventDefault();
+        const uID = firebase.auth().currentUser.uid;
         console.log(rightUID);
         console.log(uID);
         if(uID !== rightUID) {
