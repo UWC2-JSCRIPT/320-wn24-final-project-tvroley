@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc} from "firebase/firestore";
 import db from './db';
 import { useLocation, useParams } from "react-router-dom";
+import firebaseConfig from './firebaseConfig';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 function EditCard({}) {
     const [tradingCard, setTradingCard] = useState({});
@@ -20,6 +23,9 @@ function EditCard({}) {
     const handleCheck = () => {setSold(!sold)};
     const collectionName = useLocation().pathname.split("/")[1];
     const { id } = useParams();
+    const rightUID = import.meta.env.VITE_UID;
+
+    firebase.initializeApp(firebaseConfig);
 
     useEffect(() => {
         const getData = async () => {
@@ -50,6 +56,16 @@ function EditCard({}) {
 
     const editCard = async(event) => {
         event.preventDefault();
+        const user = firebase.auth().currentUser;
+        if(!user) {
+            return;
+        }
+        const uID = user.uid;
+        console.log(rightUID);
+        console.log(uID);
+        if(uID !== rightUID) {
+            return;
+        }
         if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
