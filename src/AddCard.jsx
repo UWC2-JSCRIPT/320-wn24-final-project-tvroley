@@ -19,15 +19,24 @@ function AddCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
+    let uID = '';
+    const rightUID = import.meta.env.UID;
 
     firebase.initializeApp(firebaseConfig);
 
     useEffect(() => {
-        const unregisteredAuthObserver = firebase.auth().onAuthStateChanged(user => console.log(user));
+        const unregisteredAuthObserver = firebase.auth().onAuthStateChanged(user => {uID = user.uid});
+
+        return () => unregisteredAuthObserver;
     }, []);
 
     const addCard = async(event) => {
         event.preventDefault();
+        console.log(rightUID);
+        if(uID !== rightUID) {
+            return;
+        }
+
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
