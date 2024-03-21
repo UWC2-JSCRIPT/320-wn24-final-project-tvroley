@@ -1,8 +1,11 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { doc, setDoc, } from "firebase/firestore";
 import db from './db';
 import { useLocation } from 'react-router-dom';
+import firebaseConfig from './firebaseConfig';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 function AddCard({}) {
     const [year, setYear] = useState(0);
@@ -16,9 +19,25 @@ function AddCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
+    let uID = '';
+    const rightUID = import.meta.env.UID;
+
+    firebase.initializeApp(firebaseConfig);
+
+    useEffect(() => {
+        const unregisteredAuthObserver = firebase.auth().onAuthStateChanged(user => {uID = user.uid});
+
+        return () => unregisteredAuthObserver;
+    }, []);
 
     const addCard = async(event) => {
         event.preventDefault();
+        console.log(rightUID);
+        console.log(uID);
+        if(uID !== rightUID) {
+            return;
+        }
+
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {

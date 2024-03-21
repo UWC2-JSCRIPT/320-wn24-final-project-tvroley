@@ -1,12 +1,6 @@
-import { initializeApp } from 'firebase/app';
+import firebaseApp from './firebaseApp';
 import { getFirestore } from 'firebase/firestore';
 
-const app = initializeApp({
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID
-});
-
-const db = getFirestore(app);
+const db = getFirestore(firebaseApp);
 
 export default db;
