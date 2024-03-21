@@ -1,23 +1,32 @@
 import {useNavigate} from "react-router-dom";
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import firebaseConfig from "./firebaseConfig";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 export default function Home() {
-    // Configure FirebaseUI.
-    const uiConfig = {
-        // Popup signin flow rather than redirect flow.
-        signInFlow: 'popup',
-        // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-        signInSuccessUrl: '/',
-        // We will display Google as auth provider.
-        signInOptions: [
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID
-        ]
-    };
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
 
-    firebase.initializeApp(firebaseConfig);
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+    }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+    });
 
     const navigate = useNavigate();
 
@@ -35,7 +44,6 @@ export default function Home() {
               <button onClick={goGrandpa}>Grandpa's Collection</button>
               <button onClick={goUncle}>Uncle's Collection</button>
             </div>
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
         </>
     );
 }

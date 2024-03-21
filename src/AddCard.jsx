@@ -33,6 +33,7 @@ function AddCard({}) {
     const addCard = async(event) => {
         event.preventDefault();
         console.log(rightUID);
+        console.log(uID);
         if(uID !== rightUID) {
             return;
         }
