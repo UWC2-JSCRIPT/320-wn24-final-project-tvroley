@@ -20,6 +20,7 @@ function EditCard({}) {
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const [sold, setSold] = useState(false);
+    const [signInResult, setSignInResult] = useState('');
     const handleCheck = () => {setSold(!sold)};
     const collectionName = useLocation().pathname.split("/")[1];
     const { id } = useParams();
@@ -58,14 +59,18 @@ function EditCard({}) {
         event.preventDefault();
         const user = firebase.auth().currentUser;
         if(!user) {
+            setSignInResult('Not signed in to edit cards');
             return;
         }
         const uID = user.uid;
-        console.log(rightUID);
-        console.log(uID);
+        
         if(uID !== rightUID) {
+            setSignInResult(`You don't have permission to edit cards`);
             return;
         }
+
+        setSignInResult(`You have permission to edit cards`);
+
         if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
@@ -268,6 +273,7 @@ function EditCard({}) {
             <div className='div-input-group'>
                 <input className="btn" type="submit" value="Edit Card" onClick={editCard} />
             </div>
+            <p>{signInResult}</p>
           </form>
         </div>
     )
