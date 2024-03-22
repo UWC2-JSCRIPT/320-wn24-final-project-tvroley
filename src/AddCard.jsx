@@ -20,6 +20,7 @@ function AddCard({}) {
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const collectionName = useLocation().pathname.split("/")[1];
     const rightUID = import.meta.env.VITE_UID;
+    const [signInResult, setSignInResult] = useState('');
 
     firebase.initializeApp(firebaseConfig);
 
@@ -27,14 +28,17 @@ function AddCard({}) {
         event.preventDefault();
         const user = firebase.auth().currentUser;
         if(!user) {
+            setSignInResult('Not signed in to add cards');
             return;
         }
         const uID = user.uid;
-        console.log(rightUID);
-        console.log(uID);
+
         if(uID !== rightUID) {
+            setSignInResult(`You don't have permission to add cards`);
             return;
         }
+
+        setSignInResult(`You have permission to add cards`);
 
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
@@ -282,6 +286,7 @@ function AddCard({}) {
             <div className='div-input-group'>
                 <input className="btn" type="submit" value="Submit Card" onClick={addCard} />
             </div>
+            <p>{signInResult}</p>
           </form>
         </div>
     )
