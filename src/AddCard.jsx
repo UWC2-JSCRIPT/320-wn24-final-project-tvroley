@@ -12,6 +12,7 @@ function AddCard({}) {
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [cardSet, setCardSet] = useState('');
+    const [variation, setVariation] = useState('');
     const [player, setPlayer] = useState('');
     const [gradingCompany, setGradingCompany] = useState('');
     const [grade, setGrade] = useState('');
@@ -60,6 +61,7 @@ function AddCard({}) {
             setBrand('');
             setCardNumber('');
             setCardSet('');
+            setVariation('');
             setPlayer('');
             setGradingCompany('');
             setGrade('');

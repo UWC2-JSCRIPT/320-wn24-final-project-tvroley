@@ -31,12 +31,21 @@ function TradingCard({tradingCard}) {
     }
     return currentCardNumber;
   }
+
+  const getVariationText = () => { 
+    let currentVariation = "";
+    if(tradingCard.variation) {
+      currentVariation = `${tradingCard.variation} `;
+    }
+    return currentVariation;
+  }
   
   return (
       <>
         <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
         <div>
           <p>{`${tradingCard.cardSet}`}</p>
+          <p>{`${getVariationText()}`}</p>
           <p>{`${getCardNumberText()}${tradingCard.player}`}</p>
           <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
         </div>

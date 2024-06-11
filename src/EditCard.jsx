@@ -13,6 +13,7 @@ function EditCard({}) {
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [cardSet, setCardSet] = useState('');
+    const [variation, setVariation] = useState('');
     const [player, setPlayer] = useState('');
     const [gradingCompany, setGradingCompany] = useState('');
     const [grade, setGrade] = useState('');
@@ -46,8 +47,9 @@ function EditCard({}) {
     const populateFields = () => {
         setYear(tradingCard.year);
         setBrand(tradingCard.brand);
-        setCardNumber(tradingCard.cardNumber);
+        setCardNumber(tradingCard.cardNumber || '');
         setCardSet(tradingCard.cardSet);
+        setVariation(tradingCard.variation || '');
         setPlayer(tradingCard.player);
         setGradingCompany(tradingCard.gradingCompany);
         setGrade(tradingCard.grade);
@@ -74,11 +76,12 @@ function EditCard({}) {
         setSignInResult(`You edited the card`);
 
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
+            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, variation: variation, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
                 cardSet: card.cardSet,
+                variation: card.variation,
                 cardNumber: card.cardNumber,
                 player: card.player,
                 gradingCompany: card.gradingCompany,
@@ -239,7 +242,9 @@ function EditCard({}) {
                     <input
                         id="card-variation-input"
                         type="text"
-                        maxLength="100" 
+                        maxLength="100"
+                        onChange={e => setVariation(e.target.value)} 
+                        value={variation} 
                     />
                 </div>
                 <div className='div-input-label'>
