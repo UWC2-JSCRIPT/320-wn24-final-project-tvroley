@@ -42,11 +42,12 @@ function AddCard({}) {
         setSignInResult(`You have permission to add cards`);
 
         if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
+            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, variation: variation, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
                 brand: card.brand,
                 cardSet: card.cardSet,
+                variation: card.variation,
                 cardNumber: card.cardNumber,
                 player: card.player,
                 gradingCompany: card.gradingCompany,
@@ -103,11 +104,11 @@ function AddCard({}) {
                 brandEl.classList.remove('invalid');
             }
             if(!cardSet){
-                const cardNumberEl = document.getElementById('card-set-input');
-                cardNumberEl.classList.add('invalid');
+                const cardSetEl = document.getElementById('card-set-input');
+                cardSetEl.classList.add('invalid');
             } else {
-                const cardNumberEl = document.getElementById('card-set-input');
-                cardNumberEl.classList.remove('invalid');
+                const cardSetEl = document.getElementById('card-set-input');
+                cardSetEl.classList.remove('invalid');
             }
             if(!player){
                 const playerEl = document.getElementById('player-input');
@@ -205,6 +206,16 @@ function AddCard({}) {
                         onChange={e => setCardSet(e.target.value)} 
                         value={cardSet}
                         required
+                    />
+                </div>
+                <div className='div-input-label'>
+                    <label htmlFor="card-variation-input">Variation</label>
+                    <input
+                        id="card-variation-input"
+                        type="text"
+                        maxLength="100"
+                        onChange={e => setVariation(e.target.value)} 
+                        value={variation} 
                     />
                 </div>
                 <div className='div-input-label'>
