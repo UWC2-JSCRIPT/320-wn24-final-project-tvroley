@@ -49,7 +49,9 @@ function EditCard({}) {
         setCardNumber(tradingCard.cardNumber);
         setCardSet(tradingCard.cardSet);
         setPlayer(tradingCard.player);
+        setGradingCompany(tradingCard.gradingCompany);
         setGrade(tradingCard.grade);
+        setCertificationNumber(tradingCard.certificationNumber);
         setFrontCardImageLink(tradingCard.frontCardImageLink);
         setBackCardImageLink(tradingCard.backCardImageLink);
         setSold(tradingCard.sold);
@@ -69,9 +71,9 @@ function EditCard({}) {
             return;
         }
 
-        setSignInResult(`You have permission to edit cards`);
+        setSignInResult(`You edited the card`);
 
-        if(year && brand && cardSet && player && grade && frontCardImageLink && backCardImageLink){
+        if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
             const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
             const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
                 year: card.year,
@@ -97,6 +99,10 @@ function EditCard({}) {
             playerEl.classList.remove('invalid');
             const gradeEl = document.getElementById('grade-input');
             gradeEl.classList.remove('invalid');
+            const gradingCompanyEl = document.getElementById('grading-company-input');
+            gradingCompanyEl.classList.remove('invalid');
+            const certificationNumberEl = document.getElementById('certification-number-input');
+            certificationNumberEl.classList.remove('invalid');
             const frontEl = document.getElementById('front-image-link-input');
             frontEl.classList.remove('invalid');
             const backEl = document.getElementById('back-image-link-input');
@@ -137,6 +143,20 @@ function EditCard({}) {
                 const gradeEl = document.getElementById('grade-input');
                 gradeEl.classList.remove('invalid');
             }
+            if(!gradingCompany){
+                const gradingCompanyEl = document.getElementById('grading-company-input');
+                gradingCompanyEl.classList.add('invalid');
+            } else {
+                const gradingCompanyEl = document.getElementById('grading-company-input');
+                gradingCompanyEl.classList.remove('invalid');
+            }
+            if(!certificationNumber){
+                const certificationNumberEl = document.getElementById('certification-number-input');
+                certificationNumberEl.classList.add('invalid');
+            } else {
+                const certificationNumberEl = document.getElementById('certification-number-input');
+                certificationNumberEl.classList.remove('invalid');
+            }
             if(!frontCardImageLink){
                 const frontEl = document.getElementById('front-image-link-input');
                 frontEl.classList.add('invalid');
@@ -157,8 +177,9 @@ function EditCard({}) {
     return (
         <div className='div-add-cards'>
           <h3>Edit Card</h3>
-          <img src={tradingCard.frontCardImageLink} className='img-small'></img>
-          <img src={tradingCard.backCardImageLink} className='img-small'></img>
+          <div key={tradingCard.certificationNumber} className={`div-card`}>
+            <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} className='img-small'></img>
+          </div>
           <p>{tradingCard.gradingCompany}: {tradingCard.certificationNumber}</p>
           <div>
             <button onClick={populateFields}>Populate Fields</button>
@@ -214,6 +235,14 @@ function EditCard({}) {
                     />
                 </div>
                 <div className='div-input-label'>
+                    <label htmlFor="card-variation-input">Variation</label>
+                    <input
+                        id="card-variation-input"
+                        type="text"
+                        maxLength="100" 
+                    />
+                </div>
+                <div className='div-input-label'>
                     <label htmlFor="player-input">Player</label>
                     <input
                         id="player-input"
@@ -227,6 +256,18 @@ function EditCard({}) {
                 </div>
             </div>
             <div className='div-input-group'>
+            <div className='div-input-label'>
+                <label htmlFor="grading-company-input">Grading Company</label>
+                    <input
+                        id="grading-company-input"
+                        type="text"
+                        minLength="1"
+                        maxLength="100"
+                        required
+                        onChange={e => setGradingCompany(e.target.value)} 
+                        value={gradingCompany}
+                    />
+                </div>
                 <div className='div-input-label'>
                     <label htmlFor="grade-input">Grade</label>
                     <input
@@ -237,6 +278,18 @@ function EditCard({}) {
                         required
                         onChange={e => setGrade(e.target.value)} 
                         value={grade}
+                    />
+                </div>
+                <div className='div-input-label'>
+                    <label htmlFor="certification-number-input">Certification Number</label>
+                    <input
+                        id="certification-number-input"
+                        type="text"
+                        minLength="1"
+                        maxLength="100"
+                        required
+                        onChange={e => setCertificationNumber(e.target.value)} 
+                        value={certificationNumber}
                     />
                 </div>
             </div>
