@@ -14,12 +14,9 @@ function App() {
       <Nav/>
       <Routes>
         <Route path="/" element={<Home/>} />
-        <Route path="grandpa" element={<CardCollection/>} />
-        <Route path="grandpa/:id" element={<EditCard/>} />
-        <Route path="grandpa/add" element={<AddCard/>} />
-        <Route path="uncle" element={<CardCollection/>} />
-        <Route path="uncle/:id" element={<EditCard/>} />
-        <Route path="uncle/add" element={<AddCard/>} />
+        <Route path="collection" element={<CardCollection/>} />
+        <Route path="collection/:id" element={<EditCard/>} />
+        <Route path="collection/add" element={<AddCard/>} />
       </Routes>
     </div>
   );

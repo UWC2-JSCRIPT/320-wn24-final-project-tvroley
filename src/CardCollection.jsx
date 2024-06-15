@@ -14,36 +14,66 @@ function CardCollection({}) {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorCode, setErrorCode] = useState('');
+  const [collectionName, setCollectionName] = useState(localStorage.getItem('cardsUsername'));
+  const [username, setUsername] = useState(localStorage.getItem('cardsUsername'));
+  const [collections, setCollections] = useState([]);
 
   const navigate = useNavigate();
-  const collectionName = useLocation().pathname.split("/")[1];
-
+  
   useEffect(() => {
     const getData = async () => {
-        const cards = [];
-        const cardQuery = query(collection(db, collectionName), orderBy('year', 'asc'));
-        onSnapshot(cardQuery, snapshot => {
-            setHasError(false);
-            snapshot.docChanges().map((change) => {
-                if(change.type === "added") {
-                    cards.push(change.doc.data());
-                }
-            });
-            setTradingCardCollection(cards);
-            },
-            onerror => {
-                setHasError(true);
-                setErrorCode(onerror.code);
-                setErrorMessage(onerror.message);
-            }
-        );
+      let urlGetCollections = new URL(`https://trading-cards-backend-production.up.railway.app/collections`);
+      urlGetCollections.searchParams.append("ownerName", username);
+      const responseGetCollections = await fetch(urlGetCollections, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem('cardsToken')
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+      });
+      if(responseGetCollections.status === 200) {
+        const data = await responseGetCollections.json();
+        const myCollections = data.collections;
+        const baseCollection = myCollections.filter((collect) => username === collect.title);
+        const collectionId = baseCollection[0]._id;
+        let myCollectionIds = [];
+        myCollections.map((collect) => myCollectionIds.push(collect._id));
+        setCollections(myCollectionIds);
+        console.log(myCollectionIds);
+        console.log(collectionId);
+
+        let url = new URL(`https://trading-cards-backend-production.up.railway.app/collections/` + collectionId);
+        url.searchParams.append("verbose", "true");
+        const response = await fetch(url, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem('cardsToken')
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+        });
+
+        if(response.status === 200) {
+          const data = await response.json();
+          setTradingCardCollection(data.tradingCards);
+          console.log(tradingCardCollection);
+        }
+      }
     }
     getData();
-    return () => onSnapshot;
   }, [collectionName]);
 
   const goAdd = () => {
-    navigate(`/${collectionName}/add`);
+    navigate(`/collection/add`);
   }
 
   const restoreFromJson = () => {
