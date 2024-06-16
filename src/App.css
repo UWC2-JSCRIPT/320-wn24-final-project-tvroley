@@ -13,7 +13,7 @@
   max-width: 300px;
 }
 
-.invalid{
+.invalid {
   border: 1px solid red;
   background-color: #ffdddd;
 }
@@ -133,12 +133,12 @@
   gap: 1rem;
 }
 
-.sold{
-  background-color:  lightblue;
+.sold {
+  background-color: lightblue;
   background-blend-mode: normal;
 }
 
-.unsold{
+.unsold {
   background-color: lightgray;
   background-blend-mode: normal;
 }
