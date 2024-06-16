@@ -42,11 +42,11 @@ function TradingCard({tradingCard}) {
   
   return (
       <>
-        <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
+        <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
         <div>
           <p>{`${tradingCard.cardSet}`}</p>
           <p>{`${getVariationText()}`}</p>
-          <p>{`${getCardNumberText()}${tradingCard.player}`}</p>
+          <p>{`${getCardNumberText()}${tradingCard.subject}`}</p>
           <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
         </div>
         <div className='div-cards-buttons'>
@@ -63,7 +63,7 @@ TradingCard.propTypes = {
         brand: PropTypes.string,
         cardSet: PropTypes.string,
         cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        player: PropTypes.string,
+        subject: PropTypes.string,
         gradingCompany: PropTypes.string,
         grade: PropTypes.string,
         certificationNumber: PropTypes.string,

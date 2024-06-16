@@ -1,74 +1,69 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { doc, setDoc, } from "firebase/firestore";
-import db from './db';
 import { useLocation } from 'react-router-dom';
-import firebaseConfig from './firebaseConfig';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
 
 function AddCard({}) {
     const [year, setYear] = useState(0);
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [cardSet, setCardSet] = useState('');
-    const [variation, setVariation] = useState('');
-    const [player, setPlayer] = useState('');
+    const [variety, setVariety] = useState('');
+    const [subject, setSubject] = useState('');
     const [gradingCompany, setGradingCompany] = useState('');
     const [grade, setGrade] = useState('');
     const [certificationNumber, setCertificationNumber] = useState('');
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
+    const [sold, setSold] = useState(false);
     const collectionName = useLocation().pathname.split("/")[1];
-    const rightUID = import.meta.env.VITE_UID;
-    const [signInResult, setSignInResult] = useState('');
-
-    firebase.initializeApp(firebaseConfig);
+    const handleCheck = () => {setSold(!sold)};
 
     const addCard = async(event) => {
         event.preventDefault();
-        const user = firebase.auth().currentUser;
-        if(!user) {
-            setSignInResult('Not signed in to add cards');
-            return;
-        }
-        const uID = user.uid;
 
-        if(uID !== rightUID) {
-            setSignInResult(`You don't have permission to add cards`);
-            return;
-        }
+        if(year && brand && cardSet && subject && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
+            const card = {
+                year: Number(year), 
+                brand: brand, 
+                cardNumber: cardNumber, 
+                cardSet: cardSet, 
+                variety: variety, 
+                subject: subject, 
+                gradingCompany: gradingCompany, 
+                grade: grade, 
+                certificationNumber: certificationNumber, 
+                frontCardImageLink: frontCardImageLink, 
+                backCardImageLink: backCardImageLink, 
+                sold: false
+            };
+            let urlPostCard = new URL(`https://trading-cards-backend-production.up.railway.app/cards/`);
+            const responseGetCollections = await fetch(urlPostCard, {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('cardsToken')
+                },
+                body: JSON.stringify(card)
+            });
+            const data = await responseGetCollections.json();
+            if(responseGetCollections.status === 200) {
+                console.log(data);
+            } else {
+                console.log(data);
+            }
 
-        setSignInResult(`You have permission to add cards`);
-
-        if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, variation: variation, player: player, gradingCompany: gradingCompany, grade: grade, certificationNumber: certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: false};
-            const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
-                year: card.year,
-                brand: card.brand,
-                cardSet: card.cardSet,
-                variation: card.variation,
-                cardNumber: card.cardNumber,
-                player: card.player,
-                gradingCompany: card.gradingCompany,
-                grade: card.grade,
-                certificationNumber: card.certificationNumber,
-                frontCardImageLink: card.frontCardImageLink,
-                backCardImageLink: card.backCardImageLink,
-                sold: card.sold
-            }).catch(error => console.log(error));
-
-            setYear(0);
+            /*setYear(0);
             setBrand('');
             setCardNumber('');
             setCardSet('');
-            setVariation('');
-            setPlayer('');
+            setVariety('');
+            setSubject('');
             setGradingCompany('');
             setGrade('');
             setCertificationNumber('');
             setFrontCardImageLink('');
-            setBackCardImageLink('');
+            setBackCardImageLink('');*/
 
             const yearEl = document.getElementById('year-input');
             yearEl.classList.remove('invalid');
@@ -76,8 +71,8 @@ function AddCard({}) {
             brandEl.classList.remove('invalid');
             const cardNumberEl = document.getElementById('card-set-input');
             cardNumberEl.classList.remove('invalid');
-            const playerEl = document.getElementById('player-input');
-            playerEl.classList.remove('invalid');
+            const subjectEl = document.getElementById('subject-input');
+            subjectEl.classList.remove('invalid');
             const gradingCompanyEl = document.getElementById('grading-company-input');
             gradingCompanyEl.classList.remove('invalid');
             const gradeEl = document.getElementById('grade-input');
@@ -110,12 +105,12 @@ function AddCard({}) {
                 const cardSetEl = document.getElementById('card-set-input');
                 cardSetEl.classList.remove('invalid');
             }
-            if(!player){
-                const playerEl = document.getElementById('player-input');
-                playerEl.classList.add('invalid');
+            if(!subject){
+                const subjectEl = document.getElementById('subject-input');
+                subjectEl.classList.add('invalid');
             } else {
-                const playerEl = document.getElementById('player-input');
-                playerEl.classList.remove('invalid');
+                const subjectEl = document.getElementById('subject-input');
+                subjectEl.classList.remove('invalid');
             }
             if(!gradingCompany){
                 const gradingCompanyEl = document.getElementById('grading-company-input');
@@ -209,25 +204,25 @@ function AddCard({}) {
                     />
                 </div>
                 <div className='div-input-label'>
-                    <label htmlFor="card-variation-input">Variation</label>
+                    <label htmlFor="card-variety-input">Variety</label>
                     <input
-                        id="card-variation-input"
+                        id="card-variety-input"
                         type="text"
                         maxLength="100"
-                        onChange={e => setVariation(e.target.value)} 
-                        value={variation} 
+                        onChange={e => setVariety(e.target.value)} 
+                        value={variety}
                     />
                 </div>
                 <div className='div-input-label'>
-                    <label htmlFor="player-input">Player</label>
+                    <label htmlFor="subject-input">Subject</label>
                     <input
-                        id="player-input"
+                        id="subject-input"
                         type="text"
                         minLength="1"
                         maxLength="100"
                         required
-                        onChange={e => setPlayer(e.target.value)} 
-                        value={player}
+                        onChange={e => setSubject(e.target.value)} 
+                        value={subject}
                     />
                 </div>
             </div>
@@ -295,11 +290,14 @@ function AddCard({}) {
                         value={backCardImageLink}
                     />
                 </div>
+                <div className='div-input-label'>
+                    <label htmlFor="sold-input">Sold</label>
+                    <input type="checkbox" id="sold-input" checked={sold} onChange={handleCheck}/>
+                </div>
             </div>
             <div className='div-input-group'>
                 <input className="btn" type="submit" value="Submit Card" onClick={addCard} />
             </div>
-            <p>{signInResult}</p>
           </form>
         </div>
     )

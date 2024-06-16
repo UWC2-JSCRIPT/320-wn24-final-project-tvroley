@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import TradingCard from './TradingCard';
 import { useLocation, useNavigate } from "react-router-dom";
-import grandpaCollection from './GrandpaCollection.json';
-import uncleCollection from './UncleCollection.json';
 import SortButtons from './SortButtons';
 import Nav from './Nav';
 import db from './db';
-import { doc, setDoc, onSnapshot, query, collection, orderBy } from "firebase/firestore";
 
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -41,10 +38,8 @@ function CardCollection({}) {
         const myCollections = data.collections;
         const baseCollection = myCollections.filter((collect) => username === collect.title);
         const collectionId = baseCollection[0]._id;
-        let myCollectionIds = [];
-        myCollections.map((collect) => myCollectionIds.push(collect._id));
-        setCollections(myCollectionIds);
-        console.log(myCollectionIds);
+        setCollections(myCollections);
+        console.log(myCollections);
         console.log(collectionId);
 
         let url = new URL(`https://trading-cards-backend-production.up.railway.app/collections/` + collectionId);
@@ -76,29 +71,6 @@ function CardCollection({}) {
     navigate(`/collection/add`);
   }
 
-  const restoreFromJson = () => {
-    if(collectionName === "grandpa"){
-      setTradingCardCollection(grandpaCollection);
-    } else if(collectionName === "uncle"){
-      setTradingCardCollection(uncleCollection);
-    }
-    tradingCardCollection.map(async (card) => {
-      await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
-        year: card.year,
-        brand: card.brand,
-        cardSet: card.cardSet,
-        cardNumber: card.cardNumber,
-        player: card.player,
-        gradingCompany: card.gradingCompany,
-        grade: card.grade,
-        certificationNumber: card.certificationNumber,
-        frontCardImageLink: card.frontCardImageLink,
-        backCardImageLink: card.backCardImageLink,
-        sold: card.sold
-      });
-    });
-  }
-
   const saveLocal = () => {
       const cardsWord = JSON.stringify(tradingCardCollection);
       localStorage.setItem('cards', cardsWord);
@@ -118,7 +90,6 @@ function CardCollection({}) {
         </div>
         <div className='div-restore-buttons'>
           <button onClick={saveLocal}>Save Cards Locally</button>
-          <button onClick={restoreFromJson}>Restore Collection From Backup</button>
         </div>
         <div className='div-add-button'>
           <button onClick={goAdd}>Add Card</button>
