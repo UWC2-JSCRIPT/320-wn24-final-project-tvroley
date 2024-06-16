@@ -4,7 +4,6 @@ import TradingCard from './TradingCard';
 import { useLocation, useNavigate } from "react-router-dom";
 import SortButtons from './SortButtons';
 import Nav from './Nav';
-import db from './db';
 
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -39,8 +38,6 @@ function CardCollection({}) {
         const baseCollection = myCollections.filter((collect) => username === collect.title);
         const collectionId = baseCollection[0]._id;
         setCollections(myCollections);
-        console.log(myCollections);
-        console.log(collectionId);
 
         let url = new URL(`https://trading-cards-backend-production.up.railway.app/collections/` + collectionId);
         url.searchParams.append("verbose", "true");
@@ -60,7 +57,6 @@ function CardCollection({}) {
         if(response.status === 200) {
           const data = await response.json();
           setTradingCardCollection(data.tradingCards);
-          console.log(tradingCardCollection);
         }
       }
     }

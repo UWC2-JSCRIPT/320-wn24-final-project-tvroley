@@ -4,10 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function TradingCard({tradingCard}) {
   const navigate = useNavigate();
-  const collectionName = useLocation().pathname.split("/")[1];
 
   const goEdit = () => {
-      navigate(`/${collectionName}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}`);
+      navigate(`/collection/${tradingCard._id}`);
   }
 
   const flipImage = (event) => {
@@ -32,12 +31,12 @@ function TradingCard({tradingCard}) {
     return currentCardNumber;
   }
 
-  const getVariationText = () => { 
-    let currentVariation = "";
-    if(tradingCard.variation) {
-      currentVariation = `${tradingCard.variation} `;
+  const getVarietyText = () => { 
+    let currentVariety = "";
+    if(tradingCard.variety) {
+      currentVariety = `${tradingCard.variety} `;
     }
-    return currentVariation;
+    return currentVariety;
   }
   
   return (
@@ -45,7 +44,7 @@ function TradingCard({tradingCard}) {
         <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
         <div>
           <p>{`${tradingCard.cardSet}`}</p>
-          <p>{`${getVariationText()}`}</p>
+          <p>{`${getVarietyText()}`}</p>
           <p>{`${getCardNumberText()}${tradingCard.subject}`}</p>
           <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
         </div>
@@ -62,6 +61,7 @@ TradingCard.propTypes = {
         year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         brand: PropTypes.string,
         cardSet: PropTypes.string,
+        variety: PropTypes.string,
         cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         subject: PropTypes.string,
         gradingCompany: PropTypes.string,

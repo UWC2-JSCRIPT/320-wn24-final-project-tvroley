@@ -1,7 +1,5 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc} from "firebase/firestore";
-import db from './db';
 import { useLocation, useParams } from "react-router-dom";
 import firebaseConfig from './firebaseConfig';
 import firebase from 'firebase/compat/app';
@@ -13,44 +11,52 @@ function EditCard({}) {
     const [brand, setBrand] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [cardSet, setCardSet] = useState('');
-    const [variation, setVariation] = useState('');
-    const [player, setPlayer] = useState('');
+    const [variety, setVariety] = useState('');
+    const [subject, setSubject] = useState('');
     const [gradingCompany, setGradingCompany] = useState('');
     const [grade, setGrade] = useState('');
     const [certificationNumber, setCertificationNumber] = useState('');
     const [frontCardImageLink, setFrontCardImageLink] = useState('');
     const [backCardImageLink, setBackCardImageLink] = useState('');
     const [sold, setSold] = useState(false);
-    const [signInResult, setSignInResult] = useState('');
     const handleCheck = () => {setSold(!sold)};
-    const collectionName = useLocation().pathname.split("/")[1];
-    const { id } = useParams();
-    const rightUID = import.meta.env.VITE_UID;
+    const cardId = useLocation().pathname.split("/")[2];
 
     firebase.initializeApp(firebaseConfig);
 
     useEffect(() => {
         const getData = async () => {
-            const docRef = doc(db, collectionName, id);
-            const docSnap = await getDoc(docRef).catch(error => console.log(error));
-            if (docSnap.exists()) {
-                const myCard = docSnap.data();
-                setTradingCard(myCard);
-            } else {
-                console.log("No such document!");
-            }
+        console.log(cardId);
+        let urlGetCard = new URL(`https://trading-cards-backend-production.up.railway.app/cards/${cardId}`);
+        const responseGetCard = await fetch(urlGetCard, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('cardsToken')
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+        });
+        if(responseGetCard.status === 200) {
+            console.log(responseGetCard);
+            const data = await responseGetCard.json();
+            setTradingCard(data.card);
+            console.log(tradingCard);
         }
-
+        }
         getData();
-    }, [id]);
+    }, []);
 
     const populateFields = () => {
         setYear(tradingCard.year);
         setBrand(tradingCard.brand);
         setCardNumber(tradingCard.cardNumber || '');
         setCardSet(tradingCard.cardSet);
-        setVariation(tradingCard.variation || '');
-        setPlayer(tradingCard.player);
+        setVariety(tradingCard.variety || '');
+        setSubject(tradingCard.subject);
         setGradingCompany(tradingCard.gradingCompany);
         setGrade(tradingCard.grade);
         setCertificationNumber(tradingCard.certificationNumber);
@@ -61,36 +67,28 @@ function EditCard({}) {
 
     const editCard = async(event) => {
         event.preventDefault();
-        const user = firebase.auth().currentUser;
-        if(!user) {
-            setSignInResult('Not signed in to edit cards');
-            return;
-        }
-        const uID = user.uid;
-        
-        if(uID !== rightUID) {
-            setSignInResult(`You don't have permission to edit cards`);
-            return;
-        }
 
-        setSignInResult(`You edited the card`);
-
-        if(year && brand && cardSet && player && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
-            const card = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, variation: variation, player: player, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
-            const docRef = await setDoc(doc(db, collectionName, `${card.gradingCompany}${card.certificationNumber}`), {
-                year: card.year,
-                brand: card.brand,
-                cardSet: card.cardSet,
-                variation: card.variation,
-                cardNumber: card.cardNumber,
-                player: card.player,
-                gradingCompany: card.gradingCompany,
-                grade: card.grade,
-                certificationNumber: card.certificationNumber,
-                frontCardImageLink: card.frontCardImageLink,
-                backCardImageLink: card.backCardImageLink,
-                sold: card.sold
-            }).catch(error => console.log(error));
+        if(year && brand && cardSet && subject && gradingCompany && grade && certificationNumber && frontCardImageLink && backCardImageLink){
+            const myCard = {year: Number(year), brand: brand, cardNumber: cardNumber, cardSet: cardSet, variety: variety, subject: subject, gradingCompany: tradingCard.gradingCompany, grade: grade, certificationNumber: tradingCard.certificationNumber, frontCardImageLink: frontCardImageLink, backCardImageLink: backCardImageLink, sold: Boolean(sold)};
+            
+                let urlGetCard = new URL(`https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`);
+                const responseGetCards = await fetch(urlGetCard, {
+                    method: "PUT",
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem('cardsToken')
+                    },
+                    redirect: "follow",
+                    referrerPolicy: "no-referrer",
+                    body: JSON.stringify(myCard)
+                });
+                if(responseGetCards.status === 200) {
+                    const data = await responseGetCards.json();
+                    console.log(data);
+                }
 
             const yearEl = document.getElementById('year-input');
             yearEl.classList.remove('invalid');
@@ -98,8 +96,8 @@ function EditCard({}) {
             brandEl.classList.remove('invalid');
             const cardNumberEl = document.getElementById('card-set-input');
             cardNumberEl.classList.remove('invalid');
-            const playerEl = document.getElementById('player-input');
-            playerEl.classList.remove('invalid');
+            const subjectEl = document.getElementById('subject-input');
+            subjectEl.classList.remove('invalid');
             const gradeEl = document.getElementById('grade-input');
             gradeEl.classList.remove('invalid');
             const gradingCompanyEl = document.getElementById('grading-company-input');
@@ -132,12 +130,12 @@ function EditCard({}) {
                 const cardNumberEl = document.getElementById('card-set-input');
                 cardNumberEl.classList.remove('invalid');
             }
-            if(!player){
-                const playerEl = document.getElementById('player-input');
-                playerEl.classList.add('invalid');
+            if(!subject){
+                const subjectEl = document.getElementById('subject-input');
+                subjectEl.classList.add('invalid');
             } else {
-                const playerEl = document.getElementById('player-input');
-                playerEl.classList.remove('invalid');
+                const subjectEl = document.getElementById('subject-input');
+                subjectEl.classList.remove('invalid');
             }
             if(!grade){
                 const gradeEl = document.getElementById('grade-input');
@@ -181,7 +179,7 @@ function EditCard({}) {
         <div className='div-add-cards'>
           <h3>Edit Card</h3>
           <div key={tradingCard.certificationNumber} className={`div-card`}>
-            <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} className='img-small'></img>
+            <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`} className='img-small'></img>
           </div>
           <p>{tradingCard.gradingCompany}: {tradingCard.certificationNumber}</p>
           <div>
@@ -238,25 +236,25 @@ function EditCard({}) {
                     />
                 </div>
                 <div className='div-input-label'>
-                    <label htmlFor="card-variation-input">Variation</label>
+                    <label htmlFor="card-variety-input">Variety</label>
                     <input
-                        id="card-variation-input"
+                        id="card-variety-input"
                         type="text"
                         maxLength="100"
-                        onChange={e => setVariation(e.target.value)} 
-                        value={variation} 
+                        onChange={e => setVariety(e.target.value)} 
+                        value={variety} 
                     />
                 </div>
                 <div className='div-input-label'>
-                    <label htmlFor="player-input">Player</label>
+                    <label htmlFor="subject-input">Subject</label>
                     <input
-                        id="player-input"
+                        id="subject-input"
                         type="text"
                         minLength="1"
                         maxLength="100"
                         required
-                        onChange={e => setPlayer(e.target.value)} 
-                        value={player}
+                        onChange={e => setSubject(e.target.value)} 
+                        value={subject}
                     />
                 </div>
             </div>
@@ -331,7 +329,6 @@ function EditCard({}) {
             <div className='div-input-group'>
                 <input className="btn" type="submit" value="Edit Card" onClick={editCard} />
             </div>
-            <p>{signInResult}</p>
           </form>
         </div>
     )
