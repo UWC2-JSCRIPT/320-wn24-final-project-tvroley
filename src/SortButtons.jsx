@@ -1,21 +1,19 @@
 import "./App.css";
-import db from "./db";
-import { query, collection, orderBy, getDocs } from "firebase/firestore";
 import PropTypes from "prop-types";
 
-function SortButtons({ collectionName, setTradingCardCollection }) {
+function SortButtons({ collectionId, setTradingCardCollection }) {
   const sortCards = async (event) => {
     let sortBy = "year";
     const buttonId = event.target.id;
     switch (buttonId) {
       case "sort-cert-button":
-        sortBy = "certificationNumber";
+        sortBy = "cert";
         break;
       case "sort-year-button":
         sortBy = "year";
         break;
-      case "sort-player-button":
-        sortBy = "player";
+      case "sort-subject-button":
+        sortBy = "subject";
         break;
       case "sort-sold-button":
         sortBy = "sold";
@@ -31,19 +29,29 @@ function SortButtons({ collectionName, setTradingCardCollection }) {
         return;
     }
 
-    const cards = [];
-    const cardsQuery = query(
-      collection(db, collectionName),
-      orderBy(sortBy, "asc"),
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
     );
-    const querySnapshot = await getDocs(cardsQuery).catch((error) =>
-      console.log(error),
-    );
-    querySnapshot.docs.forEach((x) => {
-      cards.push(x.data());
+    url.searchParams.append("verbose", "true");
+    url.searchParams.append("sortBy", sortBy);
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
     });
 
-    setTradingCardCollection(cards);
+    if (response.status === 200) {
+      const data = await response.json();
+      setTradingCardCollection(data.tradingCards);
+    }
   };
 
   return (
@@ -55,8 +63,8 @@ function SortButtons({ collectionName, setTradingCardCollection }) {
         <button id="sort-year-button" onClick={sortCards}>
           Sort By Year
         </button>
-        <button id="sort-player-button" onClick={sortCards}>
-          Sort By Player
+        <button id="sort-subject-button" onClick={sortCards}>
+          Sort By Subject
         </button>
         <button id="sort-sold-button" onClick={sortCards}>
           Sort By Sold Status
@@ -73,7 +81,7 @@ function SortButtons({ collectionName, setTradingCardCollection }) {
 }
 
 SortButtons.propTypes = {
-  collectionName: PropTypes.string.isRequired,
+  collectionId: PropTypes.string.isRequired,
   setTradingCardCollection: PropTypes.func.isRequired,
 };
 

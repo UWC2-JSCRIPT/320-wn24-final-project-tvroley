@@ -10,13 +10,13 @@ function CardCollection({}) {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorCode, setErrorCode] = useState("");
-  const [collectionName, setCollectionName] = useState(
-    localStorage.getItem("cardsUsername"),
-  );
+  const [collectionId, setCollectionId] = useState("");
+  const [collectionTitle, setCollectionTitle] = useState("");
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
   const [collections, setCollections] = useState([]);
+  const [currentCollection, setCurrentCollection] = useState({});
 
   const navigate = useNavigate();
 
@@ -41,38 +41,49 @@ function CardCollection({}) {
       if (responseGetCollections.status === 200) {
         const data = await responseGetCollections.json();
         const myCollections = data.collections;
-        const baseCollection = myCollections.filter(
+        const baseCollectionArray = myCollections.filter(
           (collect) => username === collect.title,
         );
-        const collectionId = baseCollection[0]._id;
-        setCollections(myCollections);
+        if (baseCollectionArray.length > 0) {
+          const baseCollection = baseCollectionArray[0];
+          setCurrentCollection(baseCollection);
+          setCollectionId(baseCollection._id);
+          setCollectionTitle(baseCollection.title);
+          setCollections(myCollections);
 
-        let url = new URL(
-          `https://trading-cards-backend-production.up.railway.app/collections/` +
-            collectionId,
-        );
-        url.searchParams.append("verbose", "true");
-        const response = await fetch(url, {
-          method: "GET",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-          },
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-        });
+          let url = new URL(
+            `https://trading-cards-backend-production.up.railway.app/collections/` +
+              baseCollection._id,
+          );
+          url.searchParams.append("verbose", "true");
+          const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+          });
 
-        if (response.status === 200) {
-          const data = await response.json();
-          setTradingCardCollection(data.tradingCards);
+          const responseData = await response.json();
+          if (response.status === 200) {
+            setTradingCardCollection(responseData.tradingCards);
+          } else {
+            console.log(responseData);
+          }
+        } else {
+          console.log("Could not find base collection");
         }
+      } else {
+        console.log(responseGetCollections);
       }
     };
     getData();
-  }, [collectionName]);
+  }, []);
 
   const goAdd = () => {
     navigate(`/collection/add`);
@@ -94,7 +105,7 @@ function CardCollection({}) {
   return (
     <>
       <h2>
-        {collectionName.toUpperCase()}: {tradingCardCollection.length} Cards
+        {collectionTitle.toUpperCase()}: {tradingCardCollection.length} Cards
       </h2>
       <div>
         <p className="p-instructions">Click on card images for full size</p>
@@ -108,7 +119,7 @@ function CardCollection({}) {
         <button onClick={goAdd}>Add Card</button>
       </div>
       <SortButtons
-        collectionName={collectionName}
+        collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
       />
       <div className="div-cards">
@@ -128,7 +139,7 @@ function CardCollection({}) {
         })}
       </div>
       <SortButtons
-        collectionName={collectionName}
+        collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
       />
       <Nav />
