@@ -100,7 +100,7 @@ function CardCollection({}) {
     setCurrentCollection(myCollection);
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
-      myCollection._id,
+        myCollection._id,
     );
     url.searchParams.append("verbose", "true");
     const response = await fetch(url, {
@@ -151,14 +151,17 @@ function CardCollection({}) {
         <button onClick={saveLocal}>Save Cards Locally</button>
       </div>
       <label htmlFor="div-collections">Collections</label>
-      <div className='div-collections'>
-      {
-        Array.from(collections).map((collect) => {
-            return (
-                <button onClick={(event) => changeCollection(event)} key={`${collect.title}-button`}>{collect.title}</button>
-            )
-          })
-      }
+      <div className="div-collections">
+        {Array.from(collections).map((collect) => {
+          return (
+            <button
+              onClick={(event) => changeCollection(event)}
+              key={`${collect.title}-button`}
+            >
+              {collect.title}
+            </button>
+          );
+        })}
       </div>
       <div className="div-add-button">
         <button onClick={goAdd}>Add Card</button>

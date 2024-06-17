@@ -168,7 +168,9 @@ function AddCard({}) {
 
   return (
     <div className="div-add-cards">
-      <h3>Add card to {localStorage.getItem('cardsUsername')} base collection</h3>
+      <h3>
+        Add card to {localStorage.getItem("cardsUsername")} base collection
+      </h3>
       <form id="card-form" className="form-card">
         <div className="div-input-group">
           <div className="div-input-label">
