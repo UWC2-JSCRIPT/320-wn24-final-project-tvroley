@@ -1,9 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import firebaseConfig from "./firebaseConfig";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 
 function EditCard({}) {
   const [tradingCard, setTradingCard] = useState({});
@@ -387,6 +384,7 @@ function EditCard({}) {
             onClick={editCard}
           />
         </div>
+        <p>{resultMessage}</p>
       </form>
     </div>
   );
