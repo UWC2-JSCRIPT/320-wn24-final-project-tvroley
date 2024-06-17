@@ -1,6 +1,6 @@
 import "./App.css";
 import PropTypes from "prop-types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function TradingCard({ tradingCard }) {
   const navigate = useNavigate();

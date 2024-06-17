@@ -89,6 +89,41 @@ function CardCollection({}) {
     navigate(`/collection/add`);
   };
 
+  const changeCollection = async (event) => {
+    const buttonCollection = event.target.innerText;
+    const buttonCollectionArray = collections.filter(
+      (collect) => buttonCollection === collect.title,
+    );
+    const myCollection = buttonCollectionArray[0];
+    setCollectionId(myCollection._id);
+    setCollectionTitle(myCollection.title);
+    setCurrentCollection(myCollection);
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+      myCollection._id,
+    );
+    url.searchParams.append("verbose", "true");
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+
+    const responseData = await response.json();
+    if (response.status === 200) {
+      setTradingCardCollection(responseData.tradingCards);
+    } else {
+      console.log(`Error: could not get cards`);
+    }
+  };
+
   const saveLocal = () => {
     const cardsWord = JSON.stringify(tradingCardCollection);
     localStorage.setItem("cards", cardsWord);
@@ -114,6 +149,16 @@ function CardCollection({}) {
       </div>
       <div className="div-restore-buttons">
         <button onClick={saveLocal}>Save Cards Locally</button>
+      </div>
+      <label htmlFor="div-collections">Collections</label>
+      <div className='div-collections'>
+      {
+        Array.from(collections).map((collect) => {
+            return (
+                <button onClick={(event) => changeCollection(event)} key={`${collect.title}-button`}>{collect.title}</button>
+            )
+          })
+      }
       </div>
       <div className="div-add-button">
         <button onClick={goAdd}>Add Card</button>

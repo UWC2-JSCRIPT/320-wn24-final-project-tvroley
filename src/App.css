@@ -18,6 +18,15 @@
   background-color: #ffdddd;
 }
 
+.div-collections {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  background-color: lightblue;
+  padding: 0.5rem;
+}
+
 .div-cards {
   display: flex;
   flex-direction: row;
