@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import firebaseConfig from "./firebaseConfig";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -19,12 +19,11 @@ function EditCard({}) {
   const [frontCardImageLink, setFrontCardImageLink] = useState("");
   const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
+  const [resultMessage, setResultMessage] = useState(false);
   const handleCheck = () => {
     setSold(!sold);
   };
   const cardId = useLocation().pathname.split("/")[2];
-
-  firebase.initializeApp(firebaseConfig);
 
   useEffect(() => {
     const getData = async () => {
@@ -45,10 +44,10 @@ function EditCard({}) {
         referrerPolicy: "no-referrer",
       });
       if (responseGetCard.status === 200) {
-        console.log(responseGetCard);
         const data = await responseGetCard.json();
         setTradingCard(data.card);
-        console.log(tradingCard);
+      } else {
+        setResultMessage(`Could not fetch card`);
       }
     };
     getData();
@@ -116,7 +115,9 @@ function EditCard({}) {
       });
       if (responseGetCards.status === 200) {
         const data = await responseGetCards.json();
-        console.log(data);
+        setResultMessage(`Card successfully edited`);
+      } else {
+        setResultMessage(`Could not edit card`);
       }
 
       const yearEl = document.getElementById("year-input");

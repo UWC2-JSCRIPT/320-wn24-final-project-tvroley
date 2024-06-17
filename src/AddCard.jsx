@@ -16,7 +16,6 @@ function AddCard({}) {
   const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState(false);
-  const collectionName = useLocation().pathname.split("/")[1];
   const handleCheck = () => {
     setSold(!sold);
   };
@@ -61,7 +60,6 @@ function AddCard({}) {
         },
         body: JSON.stringify(card),
       });
-      const data = await responseGetCollections.json();
       if (responseGetCollections.status === 200) {
         setResultMessage(`Card successfully added to collection`);
         setYear(0);
@@ -77,7 +75,6 @@ function AddCard({}) {
         setBackCardImageLink("");
       } else {
         setResultMessage(`Could not add card to collection`);
-        console.log(data);
       }
 
       const yearEl = document.getElementById("year-input");
