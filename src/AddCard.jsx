@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 function AddCard({}) {
@@ -15,6 +15,7 @@ function AddCard({}) {
   const [frontCardImageLink, setFrontCardImageLink] = useState("");
   const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
+  const [resultMessage, setResultMessage] = useState(false);
   const collectionName = useLocation().pathname.split("/")[1];
   const handleCheck = () => {
     setSold(!sold);
@@ -62,22 +63,22 @@ function AddCard({}) {
       });
       const data = await responseGetCollections.json();
       if (responseGetCollections.status === 200) {
-        console.log(data);
+        setResultMessage(`Card successfully added to collection`);
+        setYear(0);
+        setBrand("");
+        setCardNumber("");
+        setCardSet("");
+        setVariety("");
+        setSubject("");
+        setGradingCompany("");
+        setGrade("");
+        setCertificationNumber("");
+        setFrontCardImageLink("");
+        setBackCardImageLink("");
       } else {
+        setResultMessage(`Could not add card to collection`);
         console.log(data);
       }
-
-      /*setYear(0);
-            setBrand('');
-            setCardNumber('');
-            setCardSet('');
-            setVariety('');
-            setSubject('');
-            setGradingCompany('');
-            setGrade('');
-            setCertificationNumber('');
-            setFrontCardImageLink('');
-            setBackCardImageLink('');*/
 
       const yearEl = document.getElementById("year-input");
       yearEl.classList.remove("invalid");
@@ -170,7 +171,7 @@ function AddCard({}) {
 
   return (
     <div className="div-add-cards">
-      <h3>Add card to {collectionName} collection</h3>
+      <h3>Add card to {localStorage.getItem('cardsUsername')} base collection</h3>
       <form id="card-form" className="form-card">
         <div className="div-input-group">
           <div className="div-input-label">
@@ -328,6 +329,7 @@ function AddCard({}) {
             onClick={addCard}
           />
         </div>
+        <p>{resultMessage}</p>
       </form>
     </div>
   );
