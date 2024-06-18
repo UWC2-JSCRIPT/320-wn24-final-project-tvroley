@@ -66,71 +66,73 @@ function AddCardToCollection({}) {
     const collectionsDivEl = document.getElementById("collections-div");
     const childDivs = collectionsDivEl.children;
     Array.from(childDivs).map((div) => {
-        const collectLabel = div.firstElementChild;
-        const collectCheckbox = div.lastElementChild;
-        if(collectCheckbox.checked) {
-            checkedCollections.push(collectLabel.textContent);
-        }
+      const collectLabel = div.firstElementChild;
+      const collectCheckbox = div.lastElementChild;
+      if (collectCheckbox.checked) {
+        checkedCollections.push(collectLabel.textContent);
+      }
     });
     const checkedCollectionsObjs = [];
     checkedCollections.map((collect) => {
-        const collectObjArray = collections.filter((obj) => obj.title === collect);
-        checkedCollectionsObjs.push(collectObjArray[0]);
+      const collectObjArray = collections.filter(
+        (obj) => obj.title === collect,
+      );
+      checkedCollectionsObjs.push(collectObjArray[0]);
     });
     checkedCollectionsObjs.map(async (collectObj) => {
-        const cardId = tradingCard._id;
-        let urlPostCard = new URL(
-            `https://trading-cards-backend-production.up.railway.app/collections/` + collectObj._id
-          );
-          const cardIdObj = {cardId: cardId};
-          const responseGetCollections = await fetch(urlPostCard, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-            },
-            body: JSON.stringify(cardIdObj),
-          });
-          if (responseGetCollections.status === 200) {
-            setResultMessage(`Card successfully added to collection`);
-          } else {
-            setResultMessage(`Could not add card to collection`);
-          }
-    })
-      
+      const cardId = tradingCard._id;
+      let urlPostCard = new URL(
+        `https://trading-cards-backend-production.up.railway.app/collections/` +
+          collectObj._id,
+      );
+      const cardIdObj = { cardId: cardId };
+      const responseGetCollections = await fetch(urlPostCard, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        },
+        body: JSON.stringify(cardIdObj),
+      });
+      if (responseGetCollections.status === 200) {
+        setResultMessage(`Card successfully added to collection`);
+      } else {
+        setResultMessage(`Could not add card to collection`);
+      }
+    });
   };
 
   return (
     <div className="div-add-cards">
-      <h3>
-        Add card to a collection
-      </h3>
+      <h3>Add card to a collection</h3>
       <form id="card-form" className="form-card">
-      <div key={tradingCard.certificationNumber} className={`div-card`}>
-        <img
-          src={tradingCard.frontCardImageLink}
-          alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
-          className="img-small"
-        ></img>
-      </div>
-      <p>
-        {tradingCard.gradingCompany}: {tradingCard.certificationNumber}
-      </p>
-      <label htmlFor="collections-div">Collections</label>
-      <div className="div-collections" id="collections-div">
-        {Array.from(collections).map((collect) => {
-          return (
-            <div className="div-collection-check" key={`${collect.title}-div`}>
-            <label htmlFor={`${collect.title}-check`}>{collect.title}</label>
-            <input
-              type="checkbox"
-              key={`${collect.title}-check`}
-            />
-            </div>
-          );
-        })}
-      </div>
+        <div key={tradingCard.certificationNumber} className={`div-card`}>
+          <img
+            src={tradingCard.frontCardImageLink}
+            alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
+            className="img-small"
+          ></img>
+        </div>
+        <p>
+          {tradingCard.gradingCompany}: {tradingCard.certificationNumber}
+        </p>
+        <label htmlFor="collections-div">Collections</label>
+        <div className="div-collections" id="collections-div">
+          {Array.from(collections).map((collect) => {
+            return (
+              <div
+                className="div-collection-check"
+                key={`${collect.title}-div`}
+              >
+                <label htmlFor={`${collect.title}-check`}>
+                  {collect.title}
+                </label>
+                <input type="checkbox" key={`${collect.title}-check`} />
+              </div>
+            );
+          })}
+        </div>
         <div className="div-input-group">
           <input
             className="btn"

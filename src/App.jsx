@@ -18,7 +18,10 @@ function App() {
         <Route path="collection" element={<CardCollection />} />
         <Route path="collection/:id" element={<EditCard />} />
         <Route path="collection/add" element={<AddCard />} />
-        <Route path="collection/addtocollection/:cardid" element={<AddCardToCollection />} />
+        <Route
+          path="collection/addtocollection/:cardid"
+          element={<AddCardToCollection />}
+        />
       </Routes>
     </div>
   );

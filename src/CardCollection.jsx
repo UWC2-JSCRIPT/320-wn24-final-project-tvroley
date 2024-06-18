@@ -91,9 +91,9 @@ function CardCollection({}) {
   };
 
   const addCollection = async (event) => {
-    const titleObj = {collectionTitle: addedCollection};
+    const titleObj = { collectionTitle: addedCollection };
     let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/`
+      `https://trading-cards-backend-production.up.railway.app/collections/`,
     );
     const response = await fetch(url, {
       method: "POST",
@@ -118,7 +118,7 @@ function CardCollection({}) {
     } else {
       console.log(`Error: could not add collection`);
     }
-  }
+  };
 
   const changeCollection = async (event) => {
     const buttonCollection = event.target.innerText;
@@ -186,18 +186,18 @@ function CardCollection({}) {
         <button onClick={saveLocal}>Save Cards Locally</button>
       </div>
       <div className="div-add-collection">
-      <div className="div-enter-collection">
-        <label htmlFor="collection-input">Enter Collection</label>
-            <input
-              id="collection-input"
-              type="text"
-              required
-              minLength="1"
-              maxLength="50"
-              onChange={(e) => setAddedCollection(e.target.value)}
-              value={addedCollection}
-            />
-            </div>
+        <div className="div-enter-collection">
+          <label htmlFor="collection-input">Enter Collection</label>
+          <input
+            id="collection-input"
+            type="text"
+            required
+            minLength="1"
+            maxLength="50"
+            onChange={(e) => setAddedCollection(e.target.value)}
+            value={addedCollection}
+          />
+        </div>
         <button onClick={addCollection}>Add Collection</button>
       </div>
       <label htmlFor="div-collections">Collections</label>

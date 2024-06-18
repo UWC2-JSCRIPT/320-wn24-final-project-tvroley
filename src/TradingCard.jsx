@@ -62,7 +62,9 @@ function TradingCard({ tradingCard }) {
       </div>
       <div className="div-cards-buttons">
         <button onClick={(event) => goEdit(event)}>Edit</button>
-        <button onClick={(event) => goAddToCollection(event)}>Add Card To A Collection</button>
+        <button onClick={(event) => goAddToCollection(event)}>
+          Add Card To A Collection
+        </button>
         <button onClick={(event) => flipImage(event)}>Flip Image</button>
       </div>
     </>
