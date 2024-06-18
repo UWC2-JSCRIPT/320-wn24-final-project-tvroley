@@ -1,6 +1,5 @@
 import "./App.css";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -15,7 +14,7 @@ function AddCard({}) {
   const [frontCardImageLink, setFrontCardImageLink] = useState("");
   const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
-  const [resultMessage, setResultMessage] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
   const handleCheck = () => {
     setSold(!sold);
   };

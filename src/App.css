@@ -67,6 +67,15 @@
   gap: 1rem;
 }
 
+.div-collection-check {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  background-color: lightgrey;
+}
+
 .div-input-label {
   display: flex;
   flex-direction: column;

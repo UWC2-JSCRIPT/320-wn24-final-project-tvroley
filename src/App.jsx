@@ -5,6 +5,7 @@ import CardCollection from "./CardCollection";
 import EditCard from "./EditCard";
 import Nav from "./Nav";
 import AddCard from "./AddCard";
+import AddCardToCollection from "./AddCardToCollection";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="collection" element={<CardCollection />} />
         <Route path="collection/:id" element={<EditCard />} />
         <Route path="collection/add" element={<AddCard />} />
+        <Route path="collection/addtocollection/:cardid" element={<AddCardToCollection />} />
       </Routes>
     </div>
   );
