@@ -17,6 +17,7 @@ function CardCollection({}) {
   );
   const [collections, setCollections] = useState([]);
   const [currentCollection, setCurrentCollection] = useState({});
+  const [addedCollection, setAddedCollection] = useState("");
 
   const navigate = useNavigate();
 
@@ -79,7 +80,7 @@ function CardCollection({}) {
           console.log("Could not find base collection");
         }
       } else {
-        console.log(responseGetCollections);
+        console.log(`Could not get collections for user`);
       }
     };
     getData();
@@ -88,6 +89,36 @@ function CardCollection({}) {
   const goAdd = () => {
     navigate(`/collection/add`);
   };
+
+  const addCollection = async (event) => {
+    const titleObj = {collectionTitle: addedCollection};
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/`
+    );
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(titleObj),
+    });
+
+    if (response.status === 200) {
+      const responseData = await response.json();
+      const myCollection = responseData.collection;
+      const myCollections = collections;
+      myCollections.push(myCollection);
+      setCollections(myCollections);
+    } else {
+      console.log(`Error: could not add collection`);
+    }
+  }
 
   const changeCollection = async (event) => {
     const buttonCollection = event.target.innerText;
@@ -143,12 +174,31 @@ function CardCollection({}) {
         {collectionTitle.toUpperCase()}: {tradingCardCollection.length} Cards
       </h2>
       <div>
-        <p className="p-instructions">Click on card images for full size</p>
-        <p className="sold p-legend">SOLD</p>
-        <p className="unsold p-legend">NOT SOLD</p>
+        <div className="div-sold-legend">
+          <p className="p-instructions">Click on card images for full size</p>
+        </div>
+        <div className="div-sold-legend">
+          <p className="sold p-legend">SOLD</p>
+          <p className="unsold p-legend">NOT SOLD</p>
+        </div>
       </div>
       <div className="div-restore-buttons">
         <button onClick={saveLocal}>Save Cards Locally</button>
+      </div>
+      <div className="div-add-collection">
+      <div className="div-enter-collection">
+        <label htmlFor="collection-input">Enter Collection</label>
+            <input
+              id="collection-input"
+              type="text"
+              required
+              minLength="1"
+              maxLength="50"
+              onChange={(e) => setAddedCollection(e.target.value)}
+              value={addedCollection}
+            />
+            </div>
+        <button onClick={addCollection}>Add Collection</button>
       </div>
       <label htmlFor="div-collections">Collections</label>
       <div className="div-collections">
