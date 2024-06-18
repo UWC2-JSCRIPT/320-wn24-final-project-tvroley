@@ -200,8 +200,8 @@ function CardCollection({}) {
         </div>
         <button onClick={addCollection}>Add Collection</button>
       </div>
-      <label htmlFor="div-collections">Collections</label>
-      <div className="div-collections">
+      <p>Collections</p>
+      <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
             <button
