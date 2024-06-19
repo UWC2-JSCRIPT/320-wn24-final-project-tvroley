@@ -8,34 +8,6 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
 
-  const signin = () => {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
-  };
-
-  //https://trading-cards-backend-production.up.railway.app/auth/login
-  //http://localhost:3000/auth/login
   const login = async (event) => {
     event.preventDefault();
     const response = await fetch(
@@ -72,7 +44,6 @@ export default function Home() {
       <div className="div-home-buttons">
         <button onClick={goCollection}>My Collection</button>
       </div>
-      <button onClick={signin}>Sign in with Google</button>
       <div className="div-input-label">
         <label htmlFor="username-input">Username</label>
         <input
