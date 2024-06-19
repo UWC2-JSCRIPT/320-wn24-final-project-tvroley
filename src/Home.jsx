@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "firebase/compat/auth";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -44,7 +42,8 @@ export default function Home() {
       <div className="div-home-buttons">
         <button onClick={goCollection}>My Collection</button>
       </div>
-      <div className="div-input-label">
+      <div className="div-add-collection">
+      <div className="div-enter-collection">
         <label htmlFor="username-input">Username</label>
         <input
           id="username-input"
@@ -56,7 +55,7 @@ export default function Home() {
           required
         />
       </div>
-      <div className="div-input-label">
+      <div className="div-enter-collection">
         <label htmlFor="password-input">Password</label>
         <input
           id="password-input"
@@ -70,6 +69,7 @@ export default function Home() {
       </div>
       <div className="div-input-group">
         <input className="btn" type="submit" value="Login" onClick={login} />
+      </div>
       </div>
     </>
   );
