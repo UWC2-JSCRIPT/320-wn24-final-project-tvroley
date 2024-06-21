@@ -18,6 +18,7 @@ function CardCollection({}) {
   const [collections, setCollections] = useState([]);
   const [currentCollection, setCurrentCollection] = useState({});
   const [addedCollection, setAddedCollection] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
@@ -160,6 +161,34 @@ function CardCollection({}) {
     localStorage.setItem("cards", cardsWord);
   };
 
+  const searchCollection = async (event) => {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    url.searchParams.append("verbose", "true");
+    url.searchParams.append("search", searchQuery);
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+
+    const responseData = await response.json();
+    if (response.status === 200) {
+      setTradingCardCollection(responseData.tradingCards);
+    } else {
+      console.log(`Error: could not get cards`);
+    }
+  };
+
   if (hasError) {
     return (
       <p>
@@ -184,6 +213,23 @@ function CardCollection({}) {
       </div>
       <div className="div-restore-buttons">
         <button onClick={saveLocal}>Save Cards Locally</button>
+      </div>
+      <div className="div-add-collection">
+        <div className="div-enter-collection">
+          <label htmlFor="card-search-input">
+            Search For A Card In Collection
+          </label>
+          <input
+            id="card-search-input"
+            type="text"
+            required
+            minLength="1"
+            maxLength="100"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+          />
+        </div>
+        <button onClick={searchCollection}>Search</button>
       </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Nav from "./Nav";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -43,34 +44,35 @@ export default function Home() {
         <button onClick={goCollection}>My Collection</button>
       </div>
       <div className="div-add-collection">
-      <div className="div-enter-collection">
-        <label htmlFor="username-input">Username</label>
-        <input
-          id="username-input"
-          type="text"
-          min="1"
-          max="50"
-          onChange={(e) => setUsername(e.target.value)}
-          value={username}
-          required
-        />
+        <div className="div-enter-collection">
+          <label htmlFor="username-input">Username</label>
+          <input
+            id="username-input"
+            type="text"
+            min="1"
+            max="50"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            required
+          />
+        </div>
+        <div className="div-enter-collection">
+          <label htmlFor="password-input">Password</label>
+          <input
+            id="password-input"
+            type="text"
+            min="1"
+            max="100"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            required
+          />
+        </div>
+        <div className="div-input-group">
+          <input className="btn" type="submit" value="Login" onClick={login} />
+        </div>
       </div>
-      <div className="div-enter-collection">
-        <label htmlFor="password-input">Password</label>
-        <input
-          id="password-input"
-          type="text"
-          min="1"
-          max="100"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          required
-        />
-      </div>
-      <div className="div-input-group">
-        <input className="btn" type="submit" value="Login" onClick={login} />
-      </div>
-      </div>
+      <Nav />
     </>
   );
 }
