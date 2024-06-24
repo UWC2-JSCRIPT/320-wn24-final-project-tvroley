@@ -6,6 +6,7 @@ function AddCardToCollection({}) {
   const [tradingCard, setTradingCard] = useState({});
   const [resultMessage, setResultMessage] = useState(false);
   const [collections, setCollections] = useState([]);
+  const [collectionsForCard, setCollectionsForCard] = useState([]);
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
@@ -56,7 +57,42 @@ function AddCardToCollection({}) {
         const myCollections = data.collections;
         setCollections(myCollections);
       }
+
+      let urlGetCollectionsForCard = new URL(
+        `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
+      );
+      const responseGetCollectionsForCard = await fetch(urlGetCollectionsForCard, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+      });
+      let myCollectionsForCard = [];
+      if (responseGetCollectionsForCard.status === 200) {
+        const data = await responseGetCollectionsForCard.json();
+        const cardCollections = data.collections;
+        myCollectionsForCard = cardCollections;
+        setCollectionsForCard(cardCollections);
+      }
+
+      const collectionsDivEl = document.getElementById("collections-div");
+      const childDivs = collectionsDivEl.children;
+      Array.from(childDivs).map((div) => {
+        const collectLabel = div.firstElementChild;
+        const collectCheckbox = div.lastElementChild;
+        const matching = myCollectionsForCard.filter((collect) => collect.title === collectLabel.textContent);
+        if (matching.length > 0) {
+          collectCheckbox.checked = true;
+        }
+      });
     };
+
     getData();
   }, []);
 
