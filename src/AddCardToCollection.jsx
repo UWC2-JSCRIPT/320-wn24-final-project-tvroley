@@ -108,14 +108,21 @@ function AddCardToCollection({}) {
         checkedCollections.push(collectLabel.textContent);
       }
     });
-    const checkedCollectionsObjs = [];
+    const collectionsToAddObjs = [];
     checkedCollections.map((collect) => {
-      const collectObjArray = collections.filter(
+      const alreadyAddedObjArray = collectionsForCard.filter(
         (obj) => obj.title === collect,
       );
-      checkedCollectionsObjs.push(collectObjArray[0]);
+
+      if(alreadyAddedObjArray.length === 0) {
+        const collectObjArray = collections.filter(
+          (obj) => obj.title === collect,
+        );
+        
+        collectionsToAddObjs.push(collectObjArray[0]);
+      }
     });
-    checkedCollectionsObjs.map(async (collectObj) => {
+    collectionsToAddObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       let urlPostCard = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections/` +
