@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 function AddCardToCollection({}) {
   const [tradingCard, setTradingCard] = useState({});
-  const [resultMessage, setResultMessage] = useState(false);
+  const [resultMessage, setResultMessage] = useState('');
   const [collections, setCollections] = useState([]);
   const [collectionsForCard, setCollectionsForCard] = useState([]);
   const [username, setUsername] = useState(
@@ -98,7 +98,9 @@ function AddCardToCollection({}) {
 
   const addCardToCollection = async (event) => {
     event.preventDefault();
+    setResultMessage(``);
     const checkedCollections = [];
+    const uncheckedCollections = [];
     const collectionsDivEl = document.getElementById("collections-div");
     const childDivs = collectionsDivEl.children;
     Array.from(childDivs).map((div) => {
@@ -106,6 +108,8 @@ function AddCardToCollection({}) {
       const collectCheckbox = div.lastElementChild;
       if (collectCheckbox.checked) {
         checkedCollections.push(collectLabel.textContent);
+      } else {
+        uncheckedCollections.push(collectLabel.textContent);
       }
     });
     const collectionsToAddObjs = [];
@@ -118,10 +122,11 @@ function AddCardToCollection({}) {
         const collectObjArray = collections.filter(
           (obj) => obj.title === collect,
         );
-        
+
         collectionsToAddObjs.push(collectObjArray[0]);
       }
     });
+    let totalResultMessage = ``;
     collectionsToAddObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       let urlPostCard = new URL(
@@ -139,9 +144,44 @@ function AddCardToCollection({}) {
         body: JSON.stringify(cardIdObj),
       });
       if (responseGetCollections.status === 200) {
-        setResultMessage(`Card successfully added to collection`);
+        totalResultMessage = `${totalResultMessage}  Card successfully added to ${collectObj.title} collection`; 
+        setResultMessage(totalResultMessage);
       } else {
-        setResultMessage(`Could not add card to collection`);
+        totalResultMessage = `${totalResultMessage}  Could not add card to ${collectObj.title} collection`;
+        setResultMessage(totalResultMessage);
+      }
+    });
+    const collectionsToRemoveObjs = [];
+    uncheckedCollections.map((collect) => {
+      const notYetDeletedArray = collectionsForCard.filter(
+        (obj) => obj.title === collect,
+      );
+
+      if(notYetDeletedArray.length > 0) {
+        collectionsToRemoveObjs.push(notYetDeletedArray[0]);
+      }
+    });
+    collectionsToRemoveObjs.map(async (collectObj) => {
+      const cardId = tradingCard._id;
+      let urlDeleteCard = new URL(
+        `https://trading-cards-backend-production.up.railway.app/collections/forcard/`
+      );
+      urlDeleteCard.searchParams.append("card", cardId);
+      urlDeleteCard.searchParams.append("collection", collectObj._id);
+      const responseDeleteCollections = await fetch(urlDeleteCard, {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        },
+      });
+      if (responseDeleteCollections.status === 200) {
+        totalResultMessage = `${totalResultMessage}  Card successfully removed from ${collectObj.title} collection`; 
+        setResultMessage(totalResultMessage);
+      } else {
+        totalResultMessage = `${totalResultMessage}  Card not removed from ${collectObj.title} collection`; 
+        setResultMessage(totalResultMessage);
       }
     });
   };
