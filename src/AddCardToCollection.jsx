@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 function AddCardToCollection({}) {
   const [tradingCard, setTradingCard] = useState({});
-  const [resultMessage, setResultMessage] = useState('');
+  const [resultMessage, setResultMessage] = useState([]);
   const [collections, setCollections] = useState([]);
   const [collectionsForCard, setCollectionsForCard] = useState([]);
   const [username, setUsername] = useState(
@@ -94,11 +94,12 @@ function AddCardToCollection({}) {
     };
 
     getData();
-  }, []);
+  }, [resultMessage]);
 
   const addCardToCollection = async (event) => {
     event.preventDefault();
-    setResultMessage(``);
+    setResultMessage([]);
+    let totalResultMessage = [];
     const checkedCollections = [];
     const uncheckedCollections = [];
     const collectionsDivEl = document.getElementById("collections-div");
@@ -122,11 +123,9 @@ function AddCardToCollection({}) {
         const collectObjArray = collections.filter(
           (obj) => obj.title === collect,
         );
-
         collectionsToAddObjs.push(collectObjArray[0]);
       }
     });
-    let totalResultMessage = ``;
     collectionsToAddObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       let urlPostCard = new URL(
@@ -144,11 +143,9 @@ function AddCardToCollection({}) {
         body: JSON.stringify(cardIdObj),
       });
       if (responseGetCollections.status === 200) {
-        totalResultMessage = `${totalResultMessage}  Card successfully added to ${collectObj.title} collection`; 
-        setResultMessage(totalResultMessage);
+        totalResultMessage.push(`Card successfully added to ${collectObj.title} collection`); 
       } else {
-        totalResultMessage = `${totalResultMessage}  Could not add card to ${collectObj.title} collection`;
-        setResultMessage(totalResultMessage);
+        totalResultMessage.push(`Could not add card to ${collectObj.title} collection`);
       }
     });
     const collectionsToRemoveObjs = [];
@@ -156,7 +153,6 @@ function AddCardToCollection({}) {
       const notYetDeletedArray = collectionsForCard.filter(
         (obj) => obj.title === collect,
       );
-
       if(notYetDeletedArray.length > 0) {
         collectionsToRemoveObjs.push(notYetDeletedArray[0]);
       }
@@ -177,13 +173,12 @@ function AddCardToCollection({}) {
         },
       });
       if (responseDeleteCollections.status === 200) {
-        totalResultMessage = `${totalResultMessage}  Card successfully removed from ${collectObj.title} collection`; 
-        setResultMessage(totalResultMessage);
+        totalResultMessage.push(`Card successfully removed from ${collectObj.title} collection`);
       } else {
-        totalResultMessage = `${totalResultMessage}  Card not removed from ${collectObj.title} collection`; 
-        setResultMessage(totalResultMessage);
+        totalResultMessage.push(`Card not removed from ${collectObj.title} collection`); 
       }
     });
+    setResultMessage(totalResultMessage);
   };
 
   return (
@@ -224,7 +219,15 @@ function AddCardToCollection({}) {
             onClick={addCardToCollection}
           />
         </div>
-        <p>{resultMessage}</p>
+        <div>
+        {
+          resultMessage.map((result, index) => {
+            return (
+              <p key={`message${index}`}>{result}</p>
+            );
+          })
+        }
+        </div>
       </form>
     </div>
   );
