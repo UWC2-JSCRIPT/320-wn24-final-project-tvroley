@@ -211,9 +211,6 @@ function CardCollection({}) {
           <p className="unsold p-legend">NOT SOLD</p>
         </div>
       </div>
-      <div className="div-restore-buttons">
-        <button onClick={saveLocal}>Save Cards Locally</button>
-      </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">
@@ -286,6 +283,9 @@ function CardCollection({}) {
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
       />
+      <div className="div-restore-buttons">
+        <button onClick={saveLocal}>Save Cards Locally In Browser</button>
+      </div>
       <Nav />
     </>
   );
