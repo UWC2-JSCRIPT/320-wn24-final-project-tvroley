@@ -61,18 +61,21 @@ function AddCardToCollection({}) {
       let urlGetCollectionsForCard = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
       );
-      const responseGetCollectionsForCard = await fetch(urlGetCollectionsForCard, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      const responseGetCollectionsForCard = await fetch(
+        urlGetCollectionsForCard,
+        {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
         },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
+      );
       let myCollectionsForCard = [];
       if (responseGetCollectionsForCard.status === 200) {
         const data = await responseGetCollectionsForCard.json();
@@ -86,7 +89,9 @@ function AddCardToCollection({}) {
       Array.from(childDivs).map((div) => {
         const collectLabel = div.firstElementChild;
         const collectCheckbox = div.lastElementChild;
-        const matching = myCollectionsForCard.filter((collect) => collect.title === collectLabel.textContent);
+        const matching = myCollectionsForCard.filter(
+          (collect) => collect.title === collectLabel.textContent,
+        );
         if (matching.length > 0) {
           collectCheckbox.checked = true;
         }
@@ -119,7 +124,7 @@ function AddCardToCollection({}) {
         (obj) => obj.title === collect,
       );
 
-      if(alreadyAddedObjArray.length === 0) {
+      if (alreadyAddedObjArray.length === 0) {
         const collectObjArray = collections.filter(
           (obj) => obj.title === collect,
         );
@@ -143,9 +148,13 @@ function AddCardToCollection({}) {
         body: JSON.stringify(cardIdObj),
       });
       if (responseGetCollections.status === 200) {
-        totalResultMessage.push(`Card successfully added to ${collectObj.title} collection`); 
+        totalResultMessage.push(
+          `Card successfully added to ${collectObj.title} collection`,
+        );
       } else {
-        totalResultMessage.push(`Could not add card to ${collectObj.title} collection`);
+        totalResultMessage.push(
+          `Could not add card to ${collectObj.title} collection`,
+        );
       }
     });
     const collectionsToRemoveObjs = [];
@@ -153,14 +162,14 @@ function AddCardToCollection({}) {
       const notYetDeletedArray = collectionsForCard.filter(
         (obj) => obj.title === collect,
       );
-      if(notYetDeletedArray.length > 0) {
+      if (notYetDeletedArray.length > 0) {
         collectionsToRemoveObjs.push(notYetDeletedArray[0]);
       }
     });
     collectionsToRemoveObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       let urlDeleteCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/forcard/`
+        `https://trading-cards-backend-production.up.railway.app/collections/forcard/`,
       );
       urlDeleteCard.searchParams.append("card", cardId);
       urlDeleteCard.searchParams.append("collection", collectObj._id);
@@ -173,9 +182,13 @@ function AddCardToCollection({}) {
         },
       });
       if (responseDeleteCollections.status === 200) {
-        totalResultMessage.push(`Card successfully removed from ${collectObj.title} collection`);
+        totalResultMessage.push(
+          `Card successfully removed from ${collectObj.title} collection`,
+        );
       } else {
-        totalResultMessage.push(`Card not removed from ${collectObj.title} collection`); 
+        totalResultMessage.push(
+          `Card not removed from ${collectObj.title} collection`,
+        );
       }
     });
     setResultMessage(totalResultMessage);
@@ -198,35 +211,34 @@ function AddCardToCollection({}) {
         <label htmlFor="collections-div">Collections</label>
         <div className="div-collections" id="collections-div">
           {Array.from(collections).map((collect) => {
-            return (
-              <div
-                className="div-collection-check"
-                key={`${collect.title}-div`}
-              >
-                <label htmlFor={`${collect.title}-check`}>
-                  {collect.title}
-                </label>
-                <input type="checkbox" key={`${collect.title}-check`} />
-              </div>
-            );
+            if (collect.title !== username) {
+              return (
+                <div
+                  className="div-collection-check"
+                  id={`${collect.title}-div`}
+                  key={`${collect.title}-div`}
+                >
+                  <label htmlFor={`${collect.title}-check`} id={`${collect.title}-check-label`} key={`${collect.title}-check-label`}>
+                    {collect.title}
+                  </label>
+                  <input type="checkbox" id={`${collect.title}-check`} key={`${collect.title}-check`} />
+                </div>
+              );
+            }
           })}
         </div>
         <div className="div-input-group div-add-button">
           <input
             className="btn"
             type="submit"
-            value="Submit Card"
+            value="Update Collections For Card"
             onClick={addCardToCollection}
           />
         </div>
         <div>
-        {
-          resultMessage.map((result, index) => {
-            return (
-              <p key={`message${index}`}>{result}</p>
-            );
-          })
-        }
+          {resultMessage.map((result, index) => {
+            return <p key={`message${index}`}>{result}</p>;
+          })}
         </div>
       </form>
     </div>
