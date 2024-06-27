@@ -1,6 +1,6 @@
 import "./App.css";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function TradingCard({ tradingCard }) {
   const navigate = useNavigate();
@@ -43,6 +43,20 @@ function TradingCard({ tradingCard }) {
     return currentVariety;
   };
 
+  const getCollectionsPageType = () => {
+    const collectionsPage = useLocation().pathname.split("/")[1];
+    if(collectionsPage === "collection") {
+      return (
+        <>
+        <button onClick={(event) => goEdit(event)}>Edit</button>
+        <button onClick={(event) => goAddToCollection(event)}>
+          Add Card To A Collection
+        </button>
+        </>
+      )
+    }
+  }
+
   return (
     <>
       <img
@@ -61,10 +75,7 @@ function TradingCard({ tradingCard }) {
         </p>
       </div>
       <div className="div-cards-buttons">
-        <button onClick={(event) => goEdit(event)}>Edit</button>
-        <button onClick={(event) => goAddToCollection(event)}>
-          Add Card To A Collection
-        </button>
+        {getCollectionsPageType()}
         <button onClick={(event) => flipImage(event)}>Flip Image</button>
       </div>
     </>
