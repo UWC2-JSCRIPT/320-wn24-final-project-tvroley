@@ -44,7 +44,12 @@ function AllCollections({}) {
 
   const changeCollection = async (event) => {
     const buttonCollectionText = event.target.innerText;
-    let collectionText = buttonCollectionText.split(" ")[0];
+    let collectionText = "";
+    if(buttonCollectionText.indexOf("base collection") > 0) {
+        collectionText = buttonCollectionText.split(" base ")[0];    
+    } else {
+        collectionText = buttonCollectionText.split(" by ")[0];
+    }
     const buttonCollectionArray = collections.filter(
       (collect) => collectionText === collect.title,
     );
