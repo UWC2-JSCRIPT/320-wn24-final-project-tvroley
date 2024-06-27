@@ -218,10 +218,18 @@ function AddCardToCollection({}) {
                   id={`${collect.title}-div`}
                   key={`${collect.title}-div`}
                 >
-                  <label htmlFor={`${collect.title}-check`} id={`${collect.title}-check-label`} key={`${collect.title}-check-label`}>
+                  <label
+                    htmlFor={`${collect.title}-check`}
+                    id={`${collect.title}-check-label`}
+                    key={`${collect.title}-check-label`}
+                  >
                     {collect.title}
                   </label>
-                  <input type="checkbox" id={`${collect.title}-check`} key={`${collect.title}-check`} />
+                  <input
+                    type="checkbox"
+                    id={`${collect.title}-check`}
+                    key={`${collect.title}-check`}
+                  />
                 </div>
               );
             }

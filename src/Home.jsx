@@ -25,7 +25,6 @@ export default function Home() {
     if (response.status === 200) {
       response.json().then((data) => {
         setToken(data.token);
-        console.log(data.token);
         localStorage.setItem("cardsToken", data.token);
         localStorage.setItem("cardsUsername", username);
       });
