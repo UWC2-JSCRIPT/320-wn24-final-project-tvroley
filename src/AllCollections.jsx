@@ -45,13 +45,16 @@ function AllCollections({}) {
   const changeCollection = async (event) => {
     const buttonCollectionText = event.target.innerText;
     let collectionText = "";
+    let ownerText = "";
     if(buttonCollectionText.indexOf("base collection") > 0) {
-        collectionText = buttonCollectionText.split(" base ")[0];    
+        collectionText = buttonCollectionText.split(" base ")[0];
+        ownerText = buttonCollectionText.split(" base ")[0];     
     } else {
         collectionText = buttonCollectionText.split(" by ")[0];
+        ownerText = buttonCollectionText.split(" by ")[1];
     }
     const buttonCollectionArray = collections.filter(
-      (collect) => collectionText === collect.title,
+      (collect) => collectionText === collect.title && ownerText === collect.ownerName,
     );
     const myCollection = buttonCollectionArray[0];
     setCollectionId(myCollection._id);
