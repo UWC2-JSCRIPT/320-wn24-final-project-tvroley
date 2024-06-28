@@ -10,7 +10,7 @@ function TradingCard({ tradingCard }) {
   };
 
   const goAddToCollection = () => {
-    navigate(`addtocollection/${tradingCard._id}`);
+    navigate(`addtocollection/${tradingCard._id}`, {state: {tradingCard: tradingCard}});
   };
 
   const flipImage = (event) => {

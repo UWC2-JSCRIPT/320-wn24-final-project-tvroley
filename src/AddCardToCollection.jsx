@@ -10,32 +10,13 @@ function AddCardToCollection({}) {
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
-
   const cardId = useLocation().pathname.split("/")[3];
+  const location = useLocation();
+  const myTradingCard = location.state.tradingCard;
 
   useEffect(() => {
     const getData = async () => {
-      let urlGetCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
-      );
-      const responseGetCard = await fetch(urlGetCard, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
-      if (responseGetCard.status === 200) {
-        const data = await responseGetCard.json();
-        setTradingCard(data.card);
-      } else {
-        setResultMessage(`Could not fetch card`);
-      }
+      setTradingCard(myTradingCard);
       let urlGetCollections = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections`,
       );
