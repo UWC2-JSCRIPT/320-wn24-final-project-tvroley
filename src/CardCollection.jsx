@@ -274,7 +274,7 @@ function CardCollection({}) {
               key={card.certificationNumber}
               className={`div-card ${cardClass}`}
             >
-              <TradingCard tradingCard={card} />
+              <TradingCard tradingCard={card} collections={collections} />
             </div>
           );
         })}

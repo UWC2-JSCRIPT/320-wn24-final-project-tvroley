@@ -2,7 +2,7 @@ import "./App.css";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function TradingCard({ tradingCard }) {
+function TradingCard({ tradingCard, collections }) {
   const navigate = useNavigate();
 
   const goEdit = () => {
@@ -10,7 +10,7 @@ function TradingCard({ tradingCard }) {
   };
 
   const goAddToCollection = () => {
-    navigate(`addtocollection/${tradingCard._id}`, {state: {tradingCard: tradingCard}});
+    navigate(`addtocollection/${tradingCard._id}`, {state: {tradingCard: tradingCard, collections: collections}});
   };
 
   const flipImage = (event) => {

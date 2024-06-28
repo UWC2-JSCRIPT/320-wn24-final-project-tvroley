@@ -3,42 +3,20 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 function AddCardToCollection({}) {
-  const [tradingCard, setTradingCard] = useState({});
+  const cardId = useLocation().pathname.split("/")[3];
+  const location = useLocation();
+  const myTradingCard = location.state.tradingCard;
+  const myCollections = location.state.collections;
+  const tradingCard = myTradingCard;
   const [resultMessage, setResultMessage] = useState([]);
-  const [collections, setCollections] = useState([]);
+  const collections = myCollections;
   const [collectionsForCard, setCollectionsForCard] = useState([]);
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
-  const cardId = useLocation().pathname.split("/")[3];
-  const location = useLocation();
-  const myTradingCard = location.state.tradingCard;
 
   useEffect(() => {
     const getData = async () => {
-      setTradingCard(myTradingCard);
-      let urlGetCollections = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections`,
-      );
-      urlGetCollections.searchParams.append("ownerName", username);
-      const responseGetCollections = await fetch(urlGetCollections, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
-      if (responseGetCollections.status === 200) {
-        const data = await responseGetCollections.json();
-        const myCollections = data.collections;
-        setCollections(myCollections);
-      }
-
       let urlGetCollectionsForCard = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
       );
@@ -84,7 +62,6 @@ function AddCardToCollection({}) {
 
   const addCardToCollection = async (event) => {
     event.preventDefault();
-    setResultMessage([]);
     let totalResultMessage = [];
     const checkedCollections = [];
     const uncheckedCollections = [];
@@ -132,10 +109,12 @@ function AddCardToCollection({}) {
         totalResultMessage.push(
           `Card successfully added to ${collectObj.title} collection`,
         );
+        setResultMessage(totalResultMessage);
       } else {
         totalResultMessage.push(
           `Could not add card to ${collectObj.title} collection`,
         );
+        setResultMessage(totalResultMessage);
       }
     });
     const collectionsToRemoveObjs = [];
@@ -166,13 +145,14 @@ function AddCardToCollection({}) {
         totalResultMessage.push(
           `Card successfully removed from ${collectObj.title} collection`,
         );
+        setResultMessage(totalResultMessage);
       } else {
         totalResultMessage.push(
           `Card not removed from ${collectObj.title} collection`,
         );
+        setResultMessage(totalResultMessage);
       }
     });
-    setResultMessage(totalResultMessage);
   };
 
   return (
