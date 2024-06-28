@@ -1,25 +1,29 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css';
-import Home from './Home';
-import CardCollection from './CardCollection';
-import EditCard from './EditCard';
-import Nav from './Nav';
-import AddCard from './AddCard';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import Home from "./Home";
+import CardCollection from "./CardCollection";
+import EditCard from "./EditCard";
+import Nav from "./Nav";
+import AddCard from "./AddCard";
+import AddCardToCollection from "./AddCardToCollection";
+import AllCollections from "./AllCollections";
 
 function App() {
   return (
     <div>
       <h1>My Cards</h1>
       <p>version: {import.meta.env.VITE_APP_VERSION}</p>
-      <Nav/>
+      <Nav />
       <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="grandpa" element={<CardCollection/>} />
-        <Route path="grandpa/:id" element={<EditCard/>} />
-        <Route path="grandpa/add" element={<AddCard/>} />
-        <Route path="uncle" element={<CardCollection/>} />
-        <Route path="uncle/:id" element={<EditCard/>} />
-        <Route path="uncle/add" element={<AddCard/>} />
+        <Route path="/" element={<Home />} />
+        <Route path="collection" element={<CardCollection />} />
+        <Route path="collection/:id" element={<EditCard />} />
+        <Route path="collection/add" element={<AddCard />} />
+        <Route path="allcollections" element={<AllCollections />} />
+        <Route
+          path="collection/addtocollection/:cardid"
+          element={<AddCardToCollection />}
+        />
       </Routes>
     </div>
   );

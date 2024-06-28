@@ -1,76 +1,102 @@
-import './App.css';
-import PropTypes from 'prop-types';
+import "./App.css";
+import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function TradingCard({tradingCard}) {
+function TradingCard({ tradingCard, collections }) {
   const navigate = useNavigate();
-  const collectionName = useLocation().pathname.split("/")[1];
 
   const goEdit = () => {
-      navigate(`/${collectionName}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}`);
-  }
+    navigate(`/collection/${tradingCard._id}`);
+  };
+
+  const goAddToCollection = () => {
+    navigate(`addtocollection/${tradingCard._id}`, {state: {tradingCard: tradingCard, collections: collections}});
+  };
 
   const flipImage = (event) => {
     const el = event.target.parentElement.parentElement.firstChild;
-    if(el.src === tradingCard.frontCardImageLink) {
-        el.src = tradingCard.backCardImageLink;
+    if (el.src === tradingCard.frontCardImageLink) {
+      el.src = tradingCard.backCardImageLink;
     } else {
-        el.src = tradingCard.frontCardImageLink;
+      el.src = tradingCard.frontCardImageLink;
     }
-  }
+  };
 
   const toggleImageSize = (event) => {
     const el = event.target;
-    el.classList.toggle('img-small');
-  }
+    el.classList.toggle("img-small");
+  };
 
-  const getCardNumberText = () => { 
+  const getCardNumberText = () => {
     let currentCardNumber = "";
-    if(tradingCard.cardNumber) {
+    if (tradingCard.cardNumber) {
       currentCardNumber = `#${tradingCard.cardNumber} `;
     }
     return currentCardNumber;
+  };
+
+  const getVarietyText = () => {
+    let currentVariety = "";
+    if (tradingCard.variety) {
+      currentVariety = `${tradingCard.variety} `;
+    }
+    return currentVariety;
+  };
+
+  const getCollectionsPageType = () => {
+    const collectionsPage = useLocation().pathname.split("/")[1];
+    if(collectionsPage === "collection") {
+      return (
+        <>
+        <button onClick={(event) => goEdit(event)}>Edit</button>
+        <button onClick={(event) => goAddToCollection(event)}>
+          Add Card To A Collection
+        </button>
+        </>
+      )
+    }
   }
 
-  const getVariationText = () => { 
-    let currentVariation = "";
-    if(tradingCard.variation) {
-      currentVariation = `${tradingCard.variation} `;
-    }
-    return currentVariation;
-  }
-  
   return (
-      <>
-        <img src={tradingCard.frontCardImageLink} alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.player} card`} onClick={(event) => toggleImageSize(event)} className='img-small'/>
-        <div>
-          <p>{`${tradingCard.cardSet}`}</p>
-          <p>{`${getVariationText()}`}</p>
-          <p>{`${getCardNumberText()}${tradingCard.player}`}</p>
-          <p>{tradingCard.gradingCompany} {tradingCard.grade} #{tradingCard.certificationNumber}</p>
-        </div>
-        <div className='div-cards-buttons'>
-          <button onClick={(event) => goEdit(event)}>Edit</button>
-          <button onClick={(event) => flipImage(event)}>Flip Image</button>
-        </div>
-      </>
-  )
+    <>
+      <img
+        src={tradingCard.frontCardImageLink}
+        alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
+        onClick={(event) => toggleImageSize(event)}
+        className="img-small"
+      />
+      <div>
+        <p>{`${tradingCard.cardSet}`}</p>
+        <p>{`${getVarietyText()}`}</p>
+        <p>{`${getCardNumberText()}${tradingCard.subject}`}</p>
+        <p>
+          {tradingCard.gradingCompany} {tradingCard.grade} #
+          {tradingCard.certificationNumber}
+        </p>
+      </div>
+      <div className="div-cards-buttons">
+        {getCollectionsPageType()}
+        <button onClick={(event) => flipImage(event)}>Flip Image</button>
+      </div>
+    </>
+  );
 }
 
 TradingCard.propTypes = {
-    tradingCard: PropTypes.shape({
-        year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        brand: PropTypes.string,
-        cardSet: PropTypes.string,
-        cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        player: PropTypes.string,
-        gradingCompany: PropTypes.string,
-        grade: PropTypes.string,
-        certificationNumber: PropTypes.string,
-        frontCardImageLink: PropTypes.string,
-        backCardImageLink: PropTypes.string,
-        sold: PropTypes.bool
-    })
+  tradingCard: PropTypes.shape({
+    year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    brand: PropTypes.string,
+    cardSet: PropTypes.string,
+    variety: PropTypes.string,
+    cardNumber: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    subject: PropTypes.string,
+    gradingCompany: PropTypes.string,
+    grade: PropTypes.string,
+    certificationNumber: PropTypes.string,
+    frontCardImageLink: PropTypes.string,
+    backCardImageLink: PropTypes.string,
+    sold: PropTypes.bool,
+  }),
 };
 
 export default TradingCard;
