@@ -98,6 +98,9 @@ function AllCollections({}) {
   return (
     <>
       <h2>All Collections</h2>
+      <h3>
+        {collectionTitle.toUpperCase()}: {tradingCardCollection.length} Cards
+      </h3>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (

@@ -11,7 +11,7 @@ import AllCollections from "./AllCollections";
 function App() {
   return (
     <div>
-      <h1>My Cards</h1>
+      <h1>Collections</h1>
       <p>version: {import.meta.env.VITE_APP_VERSION}</p>
       <Nav />
       <Routes>
