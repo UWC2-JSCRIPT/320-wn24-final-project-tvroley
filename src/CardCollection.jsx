@@ -199,15 +199,9 @@ function CardCollection({}) {
 
   return (
     <>
-      <h2>
-        My Collections
-      </h2>
-      <h3>
-        {collectionTitle.toUpperCase()} 
-      </h3>
-      <h4>
-        {tradingCardCollection.length} Cards
-      </h4>
+      <h2>My Collections</h2>
+      <h3>{collectionTitle.toUpperCase()}</h3>
+      <h4>{tradingCardCollection.length} Cards</h4>
       <div>
         <div>
           <p className="p-instructions">Click on card images for full size</p>
