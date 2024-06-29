@@ -10,7 +10,9 @@ function TradingCard({ tradingCard, collections }) {
   };
 
   const goAddToCollection = () => {
-    navigate(`addtocollection/${tradingCard._id}`, {state: {tradingCard: tradingCard, collections: collections}});
+    navigate(`addtocollection/${tradingCard._id}`, {
+      state: { tradingCard: tradingCard, collections: collections },
+    });
   };
 
   const flipImage = (event) => {
@@ -45,17 +47,17 @@ function TradingCard({ tradingCard, collections }) {
 
   const getCollectionsPageType = () => {
     const collectionsPage = useLocation().pathname.split("/")[1];
-    if(collectionsPage === "collection") {
+    if (collectionsPage === "collection") {
       return (
         <>
-        <button onClick={(event) => goEdit(event)}>Edit</button>
-        <button onClick={(event) => goAddToCollection(event)}>
-          Add Card To A Collection
-        </button>
+          <button onClick={(event) => goEdit(event)}>Edit</button>
+          <button onClick={(event) => goAddToCollection(event)}>
+            Add Card To A Collection
+          </button>
         </>
-      )
+      );
     }
-  }
+  };
 
   return (
     <>

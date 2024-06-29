@@ -47,15 +47,16 @@ function AllCollections({}) {
     const buttonCollectionText = event.target.innerText;
     let collectionText = "";
     let ownerText = "";
-    if(buttonCollectionText.indexOf("base collection") > 0) {
-        collectionText = buttonCollectionText.split(" base ")[0];
-        ownerText = buttonCollectionText.split(" base ")[0];     
+    if (buttonCollectionText.indexOf("base collection") > 0) {
+      collectionText = buttonCollectionText.split(" base ")[0];
+      ownerText = buttonCollectionText.split(" base ")[0];
     } else {
-        collectionText = buttonCollectionText.split(" by ")[0];
-        ownerText = buttonCollectionText.split(" by ")[1];
+      collectionText = buttonCollectionText.split(" by ")[0];
+      ownerText = buttonCollectionText.split(" by ")[1];
     }
     const buttonCollectionArray = collections.filter(
-      (collect) => collectionText === collect.title && ownerText === collect.ownerName,
+      (collect) =>
+        collectionText === collect.title && ownerText === collect.ownerName,
     );
     const myCollection = buttonCollectionArray[0];
     setCollectionId(myCollection._id);
@@ -98,6 +99,8 @@ function AllCollections({}) {
   return (
     <>
       <h2>All Collections</h2>
+      <h3>{collectionTitle.toUpperCase()}</h3>
+      <h4>{tradingCardCollection.length} Cards</h4>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
