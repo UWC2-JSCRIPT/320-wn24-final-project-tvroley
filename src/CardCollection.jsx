@@ -203,8 +203,11 @@ function CardCollection({}) {
         My Collections
       </h2>
       <h3>
-        {collectionTitle.toUpperCase()}: {tradingCardCollection.length} Cards
+        {collectionTitle.toUpperCase()} 
       </h3>
+      <h4>
+        {tradingCardCollection.length} Cards
+      </h4>
       <div>
         <div>
           <p className="p-instructions">Click on card images for full size</p>

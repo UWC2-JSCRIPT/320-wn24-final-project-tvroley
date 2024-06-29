@@ -99,8 +99,11 @@ function AllCollections({}) {
     <>
       <h2>All Collections</h2>
       <h3>
-        {collectionTitle.toUpperCase()}: {tradingCardCollection.length} Cards
+        {collectionTitle.toUpperCase()}
       </h3>
+      <h4>
+        {tradingCardCollection.length} Cards
+      </h4>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
