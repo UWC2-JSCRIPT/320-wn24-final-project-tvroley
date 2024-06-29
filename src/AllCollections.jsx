@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import Nav from "./Nav";
 import TradingCard from "./TradingCard";
+import SortButtons from "./SortButtons";
 
 function AllCollections({}) {
   const [collections, setCollections] = useState([]);
@@ -109,6 +110,10 @@ function AllCollections({}) {
           );
         })}
       </div>
+      <SortButtons
+        collectionId={collectionId}
+        setTradingCardCollection={setTradingCardCollection}
+      />
       <div className="div-cards">
         {tradingCardCollection.map((card) => {
           let cardClass = "unsold";
@@ -125,6 +130,10 @@ function AllCollections({}) {
           );
         })}
       </div>
+      <SortButtons
+        collectionId={collectionId}
+        setTradingCardCollection={setTradingCardCollection}
+      />
       <Nav />
     </>
   );
