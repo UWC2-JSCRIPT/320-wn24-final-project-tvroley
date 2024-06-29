@@ -319,7 +319,7 @@ function AddCard({}) {
             />
           </div>
         </div>
-        <div className="div-input-group">
+        <div className="div-input-group div-add-button">
           <input
             className="btn"
             type="submit"

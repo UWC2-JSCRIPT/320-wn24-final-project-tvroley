@@ -24,7 +24,6 @@ function EditCard({}) {
 
   useEffect(() => {
     const getData = async () => {
-      console.log(cardId);
       let urlGetCard = new URL(
         `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
       );
@@ -376,7 +375,7 @@ function EditCard({}) {
             />
           </div>
         </div>
-        <div className="div-input-group">
+        <div className="div-input-group div-add-button">
           <input
             className="btn"
             type="submit"
