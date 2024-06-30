@@ -6,6 +6,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
+  const [resultMessage, setResultMessage] = useState([]);
 
   const login = async (event) => {
     event.preventDefault();
@@ -27,7 +28,12 @@ export default function Home() {
         setToken(data.token);
         localStorage.setItem("cardsToken", data.token);
         localStorage.setItem("cardsUsername", username);
+        setResultMessage(`Welcome ${username}`);
+        setPassword(``);
+        setUsername(``);
       });
+    } else {
+      setResultMessage(`Invalid login`);
     }
   };
 
@@ -71,6 +77,7 @@ export default function Home() {
           <input className="btn" type="submit" value="Login" onClick={login} />
         </div>
       </div>
+      <p>{resultMessage}</p>
       <Nav />
     </>
   );
