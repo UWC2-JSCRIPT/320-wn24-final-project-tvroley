@@ -19,6 +19,7 @@ function CardCollection({}) {
   const [currentCollection, setCurrentCollection] = useState({});
   const [addedCollection, setAddedCollection] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [addCollectionResult, setAddCollectionResult] = useState("");
 
   const navigate = useNavigate();
 
@@ -119,8 +120,9 @@ function CardCollection({}) {
       const myCollections = collections;
       myCollections.push(myCollection);
       setCollections(myCollections);
+      setAddCollectionResult(`Added collection ${myCollection.title}`)
     } else {
-      console.log(`Error: could not add collection`);
+      setAddCollectionResult(`Could not add collection`)
     }
   };
 
@@ -245,6 +247,7 @@ function CardCollection({}) {
           />
         </div>
         <button onClick={addCollection}>Add Collection</button>
+        <p>{addCollectionResult}</p>
       </div>
       <p>Collections</p>
       <div className="div-collections" id="collections-div">
