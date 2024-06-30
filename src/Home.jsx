@@ -43,12 +43,15 @@ export default function Home() {
     navigate("/collection");
   };
 
+  const goAllCollections = () => {
+    navigate("/allcollections");
+  };
+
   return (
     <>
-      <div className="div-home-buttons">
-        <button onClick={goCollection}>My Collection</button>
-      </div>
-      <div className="div-add-collection">
+      <h2>Welcome To Collections!</h2>
+      <p>If you have an account, login and go to My Collection to manage and view your collection.</p>
+      <div className="div-login">
         <div className="div-enter-collection">
           <label htmlFor="username-input">Username</label>
           <input
@@ -78,6 +81,13 @@ export default function Home() {
         </div>
       </div>
       <p>{resultMessage}</p>
+      <div className="div-home-buttons">
+        <button onClick={goCollection}>My Collection</button>
+      </div>
+      <p>If you don't have an account, and would like to view collections, go to All Collections</p>
+      <div className="div-home-buttons">
+        <button onClick={goAllCollections}>All Collections</button>
+      </div>
       <Nav />
     </>
   );

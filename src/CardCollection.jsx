@@ -24,6 +24,9 @@ function CardCollection({}) {
 
   useEffect(() => {
     const getData = async () => {
+      if(!username){
+        return;
+      }
       let urlGetCollections = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections`,
       );
