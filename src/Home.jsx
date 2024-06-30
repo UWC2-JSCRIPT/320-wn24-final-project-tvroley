@@ -37,6 +37,11 @@ export default function Home() {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("cardsToken");
+    localStorage.removeItem("cardsUsername");
+  }
+
   const navigate = useNavigate();
 
   const goCollection = () => {
@@ -50,7 +55,7 @@ export default function Home() {
   return (
     <>
       <h2>Welcome To Collections!</h2>
-      <p>If you have an account, login and go to My Collection to manage and view your collection.</p>
+      <p>If you have an account, login and go to My Collection to manage and view your collection</p>
       <div className="div-login">
         <div className="div-enter-collection">
           <label htmlFor="username-input">Username</label>
@@ -84,9 +89,14 @@ export default function Home() {
       <div className="div-home-buttons">
         <button onClick={goCollection}>My Collection</button>
       </div>
+      <div>
       <p>If you don't have an account, and would like to view collections, go to All Collections</p>
       <div className="div-home-buttons">
         <button onClick={goAllCollections}>All Collections</button>
+      </div>
+      </div>
+      <div className="div-logout">
+        <button onClick={logout}>Logout</button>
       </div>
       <Nav />
     </>
