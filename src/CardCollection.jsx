@@ -231,7 +231,9 @@ function CardCollection({}) {
             value={searchQuery}
           />
         </div>
+        <div className="div-sort-buttons">
         <button onClick={searchCollection}>Search</button>
+        </div>
       </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
@@ -246,10 +248,12 @@ function CardCollection({}) {
             value={addedCollection}
           />
         </div>
+        <div className="div-sort-buttons">
         <button onClick={addCollection}>Add Collection</button>
+        </div>
         <p>{addCollectionResult}</p>
       </div>
-      <p>Collections</p>
+      <p>Choose Your Collection</p>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
