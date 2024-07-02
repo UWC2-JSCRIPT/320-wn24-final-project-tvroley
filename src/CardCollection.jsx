@@ -25,7 +25,7 @@ function CardCollection({}) {
 
   useEffect(() => {
     const getData = async () => {
-      if(!username){
+      if (!username) {
         return;
       }
       let urlGetCollections = new URL(
@@ -120,9 +120,9 @@ function CardCollection({}) {
       const myCollections = collections;
       myCollections.push(myCollection);
       setCollections(myCollections);
-      setAddCollectionResult(`Added collection ${myCollection.title}`)
+      setAddCollectionResult(`Added collection ${myCollection.title}`);
     } else {
-      setAddCollectionResult(`Could not add collection`)
+      setAddCollectionResult(`Could not add collection`);
     }
   };
 
@@ -232,7 +232,7 @@ function CardCollection({}) {
           />
         </div>
         <div className="div-sort-buttons">
-        <button onClick={searchCollection}>Search</button>
+          <button onClick={searchCollection}>Search</button>
         </div>
       </div>
       <div className="div-add-collection">
@@ -249,7 +249,7 @@ function CardCollection({}) {
           />
         </div>
         <div className="div-sort-buttons">
-        <button onClick={addCollection}>Submit</button>
+          <button onClick={addCollection}>Submit</button>
         </div>
         <p>{addCollectionResult}</p>
       </div>

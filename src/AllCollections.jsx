@@ -92,7 +92,7 @@ function AllCollections({}) {
 
   const collectionSearch = async (event) => {
     let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/search`
+      `https://trading-cards-backend-production.up.railway.app/collections/search`,
     );
     url.searchParams.append("search", searchQuery);
     const response = await fetch(url, {
@@ -129,6 +129,15 @@ function AllCollections({}) {
       <h2>All Collections</h2>
       <h3>{collectionTitle.toUpperCase()}</h3>
       <h4>{tradingCardCollection.length} Cards</h4>
+      <div>
+        <div>
+          <p className="p-instructions">Click on card images for full size</p>
+        </div>
+        <div className="div-sold-legend">
+          <p className="sold p-legend">SOLD</p>
+          <p className="unsold p-legend">NOT SOLD</p>
+        </div>
+      </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">
@@ -145,20 +154,20 @@ function AllCollections({}) {
           />
         </div>
         <div className="div-sort-buttons">
-        <button onClick={collectionSearch}>Search</button>
+          <button onClick={collectionSearch}>Search</button>
         </div>
         <div className="div-collections" id="search-collections-div">
-        {Array.from(searchedCollections).map((collect) => {
-          return (
-            <button
-              onClick={changeCollection}
-              key={`${collect.title}-${collect.ownerName}-search-button`}
-            >
-              {getCollectionButtonText(collect)}
-            </button>
-          );
-        })}
-      </div>
+          {Array.from(searchedCollections).map((collect) => {
+            return (
+              <button
+                onClick={changeCollection}
+                key={`${collect.title}-${collect.ownerName}-search-button`}
+              >
+                {getCollectionButtonText(collect)}
+              </button>
+            );
+          })}
+        </div>
       </div>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
