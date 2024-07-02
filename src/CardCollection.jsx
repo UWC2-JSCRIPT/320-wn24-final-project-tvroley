@@ -237,7 +237,7 @@ function CardCollection({}) {
       </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="collection-input">Enter Collection</label>
+          <label htmlFor="collection-input">Add Collection</label>
           <input
             id="collection-input"
             type="text"
@@ -249,7 +249,7 @@ function CardCollection({}) {
           />
         </div>
         <div className="div-sort-buttons">
-        <button onClick={addCollection}>Add Collection</button>
+        <button onClick={addCollection}>Submit</button>
         </div>
         <p>{addCollectionResult}</p>
       </div>
