@@ -152,6 +152,17 @@
   margin-bottom: 1em;
 }
 
+.div-delete {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: red;
+  padding: 0.5rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 .div-add-collection {
   display: flex;
   flex-direction: column;
