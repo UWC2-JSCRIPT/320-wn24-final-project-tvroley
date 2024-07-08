@@ -95,6 +95,10 @@ function CardCollection({}) {
     navigate(`/collection/add`);
   };
 
+  const goManageCollections = () => {
+    navigate(`/collection/manage`);
+  };
+
   const addCollection = async (event) => {
     const titleObj = { collectionTitle: addedCollection };
     let url = new URL(
@@ -265,6 +269,9 @@ function CardCollection({}) {
             </button>
           );
         })}
+      </div>
+      <div className="div-restore-buttons">
+        <button onClick={goManageCollections}>Manage Collections</button>
       </div>
       <div className="div-add-button">
         <button onClick={goAdd}>Add Card</button>

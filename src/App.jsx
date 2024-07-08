@@ -7,6 +7,7 @@ import Nav from "./Nav";
 import AddCard from "./AddCard";
 import AddCardToCollection from "./AddCardToCollection";
 import AllCollections from "./AllCollections";
+import ManageCollections from "./ManageCollections";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="collection" element={<CardCollection />} />
         <Route path="collection/:id" element={<EditCard />} />
         <Route path="collection/add" element={<AddCard />} />
+        <Route path="collection/manage" element={<ManageCollections />} />
         <Route path="allcollections" element={<AllCollections />} />
         <Route
           path="collection/addtocollection/:cardid"
