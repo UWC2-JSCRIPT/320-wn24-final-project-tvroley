@@ -89,7 +89,6 @@ function ManageCollections({}) {
     <div className="div-add-cards">
       <h3>Manage Collections</h3>
       <form id="card-form" className="form-card">
-        <label htmlFor="collections-div">Collections</label>
         <div className="div-collections" id="collections-div">
           {Array.from(collections).map((collect) => {
             if (collect.title !== username) {
@@ -116,7 +115,7 @@ function ManageCollections({}) {
             }
           })}
         </div>
-        <div className="div-input-group div-add-button">
+        <div className="div-input-group div-delete">
           <input
             className="btn"
             type="submit"
