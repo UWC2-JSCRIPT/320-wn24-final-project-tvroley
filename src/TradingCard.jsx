@@ -22,7 +22,9 @@ function TradingCard({ tradingCard, collections }) {
   };
 
   const flipImage = (event) => {
-    const el = event.target.parentElement.parentElement.firstChild;
+    const el =
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .firstChild;
     if (el.src === tradingCard.frontCardImageLink) {
       el.src = tradingCard.backCardImageLink;
     } else {
@@ -60,7 +62,7 @@ function TradingCard({ tradingCard, collections }) {
             <div className="div-card-buttons-rows">
               <button onClick={(event) => goEdit(event)}>Edit</button>
               <button onClick={(event) => goAddToCollection(event)}>
-                Add Card To A Collection
+                Add To A Collection
               </button>
               <button onClick={flipImage}>Flip Image</button>
             </div>
@@ -73,7 +75,11 @@ function TradingCard({ tradingCard, collections }) {
     } else {
       return (
         <>
-          <button onClick={flipImage}>Flip Image</button>
+          <div className="div-card-buttons">
+            <div className="div-card-buttons-rows">
+              <button onClick={flipImage}>Flip Image</button>
+            </div>
+          </div>
         </>
       );
     }
