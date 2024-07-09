@@ -5,27 +5,32 @@ import { useState } from "react";
 function DeleteCard({}) {
   const location = useLocation();
   const tradingCard = location.state.tradingCard;
-  const [resultMessage, setResultMessage] = useState('');
+  const [resultMessage, setResultMessage] = useState("");
 
   const deleteCard = async (event) => {
     event.preventDefault();
     let urlPostCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/` + tradingCard._id,
+      `https://trading-cards-backend-production.up.railway.app/cards/` +
+        tradingCard._id,
+    );
+    const responseGetCollections = await fetch(urlPostCard, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+    });
+    if (responseGetCollections.status === 200) {
+      setResultMessage(
+        `Deleted ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`,
       );
-      const responseGetCollections = await fetch(urlPostCard, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-      });
-      if (responseGetCollections.status === 200) {
-        setResultMessage(`Deleted ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`);
-      } else {
-        setResultMessage(`Could not delete ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`);
-      }
-  }
+    } else {
+      setResultMessage(
+        `Could not delete ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`,
+      );
+    }
+  };
 
   return (
     <div className="div-add-cards">
@@ -43,7 +48,8 @@ function DeleteCard({}) {
         </p>
         <p></p>
         <p>
-          If you sold the card, you can just mark the card as sold, and keep it in your collection
+          If you sold the card, you can just mark the card as sold, and keep it
+          in your collection
         </p>
         <div className="div-input-group div-delete">
           <input
