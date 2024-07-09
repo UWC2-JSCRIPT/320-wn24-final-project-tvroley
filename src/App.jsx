@@ -8,6 +8,7 @@ import AddCard from "./AddCard";
 import AddCardToCollection from "./AddCardToCollection";
 import AllCollections from "./AllCollections";
 import ManageCollections from "./ManageCollections";
+import DeleteCard from "./DeleteCard";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           path="collection/addtocollection/:cardid"
           element={<AddCardToCollection />}
         />
+        <Route path="collection/deletecard/:cardid" element={<DeleteCard />} />
       </Routes>
     </div>
   );

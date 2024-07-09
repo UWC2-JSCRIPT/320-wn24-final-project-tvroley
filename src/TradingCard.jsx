@@ -9,6 +9,12 @@ function TradingCard({ tradingCard, collections }) {
     navigate(`/collection/${tradingCard._id}`);
   };
 
+  const goDelete = () => {
+    navigate(`/collection/deletecard/${tradingCard._id}`, {
+      state: { tradingCard: tradingCard },
+    });
+  };
+
   const goAddToCollection = () => {
     navigate(`addtocollection/${tradingCard._id}`, {
       state: { tradingCard: tradingCard, collections: collections },
@@ -45,15 +51,29 @@ function TradingCard({ tradingCard, collections }) {
     return currentVariety;
   };
 
-  const getCollectionsPageType = () => {
+  const getButtons = () => {
     const collectionsPage = useLocation().pathname.split("/")[1];
     if (collectionsPage === "collection") {
       return (
         <>
-          <button onClick={(event) => goEdit(event)}>Edit</button>
-          <button onClick={(event) => goAddToCollection(event)}>
-            Add Card To A Collection
-          </button>
+          <div className="div-card-buttons">
+            <div className="div-card-buttons-rows">
+              <button onClick={(event) => goEdit(event)}>Edit</button>
+              <button onClick={(event) => goAddToCollection(event)}>
+                Add Card To A Collection
+              </button>
+              <button onClick={flipImage}>Flip Image</button>
+            </div>
+            <div className="div-card-buttons-rows">
+              <button onClick={goDelete}>Delete</button>
+            </div>
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <button onClick={flipImage}>Flip Image</button>
         </>
       );
     }
@@ -76,10 +96,7 @@ function TradingCard({ tradingCard, collections }) {
           {tradingCard.certificationNumber}
         </p>
       </div>
-      <div className="div-cards-buttons">
-        {getCollectionsPageType()}
-        <button onClick={(event) => flipImage(event)}>Flip Image</button>
-      </div>
+      <div className="div-cards-buttons">{getButtons()}</div>
     </>
   );
 }
