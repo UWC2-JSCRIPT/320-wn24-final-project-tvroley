@@ -26,6 +26,7 @@ function CardCollection({}) {
   useEffect(() => {
     const getData = async () => {
       if (!username) {
+        setErrorMessage("You need to login to view your collections, or you can view the All Collections page to view collections of existing users");
         return;
       }
       let urlGetCollections = new URL(
@@ -79,13 +80,15 @@ function CardCollection({}) {
           if (response.status === 200) {
             setTradingCardCollection(responseData.tradingCards);
           } else {
-            console.log(responseData);
+            setErrorMessage("Could not retrieve base collection");
           }
         } else {
-          console.log("Could not find base collection");
+          setErrorMessage("Could not retrieve base collection");
         }
+      } else if (responseGetCollections.status === 401) {
+        setErrorMessage(`Failed to authorize user`);
       } else {
-        console.log(`Could not get collections for user`);
+        setErrorMessage(`Could not get collections for user`);
       }
     };
     getData();
@@ -161,7 +164,7 @@ function CardCollection({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
     } else {
-      console.log(`Error: could not get cards`);
+      setErrorMessage(`Error: could not get cards when changing collection`);
     }
   };
 
@@ -194,7 +197,7 @@ function CardCollection({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
     } else {
-      console.log(`Error: could not get cards`);
+      setErrorMessage(`Error: failed to search for cards`);
     }
   };
 
@@ -211,6 +214,7 @@ function CardCollection({}) {
       <h2>My Collections</h2>
       <h3>{collectionTitle.toUpperCase()}</h3>
       <h4>{tradingCardCollection.length} Cards</h4>
+      <p>{errorMessage}</p>
       <div>
         <div>
           <p className="p-instructions">Click on card images for full size</p>
