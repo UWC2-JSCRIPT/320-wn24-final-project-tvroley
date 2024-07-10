@@ -7,6 +7,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
+  const [logoutMessage, setLogoutMessage] = useState(``);
 
   const login = async (event) => {
     event.preventDefault();
@@ -31,15 +32,18 @@ export default function Home() {
         setResultMessage(`Welcome ${username}`);
         setPassword(``);
         setUsername(``);
+        setLogoutMessage(``);
       });
     } else {
       setResultMessage(`Invalid login`);
+      setLogoutMessage(``);
     }
   };
 
   const logout = () => {
     localStorage.removeItem("cardsToken");
     localStorage.removeItem("cardsUsername");
+    setLogoutMessage(`You logged out`);
   };
 
   const navigate = useNavigate();
@@ -104,6 +108,7 @@ export default function Home() {
       <div className="div-logout">
         <button onClick={logout}>Logout</button>
       </div>
+      <p>{logoutMessage}</p>
       <Nav />
     </>
   );
