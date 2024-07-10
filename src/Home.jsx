@@ -65,7 +65,7 @@ export default function Home() {
       </p>
       <div className="div-login">
         <div className="div-enter-collection">
-          <label htmlFor="username-input">Username</label>
+          <label htmlFor="username-input">Username:</label>
           <input
             id="username-input"
             type="text"
@@ -77,7 +77,7 @@ export default function Home() {
           />
         </div>
         <div className="div-enter-collection">
-          <label htmlFor="password-input">Password</label>
+          <label htmlFor="password-input">Password:</label>
           <input
             id="password-input"
             type="text"

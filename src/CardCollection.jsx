@@ -26,7 +26,9 @@ function CardCollection({}) {
   useEffect(() => {
     const getData = async () => {
       if (!username) {
-        setErrorMessage("You need to login to view your collections, or you can view the All Collections page to view collections of existing users");
+        setErrorMessage(
+          "You need to login to view your collections, or you can view the All Collections page to view collections of existing users",
+        );
         return;
       }
       let urlGetCollections = new URL(
