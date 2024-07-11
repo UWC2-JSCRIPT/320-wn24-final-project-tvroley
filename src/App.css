@@ -132,6 +132,14 @@
   margin-bottom: 1em;
 }
 
+.div-sort-button {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+}
+
 .div-restore-buttons {
   display: flex;
   flex-direction: row;
