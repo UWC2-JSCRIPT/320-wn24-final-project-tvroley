@@ -12,11 +12,13 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
   const sortCards = async (event) => {
     let sortBy = "year";
     const buttonId = event.target.id;
+    let currentAsc = 'ASC';
     switch (buttonId) {
       case "sort-cert-button":
         sortBy = "cert";
         if(certAsc === "ASC") {
-          setCertAsc("DESC");  
+          setCertAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setCertAsc("ASC");
         }
@@ -24,7 +26,8 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
       case "sort-year-button":
         sortBy = "year";
         if(yearAsc === "ASC") {
-          setYearAsc("DESC");  
+          setYearAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setYearAsc("ASC");
         }
@@ -32,7 +35,8 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
       case "sort-subject-button":
         sortBy = "subject";
         if(subjectAsc === "ASC") {
-          setSubjectAsc("DESC");  
+          setSubjectAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setSubjectAsc("ASC");
         }
@@ -40,7 +44,8 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
       case "sort-sold-button":
         sortBy = "sold";
         if(soldAsc === "ASC") {
-          setSoldAsc("DESC");  
+          setSoldAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setSoldAsc("ASC");
         }
@@ -48,7 +53,8 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
       case "sort-brand-button":
         sortBy = "brand";
         if(brandAsc === "ASC") {
-          setBrandAsc("DESC");  
+          setBrandAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setBrandAsc("ASC");
         }
@@ -56,7 +62,8 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
       case "sort-set-button":
         sortBy = "cardSet";
         if(setAsc === "ASC") {
-          setSetAsc("DESC");  
+          setSetAsc("DESC");
+          currentAsc = "DESC";  
         } else {
           setSetAsc("ASC");
         }
@@ -72,6 +79,7 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
     );
     url.searchParams.append("verbose", "true");
     url.searchParams.append("sortBy", sortBy);
+    url.searchParams.append("ascDesc", currentAsc);
     const response = await fetch(url, {
       method: "GET",
       mode: "cors",
