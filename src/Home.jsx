@@ -40,6 +40,36 @@ export default function Home() {
     }
   };
 
+  const demoLogin = async () => {
+    const response = await fetch(
+      `https://trading-cards-backend-production.up.railway.app/auth/login`,
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify({ username: "demo", password: "demo" }),
+      },
+    );
+    if (response.status === 200) {
+      response.json().then((data) => {
+        setToken(data.token);
+        localStorage.setItem("cardsToken", data.token);
+        localStorage.setItem("cardsUsername", "demo");
+        setResultMessage(`Welcome Demo User`);
+        setPassword(``);
+        setUsername(``);
+        setLogoutMessage(``);
+      });
+    } else {
+      setResultMessage(`Invalid demo mode login`);
+      setLogoutMessage(``);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("cardsToken");
     localStorage.removeItem("cardsUsername");
@@ -58,10 +88,10 @@ export default function Home() {
 
   return (
     <>
-      <h2>Welcome To Collections!</h2>
+      <h2>Welcome To Card Collections!</h2>
       <p>
-        If you have an account, login and go to My Collection to manage and view
-        your collection
+        If you have an account, login and go to "My Collection" to manage and
+        view your collection
       </p>
       <div className="div-login">
         <div className="div-enter-collection">
@@ -94,15 +124,34 @@ export default function Home() {
       </div>
       <p>{resultMessage}</p>
       <div className="div-home-buttons">
-        <button onClick={goCollection}>My Collection</button>
+        <button id="collection-button" onClick={goCollection}>
+          My Collection
+        </button>
       </div>
       <div>
         <p>
-          If you don't have an account, and would like to view collections, go
-          to All Collections
+          If you don't have an account, and would like to use demo mode of My
+          Collection, click the "Demo Mode" button
         </p>
         <div className="div-home-buttons">
-          <button onClick={goAllCollections}>All Collections</button>
+          <button
+            id="demo-button"
+            onClick={() => {
+              demoLogin();
+              goCollection();
+            }}
+          >
+            Demo Mode
+          </button>
+        </div>
+        <p>
+          If you don't have an account, and would like to view collections, go
+          to "All Collections"
+        </p>
+        <div className="div-home-buttons">
+          <button id="all-collections-button" onClick={goAllCollections}>
+            All Collections
+          </button>
         </div>
       </div>
       <div className="div-logout">
