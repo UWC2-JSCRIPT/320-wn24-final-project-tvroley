@@ -134,11 +134,13 @@ export default function Home() {
           Collection, click the "Demo Mode" button
         </p>
         <div className="div-home-buttons">
-          <button id="demo-button" onClick={() => {
-            demoLogin();
-            goCollection();
-          }
-            }>
+          <button
+            id="demo-button"
+            onClick={() => {
+              demoLogin();
+              goCollection();
+            }}
+          >
             Demo Mode
           </button>
         </div>
