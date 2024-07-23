@@ -40,8 +40,7 @@ export default function Home() {
     }
   };
 
-  const demoLogin = async (event) => {
-    event.preventDefault();
+  const demoLogin = async () => {
     const response = await fetch(
       `https://trading-cards-backend-production.up.railway.app/auth/login`,
       {
@@ -135,7 +134,11 @@ export default function Home() {
           Collection, click the "Demo Mode" button
         </p>
         <div className="div-home-buttons">
-          <button id="demo-button" onClick={demoLogin}>
+          <button id="demo-button" onClick={() => {
+            demoLogin();
+            goCollection();
+          }
+            }>
             Demo Mode
           </button>
         </div>
