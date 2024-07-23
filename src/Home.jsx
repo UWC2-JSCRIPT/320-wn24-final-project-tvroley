@@ -63,6 +63,7 @@ export default function Home() {
         setPassword(``);
         setUsername(``);
         setLogoutMessage(``);
+        goCollection();
       });
     } else {
       setResultMessage(`Invalid demo mode login`);
@@ -136,10 +137,7 @@ export default function Home() {
         <div className="div-home-buttons">
           <button
             id="demo-button"
-            onClick={() => {
-              demoLogin();
-              goCollection();
-            }}
+            onClick={demoLogin}
           >
             Demo Mode
           </button>
