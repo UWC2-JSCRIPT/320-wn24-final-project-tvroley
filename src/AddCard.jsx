@@ -1,5 +1,7 @@
 import "./App.css";
 import { useState } from "react";
+import firebaseApp from "./firebaseApp";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -15,6 +17,11 @@ function AddCard({}) {
   const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
+
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
+
   const handleCheck = () => {
     setSold(!sold);
   };
@@ -23,17 +30,15 @@ function AddCard({}) {
     event.preventDefault();
 
     if (
-      year &&
+      /*year &&
       brand &&
       cardSet &&
-      subject &&
+      subject &&*/
       gradingCompany &&
-      grade &&
-      certificationNumber &&
-      frontCardImageLink &&
-      backCardImageLink
+      /*grade &&*/
+      certificationNumber
     ) {
-      const card = {
+      /*const card = {
         year: Number(year),
         brand: brand,
         cardNumber: cardNumber,
@@ -43,8 +48,6 @@ function AddCard({}) {
         gradingCompany: gradingCompany,
         grade: grade,
         certificationNumber: certificationNumber,
-        frontCardImageLink: frontCardImageLink,
-        backCardImageLink: backCardImageLink,
         sold: false,
       };
       let urlPostCard = new URL(
@@ -75,6 +78,35 @@ function AddCard({}) {
       } else {
         setResultMessage(`Could not add card to collection`);
       }
+      */
+
+      const frontCardImageFileEl = document.getElementById(
+        "front-image-file-input",
+      );
+      const frontCardImageFile = frontCardImageFileEl.files[0];
+      const backCardImageFileEl = document.getElementById(
+        "back-image-file-input",
+      );
+      const backCardImageFile = backCardImageFileEl.files[0];
+      const storage = getStorage(firebaseApp);
+      const frontCardImageRef = ref(
+        storage,
+        `${username}/${gradingCompany}${certificationNumber}front`,
+      );
+      const backCardImageRef = ref(
+        storage,
+        `${username}/${gradingCompany}${certificationNumber}back`,
+      );
+      if (frontCardImageFile) {
+        uploadBytes(frontCardImageRef, frontCardImageFile).then((snapshot) => {
+          console.log(snapshot);
+        });
+      }
+      if (backCardImageFile) {
+        uploadBytes(backCardImageRef, backCardImageFile).then((snapshot) => {
+          console.log(snapshot);
+        });
+      }
 
       const yearEl = document.getElementById("year-input");
       yearEl.classList.remove("invalid");
@@ -90,10 +122,6 @@ function AddCard({}) {
       gradeEl.classList.remove("invalid");
       const certEl = document.getElementById("certification-number-input");
       certEl.classList.remove("invalid");
-      const frontEl = document.getElementById("front-image-link-input");
-      frontEl.classList.remove("invalid");
-      const backEl = document.getElementById("back-image-link-input");
-      backEl.classList.remove("invalid");
     } else {
       if (!year) {
         const yearEl = document.getElementById("year-input");
@@ -147,20 +175,6 @@ function AddCard({}) {
       } else {
         const certEl = document.getElementById("certification-number-input");
         certEl.classList.remove("invalid");
-      }
-      if (!frontCardImageLink) {
-        const frontEl = document.getElementById("front-image-link-input");
-        frontEl.classList.add("invalid");
-      } else {
-        const frontEl = document.getElementById("front-image-link-input");
-        frontEl.classList.remove("invalid");
-      }
-      if (!backCardImageLink) {
-        const backEl = document.getElementById("back-image-link-input");
-        backEl.classList.add("invalid");
-      } else {
-        const backEl = document.getElementById("back-image-link-input");
-        backEl.classList.remove("invalid");
       }
     }
   };
@@ -284,30 +298,14 @@ function AddCard({}) {
             <span className="invalid hidden" id="certification-error" />
           </div>
         </div>
-        <div className="div-input-group">
+        <div className="div-input-label">
           <div className="div-input-label">
-            <label htmlFor="front-image-link-input">Front Image Link</label>
-            <input
-              id="front-image-link-input"
-              type="text"
-              minLength="1"
-              maxLength="400"
-              required
-              onChange={(e) => setFrontCardImageLink(e.target.value)}
-              value={frontCardImageLink}
-            />
+            <label htmlFor="front-image-file-input">Front Image Link</label>
+            <input type="file" id="front-image-file-input"></input>
           </div>
           <div className="div-input-label">
-            <label htmlFor="back-image-link-input">Back Image Link</label>
-            <input
-              id="back-image-link-input"
-              type="text"
-              minLength="1"
-              maxLength="400"
-              required
-              onChange={(e) => setBackCardImageLink(e.target.value)}
-              value={backCardImageLink}
-            />
+            <label htmlFor="back-image-file-input">Back Image Link</label>
+            <input type="file" id="back-image-file-input"></input>
           </div>
           <div className="div-input-label">
             <label htmlFor="sold-input">Sold</label>

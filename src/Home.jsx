@@ -135,10 +135,7 @@ export default function Home() {
           Collection, click the "Demo Mode" button
         </p>
         <div className="div-home-buttons">
-          <button
-            id="demo-button"
-            onClick={demoLogin}
-          >
+          <button id="demo-button" onClick={demoLogin}>
             Demo Mode
           </button>
         </div>
