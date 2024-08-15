@@ -1,8 +1,46 @@
 import "./App.css";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import firebaseApp from "./firebaseApp";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 function TradingCard({ tradingCard, collections }) {
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
+  const [frontCardImageURL, setFrontCardImageURL] = useState("");
+  const [backCardImageURL, setBackCardImageURL] = useState("");
+  const storage = getStorage(firebaseApp);
+
+  useEffect(() => {
+    const getImageURLs = async () => {
+      const frontCardImageRef = ref(
+        storage,
+        `${username}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}front`,
+      );
+      getDownloadURL(frontCardImageRef)
+        .then((url) => {
+          setFrontCardImageURL(url);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const backCardImageRef = ref(
+        storage,
+        `${username}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}back`,
+      );
+      getDownloadURL(backCardImageRef)
+        .then((url) => {
+          setBackCardImageURL(url);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    getImageURLs();
+  }, []);
+
   const navigate = useNavigate();
 
   const goEdit = () => {
@@ -24,10 +62,10 @@ function TradingCard({ tradingCard, collections }) {
   const flipImage = (event) => {
     const el =
       event.target.parentElement.parentElement.parentElement.firstChild;
-    if (el.src === tradingCard.frontCardImageLink) {
-      el.src = tradingCard.backCardImageLink;
+    if (el.src === frontCardImageURL) {
+      el.src = backCardImageURL;
     } else {
-      el.src = tradingCard.frontCardImageLink;
+      el.src = frontCardImageURL;
     }
   };
 
@@ -81,7 +119,7 @@ function TradingCard({ tradingCard, collections }) {
   return (
     <>
       <img
-        src={tradingCard.frontCardImageLink}
+        src={frontCardImageURL}
         alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
         onClick={(event) => toggleImageSize(event)}
         className="img-small"
