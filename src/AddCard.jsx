@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import firebaseApp from "./firebaseApp";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -29,85 +29,26 @@ function AddCard({}) {
   const addCard = async (event) => {
     event.preventDefault();
 
+    const frontCardImageFileEl = document.getElementById(
+      "front-image-file-input",
+    );
+    const frontCardImageFile = frontCardImageFileEl.files[0];
+    const backCardImageFileEl = document.getElementById(
+      "back-image-file-input",
+    );
+    const backCardImageFile = backCardImageFileEl.files[0];
+
     if (
-      /*year &&
+      frontCardImageFile &&
+      backCardImageFile &&
+      year &&
       brand &&
       cardSet &&
-      subject &&*/
+      subject &&
       gradingCompany &&
-      /*grade &&*/
+      grade &&
       certificationNumber
     ) {
-      /*const card = {
-        year: Number(year),
-        brand: brand,
-        cardNumber: cardNumber,
-        cardSet: cardSet,
-        variety: variety,
-        subject: subject,
-        gradingCompany: gradingCompany,
-        grade: grade,
-        certificationNumber: certificationNumber,
-        sold: false,
-      };
-      let urlPostCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/`,
-      );
-      const responseGetCollections = await fetch(urlPostCard, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-        body: JSON.stringify(card),
-      });
-      if (responseGetCollections.status === 200) {
-        setResultMessage(`Card successfully added to collection`);
-        setYear(0);
-        setBrand("");
-        setCardNumber("");
-        setCardSet("");
-        setVariety("");
-        setSubject("");
-        setGradingCompany("");
-        setGrade("");
-        setCertificationNumber("");
-        setFrontCardImageLink("");
-        setBackCardImageLink("");
-      } else {
-        setResultMessage(`Could not add card to collection`);
-      }
-      */
-
-      const frontCardImageFileEl = document.getElementById(
-        "front-image-file-input",
-      );
-      const frontCardImageFile = frontCardImageFileEl.files[0];
-      const backCardImageFileEl = document.getElementById(
-        "back-image-file-input",
-      );
-      const backCardImageFile = backCardImageFileEl.files[0];
-      const storage = getStorage(firebaseApp);
-      const frontCardImageRef = ref(
-        storage,
-        `${username}/${gradingCompany}${certificationNumber}front`,
-      );
-      const backCardImageRef = ref(
-        storage,
-        `${username}/${gradingCompany}${certificationNumber}back`,
-      );
-      if (frontCardImageFile) {
-        uploadBytes(frontCardImageRef, frontCardImageFile).then((snapshot) => {
-          console.log(snapshot);
-        });
-      }
-      if (backCardImageFile) {
-        uploadBytes(backCardImageRef, backCardImageFile).then((snapshot) => {
-          console.log(snapshot);
-        });
-      }
-
       const yearEl = document.getElementById("year-input");
       yearEl.classList.remove("invalid");
       const brandEl = document.getElementById("brand-input");
@@ -122,6 +63,117 @@ function AddCard({}) {
       gradeEl.classList.remove("invalid");
       const certEl = document.getElementById("certification-number-input");
       certEl.classList.remove("invalid");
+
+      const storage = getStorage(firebaseApp);
+      const frontCardImageRef = ref(
+        storage,
+        `${username}/${gradingCompany}${certificationNumber}front`,
+      );
+      if (frontCardImageFile) {
+        const uploadFrontTask = uploadBytesResumable(
+          frontCardImageRef,
+          frontCardImageFile,
+        );
+        uploadFrontTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setResultMessage(`Upload is ${progress}% done`);
+            switch (snapshot.state) {
+              case "paused":
+                setResultMessage("Upload is paused");
+                break;
+              case "running":
+                setResultMessage("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            setResultMessage("Error uploading front card image");
+          },
+          () => {
+            frontCardImageFileEl.classList.remove("invalid");
+            const backCardImageRef = ref(
+              storage,
+              `${username}/${gradingCompany}${certificationNumber}back`,
+            );
+            if (backCardImageFile) {
+              const uploadBackTask = uploadBytesResumable(
+                backCardImageRef,
+                backCardImageFile,
+              );
+              uploadBackTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setResultMessage(`Upload is ${progress}% done`);
+                  switch (snapshot.state) {
+                    case "paused":
+                      setResultMessage("Upload is paused");
+                      break;
+                    case "running":
+                      setResultMessage("Upload is running");
+                      break;
+                  }
+                },
+                (error) => {
+                  setResultMessage("Error uploading back card image");
+                },
+                async () => {
+                  backCardImageFileEl.classList.remove("invalid");
+                  const card = {
+                    year: Number(year),
+                    brand: brand,
+                    cardNumber: cardNumber,
+                    cardSet: cardSet,
+                    variety: variety,
+                    subject: subject,
+                    gradingCompany: gradingCompany,
+                    grade: grade,
+                    certificationNumber: certificationNumber,
+                    sold: false,
+                  };
+                  let urlPostCard = new URL(
+                    `https://trading-cards-backend-production.up.railway.app/cards/`,
+                  );
+                  const responseGetCollections = await fetch(urlPostCard, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization:
+                        "Bearer " + localStorage.getItem("cardsToken"),
+                    },
+                    body: JSON.stringify(card),
+                  });
+                  if (responseGetCollections.status === 200) {
+                    setResultMessage(`Card successfully added to collection`);
+                    setYear(0);
+                    setBrand("");
+                    setCardNumber("");
+                    setCardSet("");
+                    setVariety("");
+                    setSubject("");
+                    setGradingCompany("");
+                    setGrade("");
+                    setCertificationNumber("");
+                    setFrontCardImageLink("");
+                    setBackCardImageLink("");
+                  } else {
+                    setResultMessage(`Could not add card to collection`);
+                  }
+                },
+              );
+            } else {
+              backCardImageFileEl.classList.add("invalid");
+            }
+          },
+        );
+      } else {
+        frontCardImageFileEl.classList.add("invalid");
+      }
     } else {
       if (!year) {
         const yearEl = document.getElementById("year-input");
