@@ -12,7 +12,7 @@ function EditCard({}) {
   const [cardSet, setCardSet] = useState("");
   const [variety, setVariety] = useState("");
   const [subject, setSubject] = useState("");
-  const [gradingCompany, setGradingCompany] = useState("");
+  const [gradingCompany, setGradingCompany] = useState("PSA");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);

@@ -10,7 +10,7 @@ function AddCard({}) {
   const [cardSet, setCardSet] = useState("");
   const [variety, setVariety] = useState("");
   const [subject, setSubject] = useState("");
-  const [gradingCompany, setGradingCompany] = useState("");
+  const [gradingCompany, setGradingCompany] = useState("PSA");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
@@ -55,7 +55,7 @@ function AddCard({}) {
       cardNumberEl.classList.remove("invalid");
       const subjectEl = document.getElementById("subject-input");
       subjectEl.classList.remove("invalid");
-      const gradingCompanyEl = document.getElementById("grading-company-input");
+      const gradingCompanyEl = document.getElementById("grading-company-select");
       gradingCompanyEl.classList.remove("invalid");
       const gradeEl = document.getElementById("grade-input");
       gradeEl.classList.remove("invalid");
@@ -201,12 +201,12 @@ function AddCard({}) {
       }
       if (!gradingCompany) {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.add("invalid");
       } else {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.remove("invalid");
       }
@@ -307,16 +307,20 @@ function AddCard({}) {
         </div>
         <div className="div-input-group">
           <div className="div-input-label">
-            <label htmlFor="grading-company-input">Grading Company</label>
-            <input
-              id="grading-company-input"
-              type="text"
-              minLength="1"
-              maxLength="50"
+            <label htmlFor="grading-company-select">Grading Company</label>
+            <select
+              name="grading-company"
+              id="grading-company-select"
               required
               onChange={(e) => setGradingCompany(e.target.value)}
               value={gradingCompany}
-            />
+            >
+              <option value="PSA">PSA</option>
+              <option value="SGC">SGC</option>
+              <option value="CSG">CSG</option>
+              <option value="CGC">CGC</option>
+              <option value="BGS">BGS</option>
+            </select>
           </div>
           <div className="div-input-label">
             <label htmlFor="grade-input">Grade</label>
