@@ -168,7 +168,8 @@ function EditCard({}) {
                     credentials: "same-origin",
                     headers: {
                       "Content-Type": "application/json",
-                      Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+                      Authorization:
+                        "Bearer " + localStorage.getItem("cardsToken"),
                     },
                     redirect: "follow",
                     referrerPolicy: "no-referrer",
@@ -201,7 +202,7 @@ function EditCard({}) {
       subjectEl.classList.remove("invalid");
       const gradeEl = document.getElementById("grade-input");
       gradeEl.classList.remove("invalid");
-      const gradingCompanyEl = document.getElementById("grading-company-input");
+      const gradingCompanyEl = document.getElementById("grading-company-select");
       gradingCompanyEl.classList.remove("invalid");
       const certificationNumberEl = document.getElementById(
         "certification-number-input",
@@ -245,12 +246,12 @@ function EditCard({}) {
       }
       if (!gradingCompany) {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.add("invalid");
       } else {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.remove("invalid");
       }
@@ -359,16 +360,20 @@ function EditCard({}) {
         </div>
         <div className="div-input-group">
           <div className="div-input-label">
-            <label htmlFor="grading-company-input">Grading Company</label>
-            <input
-              id="grading-company-input"
-              type="text"
-              minLength="1"
-              maxLength="100"
+            <label htmlFor="grading-company-select">Grading Company</label>
+            <select
+              name="grading-company"
+              id="grading-company-select"
               required
               onChange={(e) => setGradingCompany(e.target.value)}
               value={gradingCompany}
-            />
+            >
+              <option value="PSA">PSA</option>
+              <option value="SGC">SGC</option>
+              <option value="CSG">CSG</option>
+              <option value="CGC">CGC</option>
+              <option value="BGS">BGS</option>
+            </select>
           </div>
           <div className="div-input-label">
             <label htmlFor="grade-input">Grade</label>
@@ -398,7 +403,7 @@ function EditCard({}) {
           </div>
         </div>
         <div className="div-input-group">
-        <div className="div-input-label">
+          <div className="div-input-label">
             <label htmlFor="front-image-file-input">Front Image Link</label>
             <input type="file" id="front-image-file-input"></input>
           </div>
