@@ -1,5 +1,7 @@
 import "./App.css";
 import { useState } from "react";
+import firebaseApp from "./firebaseApp";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -11,10 +13,13 @@ function AddCard({}) {
   const [gradingCompany, setGradingCompany] = useState("");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
-  const [frontCardImageLink, setFrontCardImageLink] = useState("");
-  const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
+
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
+
   const handleCheck = () => {
     setSold(!sold);
   };
@@ -22,60 +27,26 @@ function AddCard({}) {
   const addCard = async (event) => {
     event.preventDefault();
 
+    const frontCardImageFileEl = document.getElementById(
+      "front-image-file-input",
+    );
+    const frontCardImageFile = frontCardImageFileEl.files[0];
+    const backCardImageFileEl = document.getElementById(
+      "back-image-file-input",
+    );
+    const backCardImageFile = backCardImageFileEl.files[0];
+
     if (
+      frontCardImageFile &&
+      backCardImageFile &&
       year &&
       brand &&
       cardSet &&
       subject &&
       gradingCompany &&
       grade &&
-      certificationNumber &&
-      frontCardImageLink &&
-      backCardImageLink
+      certificationNumber
     ) {
-      const card = {
-        year: Number(year),
-        brand: brand,
-        cardNumber: cardNumber,
-        cardSet: cardSet,
-        variety: variety,
-        subject: subject,
-        gradingCompany: gradingCompany,
-        grade: grade,
-        certificationNumber: certificationNumber,
-        frontCardImageLink: frontCardImageLink,
-        backCardImageLink: backCardImageLink,
-        sold: false,
-      };
-      let urlPostCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/`,
-      );
-      const responseGetCollections = await fetch(urlPostCard, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-        body: JSON.stringify(card),
-      });
-      if (responseGetCollections.status === 200) {
-        setResultMessage(`Card successfully added to collection`);
-        setYear(0);
-        setBrand("");
-        setCardNumber("");
-        setCardSet("");
-        setVariety("");
-        setSubject("");
-        setGradingCompany("");
-        setGrade("");
-        setCertificationNumber("");
-        setFrontCardImageLink("");
-        setBackCardImageLink("");
-      } else {
-        setResultMessage(`Could not add card to collection`);
-      }
-
       const yearEl = document.getElementById("year-input");
       yearEl.classList.remove("invalid");
       const brandEl = document.getElementById("brand-input");
@@ -90,10 +61,115 @@ function AddCard({}) {
       gradeEl.classList.remove("invalid");
       const certEl = document.getElementById("certification-number-input");
       certEl.classList.remove("invalid");
-      const frontEl = document.getElementById("front-image-link-input");
-      frontEl.classList.remove("invalid");
-      const backEl = document.getElementById("back-image-link-input");
-      backEl.classList.remove("invalid");
+
+      const storage = getStorage(firebaseApp);
+      const frontCardImageRef = ref(
+        storage,
+        `${username}/${gradingCompany}${certificationNumber}front`,
+      );
+      if (frontCardImageFile) {
+        const uploadFrontTask = uploadBytesResumable(
+          frontCardImageRef,
+          frontCardImageFile,
+        );
+        uploadFrontTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setResultMessage(`Upload is ${progress}% done`);
+            switch (snapshot.state) {
+              case "paused":
+                setResultMessage("Upload is paused");
+                break;
+              case "running":
+                setResultMessage("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            setResultMessage(`Error uploading front card image: ${error}`);
+          },
+          () => {
+            frontCardImageFileEl.classList.remove("invalid");
+            const backCardImageRef = ref(
+              storage,
+              `${username}/${gradingCompany}${certificationNumber}back`,
+            );
+            if (backCardImageFile) {
+              const uploadBackTask = uploadBytesResumable(
+                backCardImageRef,
+                backCardImageFile,
+              );
+              uploadBackTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setResultMessage(`Upload is ${progress}% done`);
+                  switch (snapshot.state) {
+                    case "paused":
+                      setResultMessage("Upload is paused");
+                      break;
+                    case "running":
+                      setResultMessage("Upload is running");
+                      break;
+                  }
+                },
+                (error) => {
+                  setResultMessage(`Error uploading back card image: ${error}`);
+                },
+                async () => {
+                  backCardImageFileEl.classList.remove("invalid");
+                  const card = {
+                    year: Number(year),
+                    brand: brand,
+                    cardNumber: cardNumber,
+                    cardSet: cardSet,
+                    variety: variety,
+                    subject: subject,
+                    gradingCompany: gradingCompany,
+                    grade: grade,
+                    certificationNumber: certificationNumber,
+                    sold: false,
+                  };
+                  let urlPostCard = new URL(
+                    `https://trading-cards-backend-production.up.railway.app/cards/`,
+                  );
+                  const responseGetCollections = await fetch(urlPostCard, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization:
+                        "Bearer " + localStorage.getItem("cardsToken"),
+                    },
+                    body: JSON.stringify(card),
+                  });
+                  if (responseGetCollections.status === 200) {
+                    setResultMessage(`Card successfully added to collection`);
+                    setYear(0);
+                    setBrand("");
+                    setCardNumber("");
+                    setCardSet("");
+                    setVariety("");
+                    setSubject("");
+                    setGradingCompany("");
+                    setGrade("");
+                    setCertificationNumber("");
+                  } else {
+                    setResultMessage(`Could not add card to collection`);
+                  }
+                },
+              );
+            } else {
+              setResultMessage(`Please select a back card image file`);
+            }
+          },
+        );
+      } else {
+        setResultMessage(`Please select a front card image file`);
+      }
     } else {
       if (!year) {
         const yearEl = document.getElementById("year-input");
@@ -147,20 +223,6 @@ function AddCard({}) {
       } else {
         const certEl = document.getElementById("certification-number-input");
         certEl.classList.remove("invalid");
-      }
-      if (!frontCardImageLink) {
-        const frontEl = document.getElementById("front-image-link-input");
-        frontEl.classList.add("invalid");
-      } else {
-        const frontEl = document.getElementById("front-image-link-input");
-        frontEl.classList.remove("invalid");
-      }
-      if (!backCardImageLink) {
-        const backEl = document.getElementById("back-image-link-input");
-        backEl.classList.add("invalid");
-      } else {
-        const backEl = document.getElementById("back-image-link-input");
-        backEl.classList.remove("invalid");
       }
     }
   };
@@ -286,28 +348,12 @@ function AddCard({}) {
         </div>
         <div className="div-input-group">
           <div className="div-input-label">
-            <label htmlFor="front-image-link-input">Front Image Link</label>
-            <input
-              id="front-image-link-input"
-              type="text"
-              minLength="1"
-              maxLength="400"
-              required
-              onChange={(e) => setFrontCardImageLink(e.target.value)}
-              value={frontCardImageLink}
-            />
+            <label htmlFor="front-image-file-input">Front Image Link</label>
+            <input type="file" id="front-image-file-input"></input>
           </div>
           <div className="div-input-label">
-            <label htmlFor="back-image-link-input">Back Image Link</label>
-            <input
-              id="back-image-link-input"
-              type="text"
-              minLength="1"
-              maxLength="400"
-              required
-              onChange={(e) => setBackCardImageLink(e.target.value)}
-              value={backCardImageLink}
-            />
+            <label htmlFor="back-image-file-input">Back Image Link</label>
+            <input type="file" id="back-image-file-input"></input>
           </div>
           <div className="div-input-label">
             <label htmlFor="sold-input">Sold</label>
