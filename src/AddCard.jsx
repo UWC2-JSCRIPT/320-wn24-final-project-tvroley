@@ -88,7 +88,7 @@ function AddCard({}) {
             }
           },
           (error) => {
-            setResultMessage("Error uploading front card image");
+            setResultMessage(`Error uploading front card image: ${error}`);
           },
           () => {
             frontCardImageFileEl.classList.remove("invalid");
@@ -117,7 +117,7 @@ function AddCard({}) {
                   }
                 },
                 (error) => {
-                  setResultMessage("Error uploading back card image");
+                  setResultMessage(`Error uploading back card image: ${error}`);
                 },
                 async () => {
                   backCardImageFileEl.classList.remove("invalid");
@@ -163,12 +163,12 @@ function AddCard({}) {
                 },
               );
             } else {
-              backCardImageFileEl.classList.add("invalid");
+              setResultMessage(`Please select a back card image file`);
             }
           },
         );
       } else {
-        frontCardImageFileEl.classList.add("invalid");
+        setResultMessage(`Please select a front card image file`);
       }
     } else {
       if (!year) {
@@ -346,7 +346,7 @@ function AddCard({}) {
             <span className="invalid hidden" id="certification-error" />
           </div>
         </div>
-        <div className="div-input-label">
+        <div className="div-input-group">
           <div className="div-input-label">
             <label htmlFor="front-image-file-input">Front Image Link</label>
             <input type="file" id="front-image-file-input"></input>
