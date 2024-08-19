@@ -13,8 +13,6 @@ function AddCard({}) {
   const [gradingCompany, setGradingCompany] = useState("");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
-  const [frontCardImageLink, setFrontCardImageLink] = useState("");
-  const [backCardImageLink, setBackCardImageLink] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
 
@@ -159,8 +157,6 @@ function AddCard({}) {
                     setGradingCompany("");
                     setGrade("");
                     setCertificationNumber("");
-                    setFrontCardImageLink("");
-                    setBackCardImageLink("");
                   } else {
                     setResultMessage(`Could not add card to collection`);
                   }
