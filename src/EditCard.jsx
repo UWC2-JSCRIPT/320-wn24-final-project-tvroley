@@ -13,7 +13,7 @@ function EditCard({}) {
   const [cardSet, setCardSet] = useState("");
   const [variety, setVariety] = useState("");
   const [subject, setSubject] = useState("");
-  const [gradingCompany, setGradingCompany] = useState("");
+  const [gradingCompany, setGradingCompany] = useState("PSA");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
@@ -48,6 +48,22 @@ function EditCard({}) {
       if (responseGetCard.status === 200) {
         const data = await responseGetCard.json();
         setTradingCard(data.card);
+        const storage = getStorage(firebaseApp);
+        let correctedCert = data.card.certificationNumber;
+        if (username === "demo") {
+          correctedCert = correctedCert.substring(0, correctedCert.length - 4);
+        }
+        const frontCardImageRef = ref(
+          storage,
+          `images/${data.card.gradingCompany}${correctedCert}front`,
+        );
+        getDownloadURL(frontCardImageRef)
+          .then((url) => {
+            setFrontCardImageURL(url);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         setResultMessage(`Could not fetch card`);
       }
@@ -94,106 +110,97 @@ function EditCard({}) {
       const storage = getStorage(firebaseApp);
       const frontCardImageRef = ref(
         storage,
-        `${username}/${gradingCompany}${certificationNumber}front`,
+        `images/${gradingCompany}${certificationNumber}front`,
       );
-      if (frontCardImageFile) {
-        const uploadFrontTask = uploadBytesResumable(
-          frontCardImageRef,
-          frontCardImageFile,
-        );
-        uploadFrontTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setResultMessage(`Upload is ${progress}% done`);
-            switch (snapshot.state) {
-              case "paused":
-                setResultMessage("Upload is paused");
-                break;
-              case "running":
-                setResultMessage("Upload is running");
-                break;
-            }
-          },
-          (error) => {
-            setResultMessage(`Error uploading front card image: ${error}`);
-          },
-          () => {
-            frontCardImageFileEl.classList.remove("invalid");
-            const backCardImageRef = ref(
-              storage,
-              `${username}/${gradingCompany}${certificationNumber}back`,
-            );
-            if (backCardImageFile) {
-              const uploadBackTask = uploadBytesResumable(
-                backCardImageRef,
-                backCardImageFile,
+      const uploadFrontTask = uploadBytesResumable(
+        frontCardImageRef,
+        frontCardImageFile,
+      );
+      uploadFrontTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setResultMessage(`Upload is ${progress}% done`);
+          switch (snapshot.state) {
+            case "paused":
+              setResultMessage("Uploading front of card image is paused");
+              break;
+            case "running":
+              setResultMessage("Uploading front of card image");
+              break;
+          }
+        },
+        (error) => {
+          setResultMessage(`Error uploading front card image: ${error}`);
+        },
+        () => {
+          frontCardImageFileEl.classList.remove("invalid");
+          const backCardImageRef = ref(
+            storage,
+            `images/${gradingCompany}${certificationNumber}back`,
+          );
+          const uploadBackTask = uploadBytesResumable(
+            backCardImageRef,
+            backCardImageFile,
+          );
+          uploadBackTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setResultMessage(`Upload is ${progress}% done`);
+              switch (snapshot.state) {
+                case "paused":
+                  setResultMessage("Uploading back of card image is paused");
+                  break;
+                case "running":
+                  setResultMessage("Uploading back of card image");
+                  break;
+              }
+            },
+            (error) => {
+              setResultMessage(`Error uploading back card image: ${error}`);
+            },
+            async () => {
+              const myCard = {
+                year: Number(year),
+                brand: brand,
+                cardNumber: cardNumber,
+                cardSet: cardSet,
+                variety: variety,
+                subject: subject,
+                gradingCompany: tradingCard.gradingCompany,
+                grade: grade,
+                certificationNumber: tradingCard.certificationNumber,
+                sold: Boolean(sold),
+              };
+              let urlGetCard = new URL(
+                `https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`,
               );
-              uploadBackTask.on(
-                "state_changed",
-                (snapshot) => {
-                  const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  setResultMessage(`Upload is ${progress}% done`);
-                  switch (snapshot.state) {
-                    case "paused":
-                      setResultMessage("Upload is paused");
-                      break;
-                    case "running":
-                      setResultMessage("Upload is running");
-                      break;
-                  }
+              const responseGetCards = await fetch(urlGetCard, {
+                method: "PUT",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + localStorage.getItem("cardsToken"),
                 },
-                (error) => {
-                  setResultMessage(`Error uploading back card image: ${error}`);
-                },
-                async () => {
-                  const myCard = {
-                    year: Number(year),
-                    brand: brand,
-                    cardNumber: cardNumber,
-                    cardSet: cardSet,
-                    variety: variety,
-                    subject: subject,
-                    gradingCompany: tradingCard.gradingCompany,
-                    grade: grade,
-                    certificationNumber: tradingCard.certificationNumber,
-                    sold: Boolean(sold),
-                  };
-                  let urlGetCard = new URL(
-                    `https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`,
-                  );
-                  const responseGetCards = await fetch(urlGetCard, {
-                    method: "PUT",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization:
-                        "Bearer " + localStorage.getItem("cardsToken"),
-                    },
-                    redirect: "follow",
-                    referrerPolicy: "no-referrer",
-                    body: JSON.stringify(myCard),
-                  });
-                  if (responseGetCards.status === 200) {
-                    const data = await responseGetCards.json();
-                    setResultMessage(`Card successfully edited`);
-                  } else {
-                    setResultMessage(`Could not edit card`);
-                  }
-                },
-              );
-            } else {
-              setResultMessage(`Please select a back card image file`);
-            }
-          },
-        );
-      } else {
-        setResultMessage(`Please select a front card image file`);
-      }
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(myCard),
+              });
+              if (responseGetCards.status === 200) {
+                const data = await responseGetCards.json();
+                setResultMessage(`Card data successfully edited`);
+              } else {
+                setResultMessage(`Could not edit card data`);
+              }
+            },
+          );
+        },
+      );
 
       const yearEl = document.getElementById("year-input");
       yearEl.classList.remove("invalid");
@@ -205,7 +212,9 @@ function EditCard({}) {
       subjectEl.classList.remove("invalid");
       const gradeEl = document.getElementById("grade-input");
       gradeEl.classList.remove("invalid");
-      const gradingCompanyEl = document.getElementById("grading-company-input");
+      const gradingCompanyEl = document.getElementById(
+        "grading-company-select",
+      );
       gradingCompanyEl.classList.remove("invalid");
       const certificationNumberEl = document.getElementById(
         "certification-number-input",
@@ -249,12 +258,12 @@ function EditCard({}) {
       }
       if (!gradingCompany) {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.add("invalid");
       } else {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.remove("invalid");
       }
@@ -268,6 +277,12 @@ function EditCard({}) {
           "certification-number-input",
         );
         certificationNumberEl.classList.remove("invalid");
+      }
+      if (!frontCardImageFile) {
+        setResultMessage(`Please select an image for the front of this card`);
+      }
+      if (!backCardImageFile) {
+        setResultMessage(`Please select an image for the back of this card`);
       }
     }
   };

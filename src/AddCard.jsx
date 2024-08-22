@@ -11,15 +11,11 @@ function AddCard({}) {
   const [cardSet, setCardSet] = useState("");
   const [variety, setVariety] = useState("");
   const [subject, setSubject] = useState("");
-  const [gradingCompany, setGradingCompany] = useState("");
+  const [gradingCompany, setGradingCompany] = useState("PSA");
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
-
-  const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
-  );
 
   const handleCheck = () => {
     setSold(!sold);
@@ -56,7 +52,9 @@ function AddCard({}) {
       cardNumberEl.classList.remove("invalid");
       const subjectEl = document.getElementById("subject-input");
       subjectEl.classList.remove("invalid");
-      const gradingCompanyEl = document.getElementById("grading-company-input");
+      const gradingCompanyEl = document.getElementById(
+        "grading-company-select",
+      );
       gradingCompanyEl.classList.remove("invalid");
       const gradeEl = document.getElementById("grade-input");
       gradeEl.classList.remove("invalid");
@@ -66,111 +64,102 @@ function AddCard({}) {
       const storage = getStorage(firebaseApp);
       const frontCardImageRef = ref(
         storage,
-        `${username}/${gradingCompany}${certificationNumber}front`,
+        `images/${gradingCompany}${certificationNumber}front`,
       );
-      if (frontCardImageFile) {
-        const uploadFrontTask = uploadBytesResumable(
-          frontCardImageRef,
-          frontCardImageFile,
-        );
-        uploadFrontTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setResultMessage(`Upload is ${progress}% done`);
-            switch (snapshot.state) {
-              case "paused":
-                setResultMessage("Upload is paused");
-                break;
-              case "running":
-                setResultMessage("Upload is running");
-                break;
-            }
-          },
-          (error) => {
-            setResultMessage(`Error uploading front card image: ${error}`);
-          },
-          () => {
-            frontCardImageFileEl.classList.remove("invalid");
-            const backCardImageRef = ref(
-              storage,
-              `${username}/${gradingCompany}${certificationNumber}back`,
-            );
-            if (backCardImageFile) {
-              const uploadBackTask = uploadBytesResumable(
-                backCardImageRef,
-                backCardImageFile,
+      const uploadFrontTask = uploadBytesResumable(
+        frontCardImageRef,
+        frontCardImageFile,
+      );
+      uploadFrontTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setResultMessage(`Upload is ${progress}% done`);
+          switch (snapshot.state) {
+            case "paused":
+              setResultMessage("Uploading front of card image is paused");
+              break;
+            case "running":
+              setResultMessage("Uploading front of card image");
+              break;
+          }
+        },
+        (error) => {
+          setResultMessage(`Error uploading front card image: ${error}`);
+        },
+        () => {
+          frontCardImageFileEl.classList.remove("invalid");
+          const backCardImageRef = ref(
+            storage,
+            `images/${gradingCompany}${certificationNumber}back`,
+          );
+          const uploadBackTask = uploadBytesResumable(
+            backCardImageRef,
+            backCardImageFile,
+          );
+          uploadBackTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setResultMessage(`Upload is ${progress}% done`);
+              switch (snapshot.state) {
+                case "paused":
+                  setResultMessage("Uploading front of card image is paused");
+                  break;
+                case "running":
+                  setResultMessage("Uploading back of card image");
+                  break;
+              }
+            },
+            (error) => {
+              setResultMessage(`Error uploading back card image: ${error}`);
+            },
+            async () => {
+              backCardImageFileEl.classList.remove("invalid");
+              const card = {
+                year: Number(year),
+                brand: brand,
+                cardNumber: cardNumber,
+                cardSet: cardSet,
+                variety: variety,
+                subject: subject,
+                gradingCompany: gradingCompany,
+                grade: grade,
+                certificationNumber: certificationNumber,
+                sold: false,
+              };
+              let urlPostCard = new URL(
+                `https://trading-cards-backend-production.up.railway.app/cards/`,
               );
-              uploadBackTask.on(
-                "state_changed",
-                (snapshot) => {
-                  const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  setResultMessage(`Upload is ${progress}% done`);
-                  switch (snapshot.state) {
-                    case "paused":
-                      setResultMessage("Upload is paused");
-                      break;
-                    case "running":
-                      setResultMessage("Upload is running");
-                      break;
-                  }
+              const responseGetCollections = await fetch(urlPostCard, {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + localStorage.getItem("cardsToken"),
                 },
-                (error) => {
-                  setResultMessage(`Error uploading back card image: ${error}`);
-                },
-                async () => {
-                  backCardImageFileEl.classList.remove("invalid");
-                  const card = {
-                    year: Number(year),
-                    brand: brand,
-                    cardNumber: cardNumber,
-                    cardSet: cardSet,
-                    variety: variety,
-                    subject: subject,
-                    gradingCompany: gradingCompany,
-                    grade: grade,
-                    certificationNumber: certificationNumber,
-                    sold: false,
-                  };
-                  let urlPostCard = new URL(
-                    `https://trading-cards-backend-production.up.railway.app/cards/`,
-                  );
-                  const responseGetCollections = await fetch(urlPostCard, {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization:
-                        "Bearer " + localStorage.getItem("cardsToken"),
-                    },
-                    body: JSON.stringify(card),
-                  });
-                  if (responseGetCollections.status === 200) {
-                    setResultMessage(`Card successfully added to collection`);
-                    setYear(0);
-                    setBrand("");
-                    setCardNumber("");
-                    setCardSet("");
-                    setVariety("");
-                    setSubject("");
-                    setGradingCompany("");
-                    setGrade("");
-                    setCertificationNumber("");
-                  } else {
-                    setResultMessage(`Could not add card to collection`);
-                  }
-                },
-              );
-            } else {
-              setResultMessage(`Please select a back card image file`);
-            }
-          },
-        );
-      } else {
-        setResultMessage(`Please select a front card image file`);
-      }
+                body: JSON.stringify(card),
+              });
+              if (responseGetCollections.status === 200) {
+                setResultMessage(`Card successfully added to collection`);
+                setYear(0);
+                setBrand("");
+                setCardNumber("");
+                setCardSet("");
+                setVariety("");
+                setSubject("");
+                setGradingCompany("");
+                setGrade("");
+                setCertificationNumber("");
+              } else {
+                setResultMessage(`Could not add card to collection`);
+              }
+            },
+          );
+        },
+      );
     } else {
       if (!year) {
         const yearEl = document.getElementById("year-input");
@@ -202,12 +191,12 @@ function AddCard({}) {
       }
       if (!gradingCompany) {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.add("invalid");
       } else {
         const gradingCompanyEl = document.getElementById(
-          "grading-company-input",
+          "grading-company-select",
         );
         gradingCompanyEl.classList.remove("invalid");
       }
@@ -224,6 +213,12 @@ function AddCard({}) {
       } else {
         const certEl = document.getElementById("certification-number-input");
         certEl.classList.remove("invalid");
+      }
+      if (!frontCardImageFile) {
+        setResultMessage(`Please select an image for the front of this card`);
+      }
+      if (!backCardImageFile) {
+        setResultMessage(`Please select an image for the back of this card`);
       }
     }
   };
