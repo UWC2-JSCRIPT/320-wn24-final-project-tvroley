@@ -9,12 +9,19 @@ function TradingCard({ tradingCard, collections }) {
   const [frontCardImageURL, setFrontCardImageURL] = useState("");
   const [backCardImageURL, setBackCardImageURL] = useState("");
   const storage = getStorage(firebaseApp);
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
 
   useEffect(() => {
     const getImageURLs = async () => {
+      let correctedCert = tradingCard.certificationNumber;
+      if (username === "demo") {
+        correctedCert = correctedCert.substring(0, correctedCert.length - 4);
+      }
       const frontCardImageRef = ref(
         storage,
-        `images/${tradingCard.gradingCompany}${tradingCard.certificationNumber}front`,
+        `images/${tradingCard.gradingCompany}${correctedCert}front`,
       );
       getDownloadURL(frontCardImageRef)
         .then((url) => {
@@ -25,7 +32,7 @@ function TradingCard({ tradingCard, collections }) {
         });
       const backCardImageRef = ref(
         storage,
-        `images/${tradingCard.gradingCompany}${tradingCard.certificationNumber}back`,
+        `images/${tradingCard.gradingCompany}${correctedCert}back`,
       );
       getDownloadURL(backCardImageRef)
         .then((url) => {
