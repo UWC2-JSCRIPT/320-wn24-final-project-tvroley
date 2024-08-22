@@ -13,7 +13,7 @@ import DeleteCard from "./DeleteCard";
 function App() {
   return (
     <div>
-      <h1>Collections</h1>
+      <h1>Card Collections</h1>
       <p>version: {import.meta.env.VITE_APP_VERSION}</p>
       <Nav />
       <Routes>

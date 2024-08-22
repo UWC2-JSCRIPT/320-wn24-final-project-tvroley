@@ -7,6 +7,7 @@ function AddCardToCollection({}) {
   const location = useLocation();
   const myTradingCard = location.state.tradingCard;
   const myCollections = location.state.collections;
+  const frontCardImageURL = location.state.frontCardImageURL;
   const tradingCard = myTradingCard;
   const [resultMessage, setResultMessage] = useState([]);
   const collections = myCollections;
@@ -161,7 +162,7 @@ function AddCardToCollection({}) {
       <form id="card-form" className="form-card">
         <div key={tradingCard.certificationNumber} className={`div-card`}>
           <img
-            src={tradingCard.frontCardImageLink}
+            src={frontCardImageURL}
             alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
             className="img-small"
           ></img>

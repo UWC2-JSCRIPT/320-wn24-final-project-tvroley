@@ -5,6 +5,7 @@ import { useState } from "react";
 function DeleteCard({}) {
   const location = useLocation();
   const tradingCard = location.state.tradingCard;
+  const frontCardImageURL = location.state.frontCardImageURL;
   const [resultMessage, setResultMessage] = useState("");
 
   const deleteCard = async (event) => {
@@ -38,7 +39,7 @@ function DeleteCard({}) {
       <form id="card-form" className="form-card">
         <div key={tradingCard.certificationNumber} className={`div-card`}>
           <img
-            src={tradingCard.frontCardImageLink}
+            src={frontCardImageURL}
             alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
             className="img-small"
           ></img>

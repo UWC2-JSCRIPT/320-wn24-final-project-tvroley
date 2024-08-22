@@ -6,9 +6,6 @@ import firebaseApp from "./firebaseApp";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 function TradingCard({ tradingCard, collections }) {
-  const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
-  );
   const [frontCardImageURL, setFrontCardImageURL] = useState("");
   const [backCardImageURL, setBackCardImageURL] = useState("");
   const storage = getStorage(firebaseApp);
@@ -17,7 +14,7 @@ function TradingCard({ tradingCard, collections }) {
     const getImageURLs = async () => {
       const frontCardImageRef = ref(
         storage,
-        `${username}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}front`,
+        `images/${tradingCard.gradingCompany}${tradingCard.certificationNumber}front`,
       );
       getDownloadURL(frontCardImageRef)
         .then((url) => {
@@ -28,7 +25,7 @@ function TradingCard({ tradingCard, collections }) {
         });
       const backCardImageRef = ref(
         storage,
-        `${username}/${tradingCard.gradingCompany}${tradingCard.certificationNumber}back`,
+        `images/${tradingCard.gradingCompany}${tradingCard.certificationNumber}back`,
       );
       getDownloadURL(backCardImageRef)
         .then((url) => {
@@ -44,18 +41,24 @@ function TradingCard({ tradingCard, collections }) {
   const navigate = useNavigate();
 
   const goEdit = () => {
-    navigate(`/collection/${tradingCard._id}`);
+    navigate(`/collection/${tradingCard._id}`, {
+      state: { frontCardImageURL: frontCardImageURL },
+    });
   };
 
   const goDelete = () => {
     navigate(`/collection/deletecard/${tradingCard._id}`, {
-      state: { tradingCard: tradingCard },
+      state: { tradingCard: tradingCard, frontCardImageURL: frontCardImageURL },
     });
   };
 
   const goAddToCollection = () => {
     navigate(`addtocollection/${tradingCard._id}`, {
-      state: { tradingCard: tradingCard, collections: collections },
+      state: {
+        tradingCard: tradingCard,
+        collections: collections,
+        frontCardImageURL: frontCardImageURL,
+      },
     });
   };
 
@@ -120,7 +123,7 @@ function TradingCard({ tradingCard, collections }) {
     <>
       <img
         src={frontCardImageURL}
-        alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
+        alt={`picture of a ${tradingCard.gradingCompany} ${tradingCard.grade} ${tradingCard.cardSet} ${tradingCard.subject} card`}
         onClick={(event) => toggleImageSize(event)}
         className="img-small"
       />

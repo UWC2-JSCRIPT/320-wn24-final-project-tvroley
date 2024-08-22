@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import Nav from "./Nav";
 
 function EditCard({}) {
   const [tradingCard, setTradingCard] = useState({});
@@ -17,9 +18,11 @@ function EditCard({}) {
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState(false);
-  const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+  const location = useLocation();
+  const [frontCardImageURL, setFrontCardImageURL] = useState(
+    location.state.frontCardImageURL,
   );
+
   const handleCheck = () => {
     setSold(!sold);
   };
@@ -168,7 +171,8 @@ function EditCard({}) {
                     credentials: "same-origin",
                     headers: {
                       "Content-Type": "application/json",
-                      Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+                      Authorization:
+                        "Bearer " + localStorage.getItem("cardsToken"),
                     },
                     redirect: "follow",
                     referrerPolicy: "no-referrer",
@@ -269,164 +273,171 @@ function EditCard({}) {
   };
 
   return (
-    <div className="div-add-cards">
-      <h3>Edit Card</h3>
-      <div key={tradingCard.certificationNumber} className={`div-card`}>
-        <img
-          src={tradingCard.frontCardImageLink}
-          alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
-          className="img-small"
-        ></img>
+    <>
+      <div className="div-add-cards">
+        <h3>Edit Card</h3>
+        <div key={tradingCard.certificationNumber} className={`div-card`}>
+          <img
+            src={frontCardImageURL}
+            alt={`picture of a ${tradingCard.gradingCompany} ${tradingCard.grade} ${tradingCard.cardSet} ${tradingCard.subject} card`}
+            className="img-small"
+          ></img>
+        </div>
+        <p>
+          {tradingCard.gradingCompany}: {tradingCard.certificationNumber}
+        </p>
+        <div>
+          <button onClick={populateFields}>Populate Fields</button>
+        </div>
+        <form id="card-form" className="form-card">
+          <div className="div-input-group">
+            <div className="div-input-label">
+              <label htmlFor="year-input">Year</label>
+              <input
+                id="year-input"
+                type="number"
+                min="0"
+                max="2050"
+                step="1"
+                onChange={(e) => setYear(e.target.value)}
+                value={year}
+                required
+              />
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="brand-input">Brand</label>
+              <input
+                id="brand-input"
+                type="text"
+                required
+                minLength="1"
+                maxLength="50"
+                onChange={(e) => setBrand(e.target.value)}
+                value={brand}
+              />
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="card-number-input">Card Number</label>
+              <input
+                id="card-number-input"
+                type="text"
+                maxLength="15"
+                onChange={(e) => setCardNumber(e.target.value)}
+                value={cardNumber}
+              />
+            </div>
+          </div>
+          <div className="div-input-group">
+            <div className="div-input-label">
+              <label htmlFor="card-set-input">Set</label>
+              <input
+                id="card-set-input"
+                type="text"
+                maxLength="100"
+                onChange={(e) => setCardSet(e.target.value)}
+                value={cardSet}
+                required
+              />
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="card-variety-input">Variety</label>
+              <input
+                id="card-variety-input"
+                type="text"
+                maxLength="100"
+                onChange={(e) => setVariety(e.target.value)}
+                value={variety}
+              />
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="subject-input">Subject</label>
+              <input
+                id="subject-input"
+                type="text"
+                minLength="1"
+                maxLength="100"
+                required
+                onChange={(e) => setSubject(e.target.value)}
+                value={subject}
+              />
+            </div>
+          </div>
+          <div className="div-input-group">
+            <div className="div-input-label">
+              <label htmlFor="grading-company-select">Grading Company</label>
+              <select
+                name="grading-company"
+                id="grading-company-select"
+                required
+                onChange={(e) => setGradingCompany(e.target.value)}
+                value={gradingCompany}
+              >
+                <option value="PSA">PSA</option>
+                <option value="SGC">SGC</option>
+                <option value="CSG">CSG</option>
+                <option value="CGC">CGC</option>
+                <option value="BGS">BGS</option>
+              </select>
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="grade-input">Grade</label>
+              <input
+                id="grade-input"
+                type="text"
+                minLength="1"
+                maxLength="50"
+                required
+                onChange={(e) => setGrade(e.target.value)}
+                value={grade}
+              />
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="certification-number-input">
+                Certification Number
+              </label>
+              <input
+                id="certification-number-input"
+                type="text"
+                minLength="1"
+                maxLength="100"
+                required
+                onChange={(e) => setCertificationNumber(e.target.value)}
+                value={certificationNumber}
+              />
+            </div>
+          </div>
+          <div className="div-input-group">
+            <div className="div-input-label">
+              <label htmlFor="front-image-file-input">Front Image Link</label>
+              <input type="file" id="front-image-file-input"></input>
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="back-image-file-input">Back Image Link</label>
+              <input type="file" id="back-image-file-input"></input>
+            </div>
+            <div className="div-input-label">
+              <label htmlFor="sold-input">Sold</label>
+              <input
+                type="checkbox"
+                id="sold-input"
+                checked={sold}
+                onChange={handleCheck}
+              />
+            </div>
+          </div>
+          <div className="div-input-group div-add-button">
+            <input
+              className="btn"
+              type="submit"
+              value="Edit Card"
+              onClick={editCard}
+            />
+          </div>
+          <p>{resultMessage}</p>
+        </form>
       </div>
-      <p>
-        {tradingCard.gradingCompany}: {tradingCard.certificationNumber}
-      </p>
-      <div>
-        <button onClick={populateFields}>Populate Fields</button>
-      </div>
-      <form id="card-form" className="form-card">
-        <div className="div-input-group">
-          <div className="div-input-label">
-            <label htmlFor="year-input">Year</label>
-            <input
-              id="year-input"
-              type="number"
-              min="0"
-              max="2050"
-              step="1"
-              onChange={(e) => setYear(e.target.value)}
-              value={year}
-              required
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="brand-input">Brand</label>
-            <input
-              id="brand-input"
-              type="text"
-              required
-              minLength="1"
-              maxLength="50"
-              onChange={(e) => setBrand(e.target.value)}
-              value={brand}
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="card-number-input">Card Number</label>
-            <input
-              id="card-number-input"
-              type="text"
-              maxLength="15"
-              onChange={(e) => setCardNumber(e.target.value)}
-              value={cardNumber}
-            />
-          </div>
-        </div>
-        <div className="div-input-group">
-          <div className="div-input-label">
-            <label htmlFor="card-set-input">Set</label>
-            <input
-              id="card-set-input"
-              type="text"
-              maxLength="100"
-              onChange={(e) => setCardSet(e.target.value)}
-              value={cardSet}
-              required
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="card-variety-input">Variety</label>
-            <input
-              id="card-variety-input"
-              type="text"
-              maxLength="100"
-              onChange={(e) => setVariety(e.target.value)}
-              value={variety}
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="subject-input">Subject</label>
-            <input
-              id="subject-input"
-              type="text"
-              minLength="1"
-              maxLength="100"
-              required
-              onChange={(e) => setSubject(e.target.value)}
-              value={subject}
-            />
-          </div>
-        </div>
-        <div className="div-input-group">
-          <div className="div-input-label">
-            <label htmlFor="grading-company-input">Grading Company</label>
-            <input
-              id="grading-company-input"
-              type="text"
-              minLength="1"
-              maxLength="100"
-              required
-              onChange={(e) => setGradingCompany(e.target.value)}
-              value={gradingCompany}
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="grade-input">Grade</label>
-            <input
-              id="grade-input"
-              type="text"
-              minLength="1"
-              maxLength="50"
-              required
-              onChange={(e) => setGrade(e.target.value)}
-              value={grade}
-            />
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="certification-number-input">
-              Certification Number
-            </label>
-            <input
-              id="certification-number-input"
-              type="text"
-              minLength="1"
-              maxLength="100"
-              required
-              onChange={(e) => setCertificationNumber(e.target.value)}
-              value={certificationNumber}
-            />
-          </div>
-        </div>
-        <div className="div-input-group">
-        <div className="div-input-label">
-            <label htmlFor="front-image-file-input">Front Image Link</label>
-            <input type="file" id="front-image-file-input"></input>
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="back-image-file-input">Back Image Link</label>
-            <input type="file" id="back-image-file-input"></input>
-          </div>
-          <div className="div-input-label">
-            <label htmlFor="sold-input">Sold</label>
-            <input
-              type="checkbox"
-              id="sold-input"
-              checked={sold}
-              onChange={handleCheck}
-            />
-          </div>
-        </div>
-        <div className="div-input-group div-add-button">
-          <input
-            className="btn"
-            type="submit"
-            value="Edit Card"
-            onClick={editCard}
-          />
-        </div>
-        <p>{resultMessage}</p>
-      </form>
-    </div>
+      <Nav />
+    </>
   );
 }
 
