@@ -22,6 +22,9 @@ function EditCard({}) {
   const [frontCardImageURL, setFrontCardImageURL] = useState(
     location.state.frontCardImageURL,
   );
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
 
   const handleCheck = () => {
     setSold(!sold);
@@ -48,22 +51,6 @@ function EditCard({}) {
       if (responseGetCard.status === 200) {
         const data = await responseGetCard.json();
         setTradingCard(data.card);
-        const storage = getStorage(firebaseApp);
-        let correctedCert = data.card.certificationNumber;
-        if (username === "demo") {
-          correctedCert = correctedCert.substring(0, correctedCert.length - 4);
-        }
-        const frontCardImageRef = ref(
-          storage,
-          `images/${data.card.gradingCompany}${correctedCert}front`,
-        );
-        getDownloadURL(frontCardImageRef)
-          .then((url) => {
-            setFrontCardImageURL(url);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       } else {
         setResultMessage(`Could not fetch card`);
       }
