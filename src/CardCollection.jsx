@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import TradingCard from "./TradingCard";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SortButtons from "./SortButtons";
 import Nav from "./Nav";
 
@@ -240,8 +240,6 @@ function CardCollection({}) {
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
-        </div>
-        <div className="div-sort-buttons">
           <button onClick={searchCollection}>Search</button>
         </div>
       </div>
@@ -257,13 +255,11 @@ function CardCollection({}) {
             onChange={(e) => setAddedCollection(e.target.value)}
             value={addedCollection}
           />
-        </div>
-        <div className="div-sort-buttons">
           <button onClick={addCollection}>Submit</button>
         </div>
         <p>{addCollectionResult}</p>
       </div>
-      <p>Choose Your Collection</p>
+      <label htmlFor="collections-div">Choose Your Collection</label>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (

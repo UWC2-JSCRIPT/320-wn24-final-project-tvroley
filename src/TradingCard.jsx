@@ -48,18 +48,24 @@ function TradingCard({ tradingCard, collections }) {
   const navigate = useNavigate();
 
   const goEdit = () => {
-    navigate(`/collection/${tradingCard._id}`);
+    navigate(`/collection/${tradingCard._id}`, {
+      state: { frontCardImageURL: frontCardImageURL },
+    });
   };
 
   const goDelete = () => {
     navigate(`/collection/deletecard/${tradingCard._id}`, {
-      state: { tradingCard: tradingCard },
+      state: { tradingCard: tradingCard, frontCardImageURL: frontCardImageURL },
     });
   };
 
   const goAddToCollection = () => {
     navigate(`addtocollection/${tradingCard._id}`, {
-      state: { tradingCard: tradingCard, collections: collections },
+      state: {
+        tradingCard: tradingCard,
+        collections: collections,
+        frontCardImageURL: frontCardImageURL,
+      },
     });
   };
 
@@ -124,7 +130,7 @@ function TradingCard({ tradingCard, collections }) {
     <>
       <img
         src={frontCardImageURL}
-        alt={`picture of a ${tradingCard.year} ${tradingCard.brand} ${tradingCard.subject} card`}
+        alt={`picture of a ${tradingCard.gradingCompany} ${tradingCard.grade} ${tradingCard.cardSet} ${tradingCard.subject} card`}
         onClick={(event) => toggleImageSize(event)}
         className="img-small"
       />
