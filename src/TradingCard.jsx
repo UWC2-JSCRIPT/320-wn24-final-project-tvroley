@@ -16,7 +16,7 @@ function TradingCard({ tradingCard, collections }) {
   useEffect(() => {
     const getImageURLs = async () => {
       let correctedCert = tradingCard.certificationNumber;
-      if (correctedCert.substring(correctedCert.length - 4) === 'DEMO') {
+      if (correctedCert.substring(correctedCert.length - 4) === "DEMO") {
         correctedCert = correctedCert.substring(0, correctedCert.length - 4);
       }
       const frontCardImageRef = ref(
