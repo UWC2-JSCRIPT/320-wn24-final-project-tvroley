@@ -20,6 +20,7 @@ function CardCollection({}) {
   const [addedCollection, setAddedCollection] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [addCollectionResult, setAddCollectionResult] = useState("");
+  const [offset, setOffset] = useState(0);
 
   const navigate = useNavigate();
 
@@ -103,6 +104,18 @@ function CardCollection({}) {
   const goManageCollections = () => {
     navigate(`/collection/manage`);
   };
+
+  const nextCards = () => {
+    if(offset + 50 < tradingCardCollection.length) {
+      setOffset(offset + 50);
+    }
+  }
+
+  const previousCards = () => {
+    if(offset - 50 >= 0) {
+      setOffset(offset - 50);
+    }
+  }
 
   const addCollection = async (event) => {
     const titleObj = { collectionTitle: addedCollection };
@@ -203,6 +216,14 @@ function CardCollection({}) {
     }
   };
 
+  const getLastCard = () => {
+    if(offset + 51 > tradingCardCollection.length) {
+      return tradingCardCollection.length;
+    } else {
+      return offset + 51;
+    }
+  }
+
   if (hasError) {
     return (
       <p>
@@ -283,20 +304,34 @@ function CardCollection({}) {
         setTradingCardCollection={setTradingCardCollection}
       />
       <div className="div-cards">
-        {tradingCardCollection.map((card) => {
-          let cardClass = "unsold";
-          if (card.sold) {
-            cardClass = "sold";
+        {tradingCardCollection.map((card, index) => {
+          if (
+            index < offset ||
+            index >= 50 + offset ||
+            index >= tradingCardCollection.length
+          ) {
+            return;
+          } else {
+            let cardClass = "unsold";
+            if (card.sold) {
+              cardClass = "sold";
+            }
+
+            return (
+              <div
+                key={card.certificationNumber}
+                className={`div-card ${cardClass}`}
+              >
+                <TradingCard tradingCard={card} collections={collections} />
+              </div>
+            );
           }
-          return (
-            <div
-              key={card.certificationNumber}
-              className={`div-card ${cardClass}`}
-            >
-              <TradingCard tradingCard={card} collections={collections} />
-            </div>
-          );
         })}
+      </div>
+      <p>Showing cards {offset + 1} through {getLastCard()}</p>
+      <div className="div-add-button">
+        <button onClick={previousCards}>Previous</button>
+        <button onClick={nextCards}>Next</button>
       </div>
       <SortButtons
         collectionId={collectionId}

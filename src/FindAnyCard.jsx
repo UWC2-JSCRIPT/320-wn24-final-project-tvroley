@@ -42,7 +42,7 @@ function FindAnyCard({}) {
 
   const searchAllCards = async (event) => {
     let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/cards/search`
+      `https://trading-cards-backend-production.up.railway.app/cards/search`,
     );
     url.searchParams.append("search", searchQuery);
     const response = await fetch(url, {
@@ -82,9 +82,7 @@ function FindAnyCard({}) {
       </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="card-search-input">
-            Search For Any Card
-          </label>
+          <label htmlFor="card-search-input">Search For Any Card</label>
           <input
             id="card-search-input"
             type="text"
