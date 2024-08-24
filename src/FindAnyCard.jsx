@@ -7,6 +7,7 @@ function FindAnyCard({}) {
   const [tradingCards, setTradingCards] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -61,8 +62,29 @@ function FindAnyCard({}) {
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCards(responseData.cards);
+      setOffset(0);
     } else {
       setErrorMessage(`Error: failed to search for cards`);
+    }
+  };
+
+  const nextCards = () => {
+    if (offset + 50 < tradingCards.length) {
+      setOffset(offset + 50);
+    }
+  };
+
+  const previousCards = () => {
+    if (offset - 50 >= 0) {
+      setOffset(offset - 50);
+    }
+  };
+
+  const getLastCard = () => {
+    if (offset + 51 > tradingCards.length) {
+      return tradingCards.length;
+    } else {
+      return offset + 51;
     }
   };
 
@@ -96,20 +118,37 @@ function FindAnyCard({}) {
         </div>
       </div>
       <div className="div-cards">
-        {tradingCards.map((card) => {
-          let cardClass = "unsold";
-          if (card.sold) {
-            cardClass = "sold";
+        {tradingCards.map((card, index) => {
+          if (
+            index < offset ||
+            index >= 50 + offset ||
+            index >= tradingCards.length
+          ) {
+            return;
+          } else {
+            let cardClass = "unsold";
+            if (card.sold) {
+              cardClass = "sold";
+            }
+
+            return (
+              <div
+                key={card.certificationNumber}
+                className={`div-card ${cardClass}`}
+              >
+                <TradingCard tradingCard={card} />
+              </div>
+            );
           }
-          return (
-            <div
-              key={card.certificationNumber}
-              className={`div-card ${cardClass}`}
-            >
-              <TradingCard tradingCard={card} />
-            </div>
-          );
         })}
+      </div>
+      <p>
+        Showing cards {offset + 1} through {getLastCard()} of{" "}
+        {tradingCards.length}
+      </p>
+      <div className="div-add-button">
+        <button onClick={previousCards}>Previous</button>
+        <button onClick={nextCards}>Next</button>
       </div>
       <Nav />
     </>

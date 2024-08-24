@@ -106,16 +106,16 @@ function CardCollection({}) {
   };
 
   const nextCards = () => {
-    if(offset + 50 < tradingCardCollection.length) {
+    if (offset + 50 < tradingCardCollection.length) {
       setOffset(offset + 50);
     }
-  }
+  };
 
   const previousCards = () => {
-    if(offset - 50 >= 0) {
+    if (offset - 50 >= 0) {
       setOffset(offset - 50);
     }
-  }
+  };
 
   const addCollection = async (event) => {
     const titleObj = { collectionTitle: addedCollection };
@@ -178,6 +178,7 @@ function CardCollection({}) {
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
+      setOffset(0);
     } else {
       setErrorMessage(`Error: could not get cards when changing collection`);
     }
@@ -211,18 +212,19 @@ function CardCollection({}) {
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
+      setOffset(0);
     } else {
       setErrorMessage(`Error: failed to search for cards`);
     }
   };
 
   const getLastCard = () => {
-    if(offset + 51 > tradingCardCollection.length) {
+    if (offset + 51 > tradingCardCollection.length) {
       return tradingCardCollection.length;
     } else {
       return offset + 51;
     }
-  }
+  };
 
   if (hasError) {
     return (
@@ -328,7 +330,10 @@ function CardCollection({}) {
           }
         })}
       </div>
-      <p>Showing cards {offset + 1} through {getLastCard()}</p>
+      <p>
+        Showing cards {offset + 1} through {getLastCard()} of{" "}
+        {tradingCardCollection.length}
+      </p>
       <div className="div-add-button">
         <button onClick={previousCards}>Previous</button>
         <button onClick={nextCards}>Next</button>

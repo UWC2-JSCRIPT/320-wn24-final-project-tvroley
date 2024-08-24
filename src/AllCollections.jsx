@@ -86,6 +86,7 @@ function AllCollections({}) {
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
+      setOffset(0);
     } else {
       console.log(`Error: could not get cards`);
     }
@@ -112,6 +113,7 @@ function AllCollections({}) {
     const responseData = await response.json();
     if (response.status === 200) {
       setSearchedCollections(responseData.collections);
+      setOffset(0);
     } else {
       console.log(`No results found`);
     }
@@ -126,24 +128,24 @@ function AllCollections({}) {
   };
 
   const nextCards = () => {
-    if(offset + 50 < tradingCardCollection.length) {
+    if (offset + 50 < tradingCardCollection.length) {
       setOffset(offset + 50);
     }
-  }
+  };
 
   const previousCards = () => {
-    if(offset - 50 >= 0) {
+    if (offset - 50 >= 0) {
       setOffset(offset - 50);
     }
-  }
+  };
 
   const getLastCard = () => {
-    if(offset + 51 > tradingCardCollection.length) {
+    if (offset + 51 > tradingCardCollection.length) {
       return tradingCardCollection.length;
     } else {
       return offset + 51;
     }
-  }
+  };
 
   return (
     <>
@@ -231,7 +233,10 @@ function AllCollections({}) {
           }
         })}
       </div>
-      <p>Showing cards {offset + 1} through {getLastCard()}</p>
+      <p>
+        Showing cards {offset + 1} through {getLastCard()} of{" "}
+        {tradingCardCollection.length}
+      </p>
       <div className="div-add-button">
         <button onClick={previousCards}>Previous</button>
         <button onClick={nextCards}>Next</button>
