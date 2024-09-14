@@ -282,7 +282,7 @@ function CardCollection({}) {
         </div>
         <p>{addCollectionResult}</p>
       </div>
-      <label htmlFor="collections-div">Choose Your Collection</label>
+      <p>Choose Your Collection</p>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
