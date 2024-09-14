@@ -228,6 +228,8 @@ function AddCard({}) {
     if (el.files[0] && el.files[0].size > 4000000) {
       el.value = "";
       setResultMessage("Error: Card image size is too big to upload");
+    } else {
+      setResultMessage("");
     }
   };
 
