@@ -9,9 +9,6 @@ function TradingCard({ tradingCard, collections }) {
   const [frontCardImageURL, setFrontCardImageURL] = useState("");
   const [backCardImageURL, setBackCardImageURL] = useState("");
   const storage = getStorage(firebaseApp);
-  const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
-  );
 
   useEffect(() => {
     const getImageURLs = async () => {
@@ -79,6 +76,14 @@ function TradingCard({ tradingCard, collections }) {
     }
   };
 
+  const checkImageLoaded = (event) => {
+    const el =
+      event.target.parentElement.parentElement.parentElement.firstChild;
+    if (el.src === "") {
+      el.src = frontCardImageURL;
+    }
+  };
+
   const toggleImageSize = (event) => {
     const el = event.target;
     el.classList.toggle("img-small");
@@ -132,6 +137,7 @@ function TradingCard({ tradingCard, collections }) {
         src={frontCardImageURL}
         alt={`picture of a ${tradingCard.gradingCompany} ${tradingCard.grade} ${tradingCard.cardSet} ${tradingCard.subject} card`}
         onClick={(event) => toggleImageSize(event)}
+        onLoad={checkImageLoaded}
         className="img-small"
       />
       <div>
