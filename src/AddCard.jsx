@@ -350,11 +350,11 @@ function AddCard({}) {
           <div className="div-input-group">
             <div className="div-input-label">
               <label htmlFor="front-image-file-input">Front Image Link</label>
-              <input type="file" id="front-image-file-input"></input>
+              <input type="file" id="front-image-file-input" accept=".jpg,.png"></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="back-image-file-input">Back Image Link</label>
-              <input type="file" id="back-image-file-input"></input>
+              <input type="file" id="back-image-file-input" accept=".jpg,.png"></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="sold-input">Sold</label>
