@@ -223,6 +223,14 @@ function AddCard({}) {
     }
   };
 
+  const checkFileSize = (event) => {
+    const el = event.target;
+    if (el.files[0] && el.files[0].size > 4000000) {
+      el.value = "";
+      setResultMessage("Error: Card image size is too big to upload");
+    }
+  };
+
   return (
     <>
       <div className="div-add-cards">
@@ -350,11 +358,21 @@ function AddCard({}) {
           <div className="div-input-group">
             <div className="div-input-label">
               <label htmlFor="front-image-file-input">Front Image Link</label>
-              <input type="file" id="front-image-file-input" accept=".jpg,.png"></input>
+              <input
+                type="file"
+                id="front-image-file-input"
+                accept=".jpg,.png"
+                onChange={checkFileSize}
+              ></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="back-image-file-input">Back Image Link</label>
-              <input type="file" id="back-image-file-input" accept=".jpg,.png"></input>
+              <input
+                type="file"
+                id="back-image-file-input"
+                accept=".jpg,.png"
+                onChange={checkFileSize}
+              ></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="sold-input">Sold</label>
