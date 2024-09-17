@@ -17,6 +17,7 @@ function CardCollection({}) {
   );
   const [collections, setCollections] = useState([]);
   const [currentCollection, setCurrentCollection] = useState({});
+  const [baseCollectionId, setBaseCollectionId] = useState({});
   const [addedCollection, setAddedCollection] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [addCollectionResult, setAddCollectionResult] = useState("");
@@ -56,6 +57,7 @@ function CardCollection({}) {
           if (baseCollectionArray.length > 0) {
             const baseCollection = baseCollectionArray[0];
             setCurrentCollection(baseCollection);
+            setBaseCollectionId(baseCollection);
             setCollectionId(baseCollection._id);
             setCollectionTitle(baseCollection.title);
             setCollections(myCollections);
@@ -98,7 +100,9 @@ function CardCollection({}) {
   }, []);
 
   const goAdd = () => {
-    navigate(`/collection/add`);
+    navigate(`/collection/add`, {
+      state: { baseCollectionId: baseCollectionId },
+    });
   };
 
   const goManageCollections = () => {

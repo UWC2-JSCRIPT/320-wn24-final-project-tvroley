@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
@@ -16,6 +17,8 @@ function AddCard({}) {
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
+  const location = useLocation();
+  const baseCollectionId = location.state.baseCollectionId;
 
   const handleCheck = () => {
     setSold(!sold);
@@ -60,6 +63,35 @@ function AddCard({}) {
       gradeEl.classList.remove("invalid");
       const certEl = document.getElementById("certification-number-input");
       certEl.classList.remove("invalid");
+
+      backCardImageFileEl.classList.remove("invalid");
+
+      let urlGetCardCount = new URL(
+        `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` + baseCollectionId,
+      );
+      
+      const responseGetCardCount = await fetch(urlGetCardCount, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+      });
+      if (responseGetCardCount.status === 200) {
+        const data = await responseGetCardCount.json();
+        const cardCount = data.count;
+        if(cardCount >= 500){
+          setResultMessage(`You have reached the maximum number of cards for your base collection.`);
+          return;
+        }
+      } else {
+        setResultMessage(`Error: Could not check current card count for your base collection`);
+      }
 
       const storage = getStorage(firebaseApp);
       const frontCardImageRef = ref(
