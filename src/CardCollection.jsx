@@ -122,6 +122,33 @@ function CardCollection({}) {
   };
 
   const addCollection = async (event) => {
+    let countUrl = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
+    );
+    const countResponse = await fetch(countUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+
+    if (countResponse.status === 200) {
+      const responseData = await countResponse.json();
+      const count = responseData.count;
+      if(count >= 20){
+        setAddCollectionResult(`Error: You have reached the maximum number of collections`);
+        return;
+      }
+    } else {
+      setAddCollectionResult(`Could not count current collections`);
+      return;
+    }
     const titleObj = { collectionTitle: addedCollection };
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/`,
