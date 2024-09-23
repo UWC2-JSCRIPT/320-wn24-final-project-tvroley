@@ -177,55 +177,59 @@ export default function Home() {
           up below
         </p>
         <div className="div-login">
-          <div className="div-enter-collection">
-            <label htmlFor="signup-username-input">Username:</label>
-            <input
-              id="signup-username-input"
-              type="text"
-              min="5"
-              max="20"
-              onChange={(e) => setSignUpusername(e.target.value)}
-              value={signUpusername}
-              required
-            />
+          <div className="div-input-group">
+            <div className="div-enter-collection">
+              <label htmlFor="signup-username-input">Username:</label>
+              <input
+                id="signup-username-input"
+                type="text"
+                min="5"
+                max="20"
+                onChange={(e) => setSignUpusername(e.target.value)}
+                value={signUpusername}
+                required
+              />
+            </div>
+            <div className="div-enter-collection">
+              <label htmlFor="signup-email-input">Email:</label>
+              <input
+                id="signup-email-input"
+                type="text"
+                min="1"
+                max="50"
+                onChange={(e) => setSignUpEmail(e.target.value)}
+                value={signUpEmail}
+                required
+              />
+            </div>
           </div>
-          <div className="div-enter-collection">
-            <label htmlFor="signup-email-input">Email:</label>
-            <input
-              id="signup-email-input"
-              type="text"
-              min="1"
-              max="50"
-              onChange={(e) => setSignUpEmail(e.target.value)}
-              value={signUpEmail}
-              required
-            />
-          </div>
-          <div className="div-enter-collection">
-            <label htmlFor="signup-password-input">Password:</label>
-            <input
-              id="signup-password-input"
-              type="text"
-              min="1"
-              max="100"
-              onChange={(e) => setSignUpPassword(e.target.value)}
-              value={signUpPassword}
-              required
-            />
-          </div>
-          <div className="div-enter-collection">
-            <label htmlFor="signup-password-confirm-input">
-              Confirm Password:
-            </label>
-            <input
-              id="signup-password-confirm-input"
-              type="text"
-              min="1"
-              max="100"
-              onChange={(e) => setSignUpPasswordConfirm(e.target.value)}
-              value={signUpPasswordConfirm}
-              required
-            />
+          <div className="div-input-group">
+            <div className="div-enter-collection">
+              <label htmlFor="signup-password-input">Password:</label>
+              <input
+                id="signup-password-input"
+                type="text"
+                min="1"
+                max="100"
+                onChange={(e) => setSignUpPassword(e.target.value)}
+                value={signUpPassword}
+                required
+              />
+            </div>
+            <div className="div-enter-collection">
+              <label htmlFor="signup-password-confirm-input">
+                Confirm Password:
+              </label>
+              <input
+                id="signup-password-confirm-input"
+                type="text"
+                min="1"
+                max="100"
+                onChange={(e) => setSignUpPasswordConfirm(e.target.value)}
+                value={signUpPasswordConfirm}
+                required
+              />
+            </div>
           </div>
           <div className="div-input-group">
             <input
