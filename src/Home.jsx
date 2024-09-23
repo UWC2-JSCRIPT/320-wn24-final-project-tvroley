@@ -5,9 +5,14 @@ import Nav from "./Nav";
 export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [signUpusername, setSignUpusername] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpPasswordConfirm, setSignUpPasswordConfirm] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
   const [logoutMessage, setLogoutMessage] = useState(``);
+  const [signUpMessage, setSignUpMessage] = useState(``);
 
   const login = async (event) => {
     event.preventDefault();
@@ -37,6 +42,37 @@ export default function Home() {
     } else {
       setResultMessage(`Invalid login`);
       setLogoutMessage(``);
+    }
+  };
+
+  const signUp = async (event) => {
+    event.preventDefault();
+    const userNameRegEx = /^[a-z0-9_]{5,20}$/;
+    if (!userNameRegEx.test(signUpusername)) {
+      setSignUpMessage(
+        "Invalid username: Must use only lowercase letters, numbers, and underscores, and be between 5 and 20 characters in length",
+      );
+      return;
+    }
+
+    const passwordRegEx =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,30}$/;
+    if (!passwordRegEx.test(signUpPassword)) {
+      setSignUpMessage(
+        "Invalid password: Must include a lowercase letter, an uppercase letter, a number, and a special character, and be between 8 and 30 characters in length",
+      );
+      return;
+    }
+
+    if (signUpPassword !== signUpPasswordConfirm) {
+      setSignUpMessage("Repeated password does not match");
+      return;
+    }
+
+    const emailRegEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (!emailRegEx.test(signUpPassword)) {
+      setSignUpMessage("Invalid email address");
+      return;
     }
   };
 
@@ -120,7 +156,13 @@ export default function Home() {
           />
         </div>
         <div className="div-input-group">
-          <input className="btn" type="submit" value="Login" onClick={login} />
+          <input
+            id="login-btn"
+            className="btn"
+            type="submit"
+            value="Login"
+            onClick={login}
+          />
         </div>
       </div>
       <p>{resultMessage}</p>
@@ -131,8 +173,76 @@ export default function Home() {
       </div>
       <div>
         <p>
-          If you don't have an account, and would like to use demo mode of My
-          Collection, click the "Demo Mode" button
+          If you would like an account for your trading card collections, sign
+          up below
+        </p>
+        <div className="div-login">
+          <div className="div-enter-collection">
+            <label htmlFor="signup-username-input">Username:</label>
+            <input
+              id="signup-username-input"
+              type="text"
+              min="5"
+              max="20"
+              onChange={(e) => setSignUpusername(e.target.value)}
+              value={signUpusername}
+              required
+            />
+          </div>
+          <div className="div-enter-collection">
+            <label htmlFor="signup-email-input">Email:</label>
+            <input
+              id="signup-email-input"
+              type="text"
+              min="1"
+              max="50"
+              onChange={(e) => setSignUpEmail(e.target.value)}
+              value={signUpEmail}
+              required
+            />
+          </div>
+          <div className="div-enter-collection">
+            <label htmlFor="signup-password-input">Password:</label>
+            <input
+              id="signup-password-input"
+              type="text"
+              min="1"
+              max="100"
+              onChange={(e) => setSignUpPassword(e.target.value)}
+              value={signUpPassword}
+              required
+            />
+          </div>
+          <div className="div-enter-collection">
+            <label htmlFor="signup-password-confirm-input">
+              Confirm Password:
+            </label>
+            <input
+              id="signup-password-confirm-input"
+              type="text"
+              min="1"
+              max="100"
+              onChange={(e) => setSignUpPasswordConfirm(e.target.value)}
+              value={signUpPasswordConfirm}
+              required
+            />
+          </div>
+          <div className="div-input-group">
+            <input
+              id="signup-btn"
+              className="btn"
+              type="submit"
+              value="Sign Up"
+              onClick={signUp}
+            />
+          </div>
+        </div>
+      </div>
+      <p>{signUpMessage}</p>
+      <div>
+        <p>
+          If you don't want to sign up for an account right now, and would like
+          to use demo mode of My Collection, click the "Demo Mode" button
         </p>
         <div className="div-home-buttons">
           <button id="demo-button" onClick={demoLogin}>

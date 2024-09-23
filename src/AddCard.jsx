@@ -67,9 +67,10 @@ function AddCard({}) {
       backCardImageFileEl.classList.remove("invalid");
 
       let urlGetCardCount = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` + baseCollectionId,
+        `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` +
+          baseCollectionId,
       );
-      
+
       const responseGetCardCount = await fetch(urlGetCardCount, {
         method: "GET",
         mode: "cors",
@@ -85,12 +86,16 @@ function AddCard({}) {
       if (responseGetCardCount.status === 200) {
         const data = await responseGetCardCount.json();
         const cardCount = data.count;
-        if(cardCount >= 500){
-          setResultMessage(`You have reached the maximum number of cards for your base collection.`);
+        if (cardCount >= 500) {
+          setResultMessage(
+            `You have reached the maximum number of cards for your base collection.`,
+          );
           return;
         }
       } else {
-        setResultMessage(`Error: Could not check current card count for your base collection`);
+        setResultMessage(
+          `Error: Could not check current card count for your base collection`,
+        );
       }
 
       const storage = getStorage(firebaseApp);
