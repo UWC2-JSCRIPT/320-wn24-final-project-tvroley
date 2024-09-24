@@ -211,6 +211,11 @@
   padding: 0.5rem;
 }
 
+.div-agreement {
+  background-color: whitesmoke;
+  padding: 0.5rem;
+}
+
 .div-logout {
   display: flex;
   flex-direction: row;
