@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Nav from "./Nav";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -70,11 +71,29 @@ export default function Home() {
       return;
     }
 
-    const emailRegEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if (!emailRegEx.test(signUpPassword)) {
+    const emailRegEx =
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    if (!emailRegEx.test(signUpEmail)) {
       setSignUpMessage("Invalid email address");
       return;
     }
+
+    if (!agree) {
+      setSignUpMessage(
+        "You must agree to the user agreement before signing up",
+      );
+      return;
+    }
+
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setSignUpMessage(error.message);
+      });
   };
 
   const demoLogin = async () => {
@@ -296,9 +315,11 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <div className="div-enter-collection">
+            <p>{signUpMessage}</p>
+          </div>
         </div>
       </div>
-      <p>{signUpMessage}</p>
       <div>
         <p>
           If you don't want to sign up for an account right now, and would like
