@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Nav from "./Nav";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -88,11 +93,25 @@ export default function Home() {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
       .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
+        signInWithEmailAndPassword(
+          auth,
+          userCredential.user.email,
+          signUpPassword,
+        )
+          .then((userCredential) => {
+            sendEmailVerification(userCredential.user).then(() => {});
+          })
+          .catch((error) => {
+            setSignUpMessage(
+              `Error setting up user account: ${error.code} ${error.message}`,
+            );
+          });
       })
       .catch((error) => {
-        setSignUpMessage(error.message);
+        setSignUpMessage(
+          `Error creating user account: ${error.code} ${error.message}`,
+        );
+        return;
       });
   };
 
