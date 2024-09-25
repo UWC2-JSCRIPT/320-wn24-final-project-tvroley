@@ -1,15 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Nav from "./Nav";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
@@ -18,64 +14,66 @@ export default function Home() {
 
   const login = async (event) => {
     event.preventDefault();
-    const response = await fetch(
-      `https://trading-cards-backend-production.up.railway.app/auth/login`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify({ username: username, password: password }),
-      },
-    );
-    if (response.status === 200) {
-      response.json().then((data) => {
-        setToken(data.token);
-        localStorage.setItem("cardsToken", data.token);
-        localStorage.setItem("cardsUsername", username);
-        setResultMessage(`Welcome ${username}`);
-        setPassword(``);
-        setUsername(``);
-        setLogoutMessage(``);
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        const response = await fetch(
+          `https://trading-cards-backend-production.up.railway.app/auth/login`,
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify({
+              email: userCredential.user.email,
+              password: password,
+            }),
+          },
+        );
+        if (response.status === 200) {
+          response.json().then(async (data) => {
+            setToken(data.token);
+            localStorage.setItem("cardsToken", data.token);
+            const responseUsername = await fetch(
+              `https://trading-cards-backend-production.up.railway.app/auth/username`,
+              {
+                method: "GET",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + data.token,
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+              },
+            );
+            if(responseUsername.status === 200){
+              responseUsername.json().then(async (usernameData) => {
+                localStorage.setItem("cardsUsername", usernameData.username);
+                setResultMessage(`Welcome ${usernameData.username}`);
+                setPassword(``);
+                setUsername(``);
+                setLogoutMessage(``);
+              });
+            } else {
+              setResultMessage(`Error getting user information`);
+              setLogoutMessage(``);  
+            }
+          });
+        } else if (response.status === 401) {
+        } else {
+          setResultMessage(`Invalid login`);
+          setLogoutMessage(``);
+        }
+      })
+      .catch((error) => {
+        setResultMessage(`Error logging in: ${error.code} ${error.message}`);
       });
-    } else {
-      setResultMessage(`Invalid login`);
-      setLogoutMessage(``);
-    }
-  };
-
-  const demoLogin = async () => {
-    const response = await fetch(
-      `https://trading-cards-backend-production.up.railway.app/auth/login`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify({ username: "demo", password: "demo" }),
-      },
-    );
-    if (response.status === 200) {
-      response.json().then((data) => {
-        setToken(data.token);
-        localStorage.setItem("cardsToken", data.token);
-        localStorage.setItem("cardsUsername", "demo");
-        setResultMessage(`Welcome Demo User`);
-        setPassword(``);
-        setUsername(``);
-        setLogoutMessage(``);
-        goCollection();
-      });
-    } else {
-      setResultMessage(`Invalid demo mode login`);
-      setLogoutMessage(``);
-    }
   };
 
   const logout = () => {
@@ -107,14 +105,14 @@ export default function Home() {
       </p>
       <div className="div-login">
         <div className="div-enter-collection">
-          <label htmlFor="username-input">Username:</label>
+          <label htmlFor="email-input">Email:</label>
           <input
-            id="username-input"
+            id="email-input"
             type="text"
             min="1"
             max="50"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             required
           />
         </div>
@@ -156,15 +154,6 @@ export default function Home() {
         </button>
       </div>
       <div>
-        <p>
-          If you don't want to sign up for an account right now, and would like
-          to use demo mode of My Collection, click the "Demo Mode" button
-        </p>
-        <div className="div-home-buttons">
-          <button id="demo-button" onClick={demoLogin}>
-            Demo Mode
-          </button>
-        </div>
         <p>
           If you don't have an account, and would like to view collections, go
           to "All Collections"

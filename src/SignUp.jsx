@@ -27,7 +27,7 @@ export default function SignUp() {
     }
 
     const passwordRegEx =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,30}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&^]{8,30}$/;
     if (!passwordRegEx.test(signUpPassword)) {
       setSignUpMessage(
         "Invalid password: Must include a lowercase letter, an uppercase letter, a number, and a special character, and be between 8 and 30 characters in length",
@@ -63,7 +63,11 @@ export default function SignUp() {
           signUpPassword,
         )
           .then((userCredential) => {
-            sendEmailVerification(userCredential.user).then(() => {});
+            sendEmailVerification(userCredential.user).then(() => {
+              setSignUpMessage(
+                `Check ${userCredential.user.email} for confirmation email, and then sign in for the first time to create your collection`,
+              );
+            });
           })
           .catch((error) => {
             setSignUpMessage(
@@ -75,7 +79,6 @@ export default function SignUp() {
         setSignUpMessage(
           `Error creating user account: ${error.code} ${error.message}`,
         );
-        return;
       });
   };
 
