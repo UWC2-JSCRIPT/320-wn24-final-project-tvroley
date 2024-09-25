@@ -34,36 +34,14 @@ export default function Home() {
           },
         );
         if (response.status === 200) {
-          response.json().then(async (data) => {
+          response.json().then((data) => {
             setToken(data.token);
             localStorage.setItem("cardsToken", data.token);
-            const responseUsername = await fetch(
-              `https://trading-cards-backend-production.up.railway.app/auth/username`,
-              {
-                method: "GET",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + data.token,
-                },
-                redirect: "follow",
-                referrerPolicy: "no-referrer",
-              },
-            );
-            if(responseUsername.status === 200){
-              responseUsername.json().then(async (usernameData) => {
-                localStorage.setItem("cardsUsername", usernameData.username);
-                setResultMessage(`Welcome ${usernameData.username}`);
-                setPassword(``);
-                setUsername(``);
-                setLogoutMessage(``);
-              });
-            } else {
-              setResultMessage(`Error getting user information`);
-              setLogoutMessage(``);  
-            }
+            localStorage.setItem("cardsUsername", data.username);
+            setResultMessage(`Welcome ${data.username}`);
+            setPassword(``);
+            setUsername(``);
+            setLogoutMessage(``);
           });
         } else if (response.status === 401) {
         } else {
