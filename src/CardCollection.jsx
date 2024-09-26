@@ -141,8 +141,10 @@ function CardCollection({}) {
     if (countResponse.status === 200) {
       const responseData = await countResponse.json();
       const count = responseData.count;
-      if(count >= 20){
-        setAddCollectionResult(`Error: You have reached the maximum number of collections`);
+      if (count >= 20) {
+        setAddCollectionResult(
+          `Error: You have reached the maximum number of collections`,
+        );
         return;
       }
     } else {

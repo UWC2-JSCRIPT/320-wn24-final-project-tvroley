@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Nav from "./Nav";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
@@ -11,64 +17,118 @@ export default function Home() {
 
   const login = async (event) => {
     event.preventDefault();
-    const response = await fetch(
-      `https://trading-cards-backend-production.up.railway.app/auth/login`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify({ username: username, password: password }),
-      },
-    );
-    if (response.status === 200) {
-      response.json().then((data) => {
-        setToken(data.token);
-        localStorage.setItem("cardsToken", data.token);
-        localStorage.setItem("cardsUsername", username);
-        setResultMessage(`Welcome ${username}`);
-        setPassword(``);
-        setUsername(``);
-        setLogoutMessage(``);
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        const response = await fetch(
+          `https://trading-cards-backend-production.up.railway.app/auth/login`,
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify({
+              email: userCredential.user.email,
+              password: password,
+            }),
+          },
+        );
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setToken(data.token);
+            localStorage.setItem("cardsToken", data.token);
+            localStorage.setItem("cardsUsername", data.username);
+            setResultMessage(`Welcome ${data.username}`);
+            setPassword(``);
+            setUsername(``);
+            setLogoutMessage(``);
+            setEmail(``);
+            goCollection();
+          });
+        } else if (response.status === 401) {
+          if (auth.currentUser.emailVerified) {
+            const signUpResponse = await fetch(
+              `https://trading-cards-backend-production.up.railway.app/auth/signup`,
+              {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify({
+                  email: userCredential.user.email,
+                  password: password,
+                  username: userCredential.user.displayName,
+                }),
+              },
+            );
+            if (signUpResponse.status === 200) {
+              signUpResponse.json().then(async (signUpData) => {
+                const loginResponse = await fetch(
+                  `https://trading-cards-backend-production.up.railway.app/auth/login`,
+                  {
+                    method: "POST",
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/json" },
+                    redirect: "follow",
+                    referrerPolicy: "no-referrer",
+                    body: JSON.stringify({
+                      email: userCredential.user.email,
+                      password: password,
+                    }),
+                  },
+                );
+                if (loginResponse.status === 200) {
+                  loginResponse.json().then((data) => {
+                    setToken(data.token);
+                    localStorage.setItem("cardsToken", data.token);
+                    localStorage.setItem("cardsUsername", data.username);
+                    setResultMessage(`Welcome ${data.username}`);
+                    setPassword(``);
+                    setUsername(``);
+                    setLogoutMessage(``);
+                    setEmail(``);
+                    goCollection();
+                  });
+                } else {
+                  setResultMessage(
+                    `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                  );
+                }
+              });
+            } else {
+              setResultMessage(
+                `Error setting up account for first time login: ${signUpResponse.status} ${signUpResponse.statusText}`,
+              );
+            }
+          } else {
+            sendEmailVerification(userCredential.user)
+              .then(() => {
+                setResultMessage(
+                  `Please confirm your email.  Another confirmation email was sent to ${email}`,
+                );
+              })
+              .catch((err) => {
+                setResultMessage(
+                  `Your email is not confirmed and there was an error sending another confirmation email to ${email}  Error: ${err.code} ${err.message}`,
+                );
+              });
+          }
+        } else {
+          setResultMessage(`Error: ${response.statusText}`);
+        }
+      })
+      .catch((error) => {
+        setResultMessage(`Error logging in: ${error.code} ${error.message}`);
       });
-    } else {
-      setResultMessage(`Invalid login`);
-      setLogoutMessage(``);
-    }
-  };
-
-  const demoLogin = async () => {
-    const response = await fetch(
-      `https://trading-cards-backend-production.up.railway.app/auth/login`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify({ username: "demo", password: "demo" }),
-      },
-    );
-    if (response.status === 200) {
-      response.json().then((data) => {
-        setToken(data.token);
-        localStorage.setItem("cardsToken", data.token);
-        localStorage.setItem("cardsUsername", "demo");
-        setResultMessage(`Welcome Demo User`);
-        setPassword(``);
-        setUsername(``);
-        setLogoutMessage(``);
-        goCollection();
-      });
-    } else {
-      setResultMessage(`Invalid demo mode login`);
-      setLogoutMessage(``);
-    }
+    setLogoutMessage(``);
   };
 
   const logout = () => {
@@ -81,6 +141,10 @@ export default function Home() {
 
   const goCollection = () => {
     navigate("/collection");
+  };
+
+  const goSignUp = () => {
+    navigate("/signup");
   };
 
   const goAllCollections = () => {
@@ -96,14 +160,14 @@ export default function Home() {
       </p>
       <div className="div-login">
         <div className="div-enter-collection">
-          <label htmlFor="username-input">Username:</label>
+          <label htmlFor="email-input">Email:</label>
           <input
-            id="username-input"
+            id="email-input"
             type="text"
             min="1"
             max="50"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             required
           />
         </div>
@@ -120,7 +184,13 @@ export default function Home() {
           />
         </div>
         <div className="div-input-group">
-          <input className="btn" type="submit" value="Login" onClick={login} />
+          <input
+            id="login-btn"
+            className="btn"
+            type="submit"
+            value="Login"
+            onClick={login}
+          />
         </div>
       </div>
       <p>{resultMessage}</p>
@@ -129,16 +199,16 @@ export default function Home() {
           My Collection
         </button>
       </div>
+      <p>
+        If you would like an account for your trading card collections, sign up
+        below
+      </p>
+      <div className="div-home-buttons">
+        <button id="signup-button" onClick={goSignUp}>
+          Sign Up
+        </button>
+      </div>
       <div>
-        <p>
-          If you don't have an account, and would like to use demo mode of My
-          Collection, click the "Demo Mode" button
-        </p>
-        <div className="div-home-buttons">
-          <button id="demo-button" onClick={demoLogin}>
-            Demo Mode
-          </button>
-        </div>
         <p>
           If you don't have an account, and would like to view collections, go
           to "All Collections"
