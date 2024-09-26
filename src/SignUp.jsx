@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 export default function SignUp() {
@@ -63,11 +64,21 @@ export default function SignUp() {
           signUpPassword,
         )
           .then((userCredential) => {
-            sendEmailVerification(userCredential.user).then(() => {
-              setSignUpMessage(
-                `Check ${userCredential.user.email} for confirmation email, and then sign in for the first time to create your collection`,
-              );
-            });
+            updateProfile(auth.currentUser, {
+              displayName: signUpusername,
+            })
+              .then((userRecord) => {
+                sendEmailVerification(userCredential.user).then(() => {
+                  setSignUpMessage(
+                    `Check ${userCredential.user.email} for confirmation email, and then sign in for the first time to create your collection`,
+                  );
+                });
+              })
+              .catch((error) => {
+                signUpMessage(
+                  `Error setting up user account: ${error.code} ${error.message}`,
+                );
+              });
           })
           .catch((error) => {
             setSignUpMessage(
@@ -208,9 +219,9 @@ export default function SignUp() {
               </div>
             </div>
           </div>
-          <div className="div-enter-collection">
-            <p>{signUpMessage}</p>
-          </div>
+        </div>
+        <div className="div-enter-collection">
+          <p>{signUpMessage}</p>
         </div>
       </div>
       <Nav />

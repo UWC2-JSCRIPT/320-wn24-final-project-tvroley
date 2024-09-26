@@ -1,7 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Nav from "./Nav";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -45,14 +49,86 @@ export default function Home() {
             goCollection();
           });
         } else if (response.status === 401) {
+          if (auth.currentUser.emailVerified) {
+            const signUpResponse = await fetch(
+              `https://trading-cards-backend-production.up.railway.app/auth/signup`,
+              {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify({
+                  email: userCredential.user.email,
+                  password: password,
+                  username: userCredential.user.displayName,
+                }),
+              },
+            );
+            if (signUpResponse.status === 200) {
+              signUpResponse.json().then(async (signUpData) => {
+                const loginResponse = await fetch(
+                  `https://trading-cards-backend-production.up.railway.app/auth/login`,
+                  {
+                    method: "POST",
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/json" },
+                    redirect: "follow",
+                    referrerPolicy: "no-referrer",
+                    body: JSON.stringify({
+                      email: userCredential.user.email,
+                      password: password,
+                    }),
+                  },
+                );
+                if (loginResponse.status === 200) {
+                  loginResponse.json().then((data) => {
+                    setToken(data.token);
+                    localStorage.setItem("cardsToken", data.token);
+                    localStorage.setItem("cardsUsername", data.username);
+                    setResultMessage(`Welcome ${data.username}`);
+                    setPassword(``);
+                    setUsername(``);
+                    setLogoutMessage(``);
+                    setEmail(``);
+                    goCollection();
+                  });
+                } else {
+                  setResultMessage(
+                    `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                  );
+                }
+              });
+            } else {
+              setResultMessage(
+                `Error setting up account for first time login: ${signUpResponse.status} ${signUpResponse.statusText}`,
+              );
+            }
+          } else {
+            sendEmailVerification(userCredential.user)
+              .then(() => {
+                setResultMessage(
+                  `Please confirm your email.  Another confirmation email was sent to ${email}`,
+                );
+              })
+              .catch((err) => {
+                setResultMessage(
+                  `Your email is not confirmed and there was an error sending another confirmation email to ${email}  Error: ${err.code} ${err.message}`,
+                );
+              });
+          }
         } else {
-          setResultMessage(`Invalid login`);
-          setLogoutMessage(``);
+          setResultMessage(`Error: ${response.statusText}`);
         }
       })
       .catch((error) => {
         setResultMessage(`Error logging in: ${error.code} ${error.message}`);
       });
+    setLogoutMessage(``);
   };
 
   const logout = () => {
