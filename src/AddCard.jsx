@@ -19,6 +19,7 @@ function AddCard({}) {
   const [resultMessage, setResultMessage] = useState("");
   const location = useLocation();
   const baseCollectionId = location.state.baseCollectionId;
+  const fiveMB = 5 * 1024 * 1024;
 
   const handleCheck = () => {
     setSold(!sold);
@@ -35,7 +36,7 @@ function AddCard({}) {
       "back-image-file-input",
     );
     const backCardImageFile = backCardImageFileEl.files[0];
-
+    
     if (
       frontCardImageFile &&
       backCardImageFile &&
@@ -96,6 +97,16 @@ function AddCard({}) {
         setResultMessage(
           `Error: Could not check current card count for your base collection`,
         );
+      }
+
+      if((frontCardImageFile.type !== 'image/jpeg' && frontCardImageFile.type !== 'image/png') || frontCardImageFile.size > fiveMB){
+        setResultMessage(`Front image file must be a jpeg or png and smaller than 5MB`);
+        return;
+      }
+
+      if((backCardImageFile.type !== 'image/jpeg' && backCardImageFile.type !== 'image/png') || backCardImageFile.size > fiveMB){
+        setResultMessage(`Back image file must be a jpeg or png and smaller than 5MB`);
+        return;
       }
 
       const storage = getStorage(firebaseApp);
