@@ -10,7 +10,6 @@ export default function Home() {
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
   const [logoutMessage, setLogoutMessage] = useState(``);
-  const [agree, setAgree] = useState(false);
 
   const login = async (event) => {
     event.preventDefault();
@@ -42,6 +41,8 @@ export default function Home() {
             setPassword(``);
             setUsername(``);
             setLogoutMessage(``);
+            setEmail(``);
+            goCollection();
           });
         } else if (response.status === 401) {
         } else {
