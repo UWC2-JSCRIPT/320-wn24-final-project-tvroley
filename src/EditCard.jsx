@@ -94,6 +94,15 @@ function EditCard({}) {
       frontCardImageFile &&
       backCardImageFile
     ) {
+      if((frontCardImageFile.type !== 'image/jpeg' && frontCardImageFile.type !== 'image/png') || frontCardImageFile.size > fiveMB){
+        setResultMessage(`Front image file must be a jpeg or png and smaller than 5MB`);
+        return;
+      }
+
+      if((backCardImageFile.type !== 'image/jpeg' && backCardImageFile.type !== 'image/png') || backCardImageFile.size > fiveMB){
+        setResultMessage(`Back image file must be a jpeg or png and smaller than 5MB`);
+        return;
+      }
       const storage = getStorage(firebaseApp);
       const frontCardImageRef = ref(
         storage,
