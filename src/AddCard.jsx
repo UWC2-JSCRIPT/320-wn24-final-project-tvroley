@@ -123,7 +123,7 @@ function AddCard({}) {
         );
         return;
       }
-      const auth = getAuth();
+      const auth = getAuth(firebaseApp);
       const frontMetaData = {
         contentType: frontCardImageFile.type,
         customMetadata: {

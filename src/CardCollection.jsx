@@ -343,7 +343,8 @@ function CardCollection({}) {
           if (
             index < offset ||
             index >= 50 + offset ||
-            index >= tradingCardCollection.length
+            index >= tradingCardCollection.length ||
+            !Object.hasOwn(card, "year")
           ) {
             return;
           } else {
