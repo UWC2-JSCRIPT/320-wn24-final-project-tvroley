@@ -18,7 +18,9 @@ function EditCard({}) {
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
-  const [resultMessage, setResultMessage] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+  const [frontResultMessage, setFrontResultMessage] = useState("");
+  const [backResultMessage, setBackResultMessage] = useState("");
   const location = useLocation();
   const [frontCardImageURL, setFrontCardImageURL] = useState(
     location.state.frontCardImageURL,
@@ -176,21 +178,21 @@ function EditCard({}) {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setResultMessage(`Upload is ${progress}% done`);
+            setFrontResultMessage(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case "paused":
-              setResultMessage("Uploading front of card image is paused");
+              setFrontResultMessage("Uploading front of card image is paused");
               break;
             case "running":
-              setResultMessage("Uploading front of card image");
+              setFrontResultMessage("Uploading front of card image");
               break;
           }
         },
         (error) => {
-          setResultMessage(`Error uploading front card image: ${error}`);
+          setFrontResultMessage(`Error uploading front card image: ${error}`);
         },
         () => {
-          setResultMessage(`Card back image successfully updated`);
+          setFrontResultMessage(`Card front image successfully updated`);
           frontCardImageFileEl.classList.remove("invalid");
         },
       );
@@ -206,21 +208,21 @@ function EditCard({}) {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setResultMessage(`Upload is ${progress}% done`);
+            setBackResultMessage(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case "paused":
-              setResultMessage("Uploading back of card image is paused");
+              setBackResultMessage("Uploading back of card image is paused");
               break;
             case "running":
-              setResultMessage("Uploading back of card image");
+              setBackResultMessage("Uploading back of card image");
               break;
           }
         },
         (error) => {
-          setResultMessage(`Error uploading back card image: ${error}`);
+          setBackResultMessage(`Error uploading back card image: ${error}`);
         },
         async () => {
-          setResultMessage(`Card back image successfully updated`);
+          setBackResultMessage(`Card back image successfully updated`);
         },
       );
 
@@ -470,7 +472,8 @@ function EditCard({}) {
               onClick={editCard}
             />
           </div>
-          <p>{resultMessage}</p>
+          <p>{frontResultMessage}</p>
+          <p>{backResultMessage}</p>
         </form>
       </div>
       <Nav />
