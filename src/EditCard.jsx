@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function EditCard({}) {
   const [tradingCard, setTradingCard] = useState({});
@@ -17,7 +18,9 @@ function EditCard({}) {
   const [grade, setGrade] = useState("");
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
-  const [resultMessage, setResultMessage] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+  const [frontResultMessage, setFrontResultMessage] = useState("");
+  const [backResultMessage, setBackResultMessage] = useState("");
   const location = useLocation();
   const [frontCardImageURL, setFrontCardImageURL] = useState(
     location.state.frontCardImageURL,
@@ -25,6 +28,8 @@ function EditCard({}) {
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
+  let uid;
+  const fiveMB = 5 * 1024 * 1024;
 
   const handleCheck = () => {
     setSold(!sold);
@@ -57,6 +62,12 @@ function EditCard({}) {
     };
     getData();
   }, []);
+
+  onAuthStateChanged(getAuth(firebaseApp), (user) => {
+    if (user) {
+      uid = user.uid;
+    }
+  });
 
   const populateFields = () => {
     setYear(tradingCard.year);
@@ -94,98 +105,130 @@ function EditCard({}) {
       frontCardImageFile &&
       backCardImageFile
     ) {
-      const storage = getStorage(firebaseApp);
-      const frontCardImageRef = ref(
-        storage,
-        `images/${gradingCompany}${certificationNumber}front`,
+      if (
+        (frontCardImageFile.type !== "image/jpeg" &&
+          frontCardImageFile.type !== "image/png") ||
+        frontCardImageFile.size > fiveMB
+      ) {
+        setResultMessage(
+          `Front image file must be a jpeg or png and smaller than 5MB`,
+        );
+        return;
+      }
+
+      if (
+        (backCardImageFile.type !== "image/jpeg" &&
+          backCardImageFile.type !== "image/png") ||
+        backCardImageFile.size > fiveMB
+      ) {
+        setResultMessage(
+          `Back image file must be a jpeg or png and smaller than 5MB`,
+        );
+        return;
+      }
+      const myCard = {
+        year: Number(year),
+        brand: brand,
+        cardNumber: cardNumber,
+        cardSet: cardSet,
+        variety: variety,
+        subject: subject,
+        gradingCompany: tradingCard.gradingCompany,
+        grade: grade,
+        certificationNumber: tradingCard.certificationNumber,
+        sold: Boolean(sold),
+      };
+      let urlEditCard = new URL(
+        `https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`,
       );
+      const responseEditCard = await fetch(urlEditCard, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(myCard),
+      });
+      if (responseEditCard.status === 200) {
+        const data = await responseEditCard.json();
+        setResultMessage(`Card information updated`);
+      } else {
+        setResultMessage(`Could not edit card data`);
+      }
+      const frontMetaData = {
+        contentType: frontCardImageFile.type,
+        customMetadata: {
+          author_uid: uid,
+        },
+      };
+      const backMetaData = {
+        contentType: backCardImageFile.type,
+        customMetadata: {
+          author_uid: uid,
+        },
+      };
+      const storage = getStorage(firebaseApp);
+      const frontCardImageRef = ref(storage, `images/${tradingCard._id}-front`);
       const uploadFrontTask = uploadBytesResumable(
         frontCardImageRef,
         frontCardImageFile,
+        frontMetaData,
       );
       uploadFrontTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setResultMessage(`Upload is ${progress}% done`);
+          setFrontResultMessage(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case "paused":
-              setResultMessage("Uploading front of card image is paused");
+              setFrontResultMessage("Uploading front of card image is paused");
               break;
             case "running":
-              setResultMessage("Uploading front of card image");
+              setFrontResultMessage("Uploading front of card image");
               break;
           }
         },
         (error) => {
-          setResultMessage(`Error uploading front card image: ${error}`);
+          setFrontResultMessage(`Error uploading front card image: ${error}`);
         },
         () => {
+          setFrontResultMessage(`Card front image successfully updated`);
           frontCardImageFileEl.classList.remove("invalid");
-          const backCardImageRef = ref(
-            storage,
-            `images/${gradingCompany}${certificationNumber}back`,
-          );
-          const uploadBackTask = uploadBytesResumable(
-            backCardImageRef,
-            backCardImageFile,
-          );
-          uploadBackTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setResultMessage(`Upload is ${progress}% done`);
-              switch (snapshot.state) {
-                case "paused":
-                  setResultMessage("Uploading back of card image is paused");
-                  break;
-                case "running":
-                  setResultMessage("Uploading back of card image");
-                  break;
-              }
-            },
-            (error) => {
-              setResultMessage(`Error uploading back card image: ${error}`);
-            },
-            async () => {
-              const myCard = {
-                year: Number(year),
-                brand: brand,
-                cardNumber: cardNumber,
-                cardSet: cardSet,
-                variety: variety,
-                subject: subject,
-                gradingCompany: tradingCard.gradingCompany,
-                grade: grade,
-                certificationNumber: tradingCard.certificationNumber,
-                sold: Boolean(sold),
-              };
-              let urlGetCard = new URL(
-                `https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`,
-              );
-              const responseGetCards = await fetch(urlGetCard, {
-                method: "PUT",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-                },
-                redirect: "follow",
-                referrerPolicy: "no-referrer",
-                body: JSON.stringify(myCard),
-              });
-              if (responseGetCards.status === 200) {
-                const data = await responseGetCards.json();
-                setResultMessage(`Card data successfully edited`);
-              } else {
-                setResultMessage(`Could not edit card data`);
-              }
-            },
-          );
+        },
+      );
+
+      const backCardImageRef = ref(storage, `images/${tradingCard._id}-back`);
+      const uploadBackTask = uploadBytesResumable(
+        backCardImageRef,
+        backCardImageFile,
+        backMetaData,
+      );
+      uploadBackTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setBackResultMessage(`Upload is ${progress}% done`);
+          switch (snapshot.state) {
+            case "paused":
+              setBackResultMessage("Uploading back of card image is paused");
+              break;
+            case "running":
+              setBackResultMessage("Uploading back of card image");
+              break;
+          }
+        },
+        (error) => {
+          setBackResultMessage(`Error uploading back card image: ${error}`);
+        },
+        async () => {
+          setBackResultMessage(`Card back image successfully updated`);
         },
       );
 
@@ -435,7 +478,8 @@ function EditCard({}) {
               onClick={editCard}
             />
           </div>
-          <p>{resultMessage}</p>
+          <p>{frontResultMessage}</p>
+          <p>{backResultMessage}</p>
         </form>
       </div>
       <Nav />
