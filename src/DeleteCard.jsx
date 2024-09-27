@@ -10,11 +10,11 @@ function DeleteCard({}) {
 
   const deleteCard = async (event) => {
     event.preventDefault();
-    let urlPostCard = new URL(
+    let urlDeleteCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/cards/` +
         tradingCard._id,
     );
-    const responseGetCollections = await fetch(urlPostCard, {
+    const responseDeleteCard = await fetch(urlDeleteCard, {
       method: "DELETE",
       mode: "cors",
       headers: {
@@ -22,7 +22,7 @@ function DeleteCard({}) {
         Authorization: "Bearer " + localStorage.getItem("cardsToken"),
       },
     });
-    if (responseGetCollections.status === 200) {
+    if (responseDeleteCard.status === 200) {
       setResultMessage(
         `Deleted ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`,
       );
