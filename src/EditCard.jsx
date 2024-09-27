@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function EditCard({}) {
   const [tradingCard, setTradingCard] = useState({});
@@ -28,6 +28,7 @@ function EditCard({}) {
   const [username, setUsername] = useState(
     localStorage.getItem("cardsUsername"),
   );
+  let uid;
   const fiveMB = 5 * 1024 * 1024;
 
   const handleCheck = () => {
@@ -61,6 +62,12 @@ function EditCard({}) {
     };
     getData();
   }, []);
+
+  onAuthStateChanged(getAuth(firebaseApp), (user) => {
+    if (user) {
+      uid = user.uid;
+    }
+  });
 
   const populateFields = () => {
     setYear(tradingCard.year);
@@ -153,17 +160,16 @@ function EditCard({}) {
       } else {
         setResultMessage(`Could not edit card data`);
       }
-      const auth = getAuth(firebaseApp);
       const frontMetaData = {
         contentType: frontCardImageFile.type,
         customMetadata: {
-          author_uid: auth.currentUser.uid,
+          author_uid: uid,
         },
       };
       const backMetaData = {
         contentType: backCardImageFile.type,
         customMetadata: {
-          author_uid: auth.currentUser.uid,
+          author_uid: uid,
         },
       };
       const storage = getStorage(firebaseApp);
@@ -178,7 +184,7 @@ function EditCard({}) {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setFrontResultMessage(`Upload is ${progress}% done`);
+          setFrontResultMessage(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case "paused":
               setFrontResultMessage("Uploading front of card image is paused");
@@ -208,7 +214,7 @@ function EditCard({}) {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setBackResultMessage(`Upload is ${progress}% done`);
+          setBackResultMessage(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case "paused":
               setBackResultMessage("Uploading back of card image is paused");

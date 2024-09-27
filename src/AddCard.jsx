@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -21,10 +21,17 @@ function AddCard({}) {
   const location = useLocation();
   const baseCollectionId = location.state.baseCollectionId;
   const fiveMB = 5 * 1024 * 1024;
+  let uid;
 
   const handleCheck = () => {
     setSold(!sold);
   };
+
+  onAuthStateChanged(getAuth(firebaseApp), (user) => {
+    if (user) {
+      uid = user.uid;
+    }
+  });
 
   const addCard = async (event) => {
     event.preventDefault();
@@ -123,17 +130,16 @@ function AddCard({}) {
         );
         return;
       }
-      const auth = getAuth(firebaseApp);
       const frontMetaData = {
         contentType: frontCardImageFile.type,
         customMetadata: {
-          author_uid: auth.currentUser.uid,
+          author_uid: uid,
         },
       };
       const backMetaData = {
         contentType: backCardImageFile.type,
         customMetadata: {
-          author_uid: auth.currentUser.uid,
+          author_uid: uid,
         },
       };
 
