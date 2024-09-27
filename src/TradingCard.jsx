@@ -16,10 +16,7 @@ function TradingCard({ tradingCard, collections }) {
       if (correctedCert.substring(correctedCert.length - 4) === "DEMO") {
         correctedCert = correctedCert.substring(0, correctedCert.length - 4);
       }
-      const frontCardImageRef = ref(
-        storage,
-        `images/${tradingCard.gradingCompany}${correctedCert}front`,
-      );
+      const frontCardImageRef = ref(storage, `images/${tradingCard._id}-front`);
       getDownloadURL(frontCardImageRef)
         .then((url) => {
           setFrontCardImageURL(url);
@@ -27,10 +24,7 @@ function TradingCard({ tradingCard, collections }) {
         .catch((error) => {
           console.log(error);
         });
-      const backCardImageRef = ref(
-        storage,
-        `images/${tradingCard.gradingCompany}${correctedCert}back`,
-      );
+      const backCardImageRef = ref(storage, `images/${tradingCard._id}-back`);
       getDownloadURL(backCardImageRef)
         .then((url) => {
           setBackCardImageURL(url);

@@ -124,7 +124,6 @@ function AddCard({}) {
         return;
       }
       const auth = getAuth();
-      console.log(auth);
       const frontMetaData = {
         contentType: frontCardImageFile.type,
         customMetadata: {
@@ -190,7 +189,7 @@ function AddCard({}) {
           async (error) => {
             let urlDeleteCard = new URL(
               `https://trading-cards-backend-production.up.railway.app/cards/` +
-              cardId,
+                cardId,
             );
             await fetch(urlDeleteCard, {
               method: "DELETE",
@@ -229,7 +228,7 @@ function AddCard({}) {
               async (error) => {
                 let urlDeleteCard = new URL(
                   `https://trading-cards-backend-production.up.railway.app/cards/` +
-                  cardId,
+                    cardId,
                 );
                 await fetch(urlDeleteCard, {
                   method: "DELETE",
