@@ -27,6 +27,7 @@ function CardCollection({}) {
 
   useEffect(() => {
     const getData = async () => {
+      setOffset(0);
       if (!username) {
         setErrorMessage(
           "You need to login to view your collections, or you can view the All Collections page to view collections of existing users",
@@ -182,6 +183,7 @@ function CardCollection({}) {
   };
 
   const changeCollection = async (event) => {
+    setOffset(0);
     const buttonCollection = event.target.innerText;
     const buttonCollectionArray = collections.filter(
       (collect) => buttonCollection === collect.title,
@@ -223,6 +225,7 @@ function CardCollection({}) {
   };
 
   const searchCollection = async (event) => {
+    setOffset(0);
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
         collectionId,
@@ -337,6 +340,7 @@ function CardCollection({}) {
       <SortButtons
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
+        setOffset={setOffset}
       />
       <div className="div-cards">
         {tradingCardCollection.map((card, index) => {
@@ -375,6 +379,7 @@ function CardCollection({}) {
       <SortButtons
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
+        setOffset={setOffset}
       />
       <div className="div-restore-buttons">
         <button onClick={saveLocal}>Save Cards Locally In Browser</button>

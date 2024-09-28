@@ -2,7 +2,7 @@ import "./App.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-function SortButtons({ collectionId, setTradingCardCollection }) {
+function SortButtons({ collectionId, setTradingCardCollection, setOffset }) {
   const [certAsc, setCertAsc] = useState("ASC");
   const [yearAsc, setYearAsc] = useState("ASC");
   const [subjectAsc, setSubjectAsc] = useState("ASC");
@@ -96,6 +96,7 @@ function SortButtons({ collectionId, setTradingCardCollection }) {
     if (response.status === 200) {
       const data = await response.json();
       setTradingCardCollection(data.tradingCards);
+      setOffset(0);
     }
   };
 
