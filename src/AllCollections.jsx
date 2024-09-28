@@ -213,7 +213,8 @@ function AllCollections({}) {
           if (
             index < offset ||
             index >= 50 + offset ||
-            index >= tradingCardCollection.length
+            index >= tradingCardCollection.length ||
+            !card.hasOwnProperty("year")
           ) {
             return;
           } else {

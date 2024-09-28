@@ -122,7 +122,8 @@ function FindAnyCard({}) {
           if (
             index < offset ||
             index >= 50 + offset ||
-            index >= tradingCards.length
+            index >= tradingCards.length ||
+            !card.hasOwnProperty("year")
           ) {
             return;
           } else {

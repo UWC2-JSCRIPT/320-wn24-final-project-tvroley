@@ -344,7 +344,7 @@ function CardCollection({}) {
             index < offset ||
             index >= 50 + offset ||
             index >= tradingCardCollection.length ||
-            !Object.hasOwn(card, "year")
+            !card.hasOwnProperty("year")
           ) {
             return;
           } else {
