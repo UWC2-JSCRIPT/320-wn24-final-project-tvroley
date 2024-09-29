@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
+import Mongo from "./Mongo";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -14,28 +15,14 @@ export default function Home() {
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
   const [logoutMessage, setLogoutMessage] = useState(``);
+  const mongo = new Mongo();
 
   const login = async (event) => {
     event.preventDefault();
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
-        const response = await fetch(
-          `https://trading-cards-backend-production.up.railway.app/auth/login`,
-          {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: { "Content-Type": "application/json" },
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-            body: JSON.stringify({
-              email: userCredential.user.email,
-              password: password,
-            }),
-          },
-        );
+        const response = await mongo.login(email, password);
         if (response.status === 200) {
           response.json().then((data) => {
             setToken(data.token);
@@ -50,41 +37,15 @@ export default function Home() {
           });
         } else if (response.status === 401) {
           if (auth.currentUser.emailVerified) {
-            const signUpResponse = await fetch(
-              `https://trading-cards-backend-production.up.railway.app/auth/signup`,
-              {
-                method: "POST",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                headers: { "Content-Type": "application/json" },
-                redirect: "follow",
-                referrerPolicy: "no-referrer",
-                body: JSON.stringify({
-                  email: userCredential.user.email,
-                  password: password,
-                  username: userCredential.user.displayName,
-                }),
-              },
+            const username = userCredential.user.displayName;
+            const signUpResponse = await mongo.signup(
+              email,
+              username,
+              password,
             );
             if (signUpResponse.status === 200) {
               signUpResponse.json().then(async (signUpData) => {
-                const loginResponse = await fetch(
-                  `https://trading-cards-backend-production.up.railway.app/auth/login`,
-                  {
-                    method: "POST",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
-                    headers: { "Content-Type": "application/json" },
-                    redirect: "follow",
-                    referrerPolicy: "no-referrer",
-                    body: JSON.stringify({
-                      email: userCredential.user.email,
-                      password: password,
-                    }),
-                  },
-                );
+                const loginResponse = await mongo.login(email, password);
                 if (loginResponse.status === 200) {
                   loginResponse.json().then((data) => {
                     setToken(data.token);

@@ -158,7 +158,9 @@ function EditCard({}) {
         const data = await responseEditCard.json();
         setResultMessage(`Card information updated`);
       } else {
-        setResultMessage(`Could not edit card information, possibly because no changes were made, updating photos separately`);
+        setResultMessage(
+          `Could not edit card information, possibly because no changes were made, updating photos separately`,
+        );
       }
       const frontMetaData = {
         contentType: frontCardImageFile.type,
