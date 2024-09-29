@@ -133,9 +133,9 @@ function EditCard({}) {
         cardSet: cardSet,
         variety: variety,
         subject: subject,
-        gradingCompany: tradingCard.gradingCompany,
+        gradingCompany: gradingCompany,
         grade: grade,
-        certificationNumber: tradingCard.certificationNumber,
+        certificationNumber: certificationNumber,
         sold: Boolean(sold),
       };
       let urlEditCard = new URL(
