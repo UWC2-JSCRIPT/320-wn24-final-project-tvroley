@@ -128,7 +128,7 @@ export default function Home() {
         If you have an account, login and go to "My Collection" to manage and
         view your collection
       </p>
-      <form id="card-form" className="form-card">
+      <form id="login-form" className="form-card">
         <div className="div-login">
           <div className="div-enter-collection">
             <label htmlFor="email-input">Email:</label>

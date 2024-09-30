@@ -100,7 +100,7 @@ export default function Account() {
       <h1>My Account</h1>
       <div>
         <p>Change Password</p>
-        <form id="card-form" className="form-card">
+        <form id="password-form" className="form-card">
           <div className="div-login">
             <div className="div-input-group">
                 <label htmlFor="old-password-input">Old Password:</label>
