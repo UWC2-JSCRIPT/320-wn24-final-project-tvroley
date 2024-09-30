@@ -5,8 +5,10 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   sendEmailVerification,
+  signOut,
 } from "firebase/auth";
 import Mongo from "./Mongo";
+import firebaseApp from "./firebaseApp";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -95,7 +97,14 @@ export default function Home() {
   const logout = () => {
     localStorage.removeItem("cardsToken");
     localStorage.removeItem("cardsUsername");
-    setLogoutMessage(`You logged out`);
+    const auth = getAuth(firebaseApp);
+    signOut(auth)
+      .then((result) => {
+        setLogoutMessage(`You logged out`);
+      })
+      .catch((error) => {
+        setLogoutMessage(`Error while logging out`);
+      });
   };
 
   const navigate = useNavigate();
