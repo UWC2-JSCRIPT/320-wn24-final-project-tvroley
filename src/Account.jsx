@@ -100,63 +100,58 @@ export default function Account() {
       <h1>My Account</h1>
       <div>
         <p>Change Password</p>
-        <div className="div-login">
-          <div className="div-input-group">
-            <div className="div-enter-collection">
-              <label htmlFor="old-password-input">Old Password:</label>
-              <input
-                id="old-password-input"
-                type="text"
-                min="1"
-                max="100"
-                onChange={(e) => setOldPassword(e.target.value)}
-                value={oldPassword}
-                required
-              />
-            </div>
-            <div className="div-enter-collection">
-              <label htmlFor="new-password-input">New Password:</label>
-              <input
-                id="new-password-input"
-                type="text"
-                min="1"
-                max="100"
-                onChange={(e) => setNewPassword(e.target.value)}
-                value={newPassword}
-                required
-              />
-            </div>
-            <div className="div-enter-collection">
-              <label htmlFor="new-password-confirm-input">
-                New Password Confirm:
-              </label>
-              <input
-                id="new-password-confirm-input"
-                type="text"
-                min="1"
-                max="100"
-                onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                value={newPasswordConfirm}
-                required
-              />
-            </div>
-          </div>
-        </div>
-        <div className="div-login">
-          <div className="div-input-group">
-            <div className="div-enter-collection">
-              <div className="div-input-group">
+        <form id="card-form" className="form-card">
+          <div className="div-login">
+            <div className="div-input-group">
+                <label htmlFor="old-password-input">Old Password:</label>
                 <input
-                  id="change-password-btn"
-                  className="btn"
-                  type="submit"
-                  value="Change Password"
-                  onClick={changePassword}
+                  id="old-password-input"
+                  type="password"
+                  autoComplete="false"
+                  min="1"
+                  max="100"
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  value={oldPassword}
+                  required
                 />
-              </div>
+                <label htmlFor="new-password-input">New Password:</label>
+                <input
+                  id="new-password-input"
+                  type="password"
+                  autoComplete="false"
+                  min="1"
+                  max="100"
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  value={newPassword}
+                  required
+                />
+                <label htmlFor="new-password-confirm-input">
+                  New Password Confirm:
+                </label>
+                <input
+                  id="new-password-confirm-input"
+                  type="password"
+                  autoComplete="false"
+                  min="1"
+                  max="100"
+                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                  value={newPasswordConfirm}
+                  required
+                />
+                <div className="div-input-group">
+                    <div className="div-input-group">
+                      <input
+                        id="change-password-btn"
+                        className="btn"
+                        type="submit"
+                        value="Change Password"
+                        onClick={changePassword}
+                      />
+                    </div>
+                </div>
             </div>
           </div>
-        </div>
+        </form>
         <div className="div-enter-collection">
           <p>{resultMessage}</p>
         </div>
