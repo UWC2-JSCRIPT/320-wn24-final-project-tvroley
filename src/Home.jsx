@@ -128,41 +128,44 @@ export default function Home() {
         If you have an account, login and go to "My Collection" to manage and
         view your collection
       </p>
-      <div className="div-login">
-        <div className="div-enter-collection">
-          <label htmlFor="email-input">Email:</label>
-          <input
-            id="email-input"
-            type="text"
-            min="1"
-            max="50"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-          />
+      <form id="card-form" className="form-card">
+        <div className="div-login">
+          <div className="div-enter-collection">
+            <label htmlFor="email-input">Email:</label>
+            <input
+              id="email-input"
+              type="text"
+              min="1"
+              max="50"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+            />
+          </div>
+          <div className="div-enter-collection">
+            <label htmlFor="password-input">Password:</label>
+            <input
+              id="password-input"
+              type="password"
+              autoComplete="false"
+              min="1"
+              max="100"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+            />
+          </div>
+          <div className="div-input-group">
+            <input
+              id="login-btn"
+              className="btn"
+              type="submit"
+              value="Login"
+              onClick={login}
+            />
+          </div>
         </div>
-        <div className="div-enter-collection">
-          <label htmlFor="password-input">Password:</label>
-          <input
-            id="password-input"
-            type="text"
-            min="1"
-            max="100"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-          />
-        </div>
-        <div className="div-input-group">
-          <input
-            id="login-btn"
-            className="btn"
-            type="submit"
-            value="Login"
-            onClick={login}
-          />
-        </div>
-      </div>
+      </form>
       <p>{resultMessage}</p>
       <div className="div-home-buttons">
         <button id="collection-button" onClick={goCollection}>
