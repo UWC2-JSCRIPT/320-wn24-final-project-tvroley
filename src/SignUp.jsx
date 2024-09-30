@@ -99,7 +99,7 @@ export default function SignUp() {
 
   return (
     <>
-      <div>
+      <form id="signup-form" className="form-card">
         <p>
           If you would like an account for your trading card collections, sign
           up below
@@ -136,7 +136,8 @@ export default function SignUp() {
               <label htmlFor="signup-password-input">Password:</label>
               <input
                 id="signup-password-input"
-                type="text"
+                type="password"
+                autoComplete="false"
                 min="1"
                 max="100"
                 onChange={(e) => setSignUpPassword(e.target.value)}
@@ -150,7 +151,8 @@ export default function SignUp() {
               </label>
               <input
                 id="signup-password-confirm-input"
-                type="text"
+                type="password"
+                autoComplete="false"
                 min="1"
                 max="100"
                 onChange={(e) => setSignUpPasswordConfirm(e.target.value)}
@@ -223,7 +225,7 @@ export default function SignUp() {
         <div className="div-enter-collection">
           <p>{signUpMessage}</p>
         </div>
-      </div>
+        </form>
       <Nav />
     </>
   );
