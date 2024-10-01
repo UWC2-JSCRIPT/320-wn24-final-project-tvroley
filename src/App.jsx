@@ -12,6 +12,7 @@ import DeleteCard from "./DeleteCard";
 import FindAnyCard from "./FindAnyCard";
 import SignUp from "./SignUp";
 import Account from "./Account";
+import DeleteAccount from "./DeleteAccount";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         />
         <Route path="collection/deletecard/:cardid" element={<DeleteCard />} />
         <Route path="account" element={<Account />} />
+        <Route path="deleteaccount" element={<DeleteAccount />} />
       </Routes>
     </div>
   );

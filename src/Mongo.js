@@ -58,6 +58,20 @@ class Mongo {
       body: JSON.stringify({ password: password }),
     });
   }
+
+  deleteAccount() {
+    let urlPassword = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/delete`,
+    );
+    return fetch(urlPassword, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+    });
+  }
 }
 
 export default Mongo;

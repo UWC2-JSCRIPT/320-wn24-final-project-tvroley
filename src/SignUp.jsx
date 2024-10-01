@@ -225,7 +225,7 @@ export default function SignUp() {
         <div className="div-enter-collection">
           <p>{signUpMessage}</p>
         </div>
-        </form>
+      </form>
       <Nav />
     </>
   );
