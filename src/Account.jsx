@@ -167,7 +167,7 @@ export default function Account() {
           </div>
         </form>
         <h2>Delete Account</h2>
-        <div className="div-login">
+        <div className="div-delete-account">
           <div className="div-input-group">
             <button id="delete-account-btn" onClick={goDeleteAccount}>
               Go Delete Account

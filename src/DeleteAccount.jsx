@@ -74,7 +74,7 @@ export default function DeleteAccount() {
         <p>All of your cards and collections will be deleted as well</p>
         <p>This action cannot be undone</p>
         <form id="delete-form" className="form-card">
-          <div className="div-login">
+          <div className="div-delete-account">
             <div className="div-input-group">
               <label htmlFor="delete-password-input">Password:</label>
               <input
