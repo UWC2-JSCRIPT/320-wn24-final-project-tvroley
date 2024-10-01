@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
 import firebaseApp from "./firebaseApp";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  updateProfile,
   onAuthStateChanged,
   reauthenticateWithCredential,
   EmailAuthProvider,
@@ -18,6 +18,7 @@ export default function Account() {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [resultMessage, setResultMessage] = useState(``);
   const server = new Mongo();
+  const navigate = useNavigate();
   let currentUser;
 
   onAuthStateChanged(getAuth(firebaseApp), (user) => {
@@ -95,63 +96,71 @@ export default function Account() {
       );
   };
 
+  const goDeleteAccount = (event) => {
+    navigate("/deleteaccount");
+  };
+
   return (
     <>
       <h1>My Account</h1>
       <div>
-        <p>Change Password</p>
+        <h2>Change Password</h2>
         <form id="password-form" className="form-card">
           <div className="div-login">
             <div className="div-input-group">
-                <label htmlFor="old-password-input">Old Password:</label>
-                <input
-                  id="old-password-input"
-                  type="password"
-                  autoComplete="false"
-                  min="1"
-                  max="100"
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  value={oldPassword}
-                  required
-                />
-                <label htmlFor="new-password-input">New Password:</label>
-                <input
-                  id="new-password-input"
-                  type="password"
-                  autoComplete="false"
-                  min="1"
-                  max="100"
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  value={newPassword}
-                  required
-                />
-                <label htmlFor="new-password-confirm-input">
-                  New Password Confirm:
-                </label>
-                <input
-                  id="new-password-confirm-input"
-                  type="password"
-                  autoComplete="false"
-                  min="1"
-                  max="100"
-                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                  value={newPasswordConfirm}
-                  required
-                />
-                <div className="div-input-group">
-                    <div className="div-input-group">
-                      <input
-                        id="change-password-btn"
-                        className="btn"
-                        type="submit"
-                        value="Change Password"
-                        onClick={changePassword}
-                      />
-                    </div>
-                </div>
+              <label htmlFor="old-password-input">Old Password:</label>
+              <input
+                id="old-password-input"
+                type="password"
+                autoComplete="false"
+                min="1"
+                max="100"
+                onChange={(e) => setOldPassword(e.target.value)}
+                value={oldPassword}
+                required
+              />
+              <label htmlFor="new-password-input">New Password:</label>
+              <input
+                id="new-password-input"
+                type="password"
+                autoComplete="false"
+                min="1"
+                max="100"
+                onChange={(e) => setNewPassword(e.target.value)}
+                value={newPassword}
+                required
+              />
+              <label htmlFor="new-password-confirm-input">
+                New Password Confirm:
+              </label>
+              <input
+                id="new-password-confirm-input"
+                type="password"
+                autoComplete="false"
+                min="1"
+                max="100"
+                onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                value={newPasswordConfirm}
+                required
+              />
+              <input
+                id="change-password-btn"
+                className="btn"
+                type="submit"
+                value="Change Password"
+                onClick={changePassword}
+              />
             </div>
           </div>
         </form>
+        <h2>Delete Account</h2>
+        <div className="div-login">
+          <div className="div-input-group">
+            <button id="delete-account-btn" onClick={goDeleteAccount}>
+              Go Delete Account
+            </button>
+          </div>
+        </div>
         <div className="div-enter-collection">
           <p>{resultMessage}</p>
         </div>
