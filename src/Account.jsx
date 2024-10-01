@@ -24,11 +24,17 @@ export default function Account() {
   onAuthStateChanged(getAuth(firebaseApp), (user) => {
     if (user) {
       currentUser = user;
+    } else {
+      currentUser = null;
     }
   });
 
   const changePassword = async (event) => {
     event.preventDefault();
+    if(!currentUser){
+      setResultMessage("You need to login to change your password");
+      return;
+    }
     const passwordRegEx =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&^]{8,30}$/;
     if (!passwordRegEx.test(newPassword)) {
@@ -97,6 +103,10 @@ export default function Account() {
   };
 
   const goDeleteAccount = (event) => {
+    if(!currentUser){
+      setResultMessage("You need to login to delete your account");
+      return;
+    }
     navigate("/deleteaccount");
   };
 
@@ -152,6 +162,9 @@ export default function Account() {
               />
             </div>
           </div>
+          <div className="div-enter-collection">
+            <p>{resultMessage}</p>
+          </div>
         </form>
         <h2>Delete Account</h2>
         <div className="div-login">
@@ -161,10 +174,7 @@ export default function Account() {
             </button>
           </div>
         </div>
-        <div className="div-enter-collection">
-          <p>{resultMessage}</p>
-        </div>
-      </div>
+      </div>      
       <Nav />
     </>
   );
