@@ -193,6 +193,17 @@
   margin-bottom: 1em;
 }
 
+.div-delete-account {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: rgb(246, 91, 91);
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 .div-card-buttons {
   display: flex;
   flex-direction: row;
