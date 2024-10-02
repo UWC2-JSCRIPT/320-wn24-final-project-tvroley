@@ -86,6 +86,43 @@ class Mongo {
       },
     });
   }
+
+  getAllCards() {
+    let urlGetAllCards = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/`,
+    );
+    return fetch(urlGetAllCards, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  searchAllCards(searchQuery) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/search`,
+    );
+    url.searchParams.append("search", searchQuery);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
 }
 
 export default Mongo;
