@@ -2,30 +2,25 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import TradingCard from "./TradingCard";
 import Nav from "./Nav";
+import Mongo from "./Mongo";
 
 function FindAnyCard({}) {
   const [tradingCards, setTradingCards] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [offset, setOffset] = useState(0);
+  const [username, setUsername] = useState(
+    localStorage.getItem("cardsUsername"),
+  );
+  const server = new Mongo();
 
   useEffect(() => {
     const getData = async () => {
-      let urlGetAllCards = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/`,
-      );
-      const responseGetAllCards = await fetch(urlGetAllCards, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
+      if (!username) {
+        setErrorMessage("You need to login to use the find any card page");
+        return;
+      }
+      const responseGetAllCards = await server.getAllCards();
       if (responseGetAllCards.status === 200) {
         const data = await responseGetAllCards.json();
         const myCards = data.cards;
@@ -42,25 +37,14 @@ function FindAnyCard({}) {
   }, []);
 
   const searchAllCards = async (event) => {
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/cards/search`,
-    );
-    url.searchParams.append("search", searchQuery);
-    const response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
+    if (!username) {
+      setErrorMessage("You need to login to search for any card");
+      return;
+    }
+    const response = await server.searchAllCards(searchQuery);
 
-    const responseData = await response.json();
     if (response.status === 200) {
+      const responseData = await response.json();
       setTradingCards(responseData.cards);
       setOffset(0);
     } else {
