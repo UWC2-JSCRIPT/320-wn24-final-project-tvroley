@@ -31,7 +31,7 @@ export default function Account() {
 
   const changePassword = async (event) => {
     event.preventDefault();
-    if(!currentUser){
+    if (!currentUser) {
       setResultMessage("You need to login to change your password");
       return;
     }
@@ -103,7 +103,7 @@ export default function Account() {
   };
 
   const goDeleteAccount = (event) => {
-    if(!currentUser){
+    if (!currentUser) {
       setResultMessage("You need to login to delete your account");
       return;
     }
@@ -174,7 +174,7 @@ export default function Account() {
             </button>
           </div>
         </div>
-      </div>      
+      </div>
       <Nav />
     </>
   );

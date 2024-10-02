@@ -75,8 +75,7 @@ class Mongo {
 
   deleteCard(cardId) {
     let urlDeleteCard = new URL(
-      `https://trading-cards-backend-production.up.railway.app/cards/` +
-        cardId,
+      `https://trading-cards-backend-production.up.railway.app/cards/` + cardId,
     );
     return fetch(urlDeleteCard, {
       method: "DELETE",

@@ -15,25 +15,31 @@ function DeleteCard({}) {
 
   const deleteCard = async (event) => {
     event.preventDefault();
-    
+
     const responseDeleteCard = await server.deleteCard(tradingCard._id);
     if (responseDeleteCard.status === 200) {
       const storage = getStorage();
       const frontImageRef = ref(storage, `images/${tradingCard._id}-front`);
 
-      deleteObject(frontImageRef).then(() => {
-        setFrontMessage(`Deleted front of card image`);
-      }).catch((error) => {
-        setFrontMessage(`Error deleting front of card image: ${error.message}`);
-      });
+      deleteObject(frontImageRef)
+        .then(() => {
+          setFrontMessage(`Deleted front of card image`);
+        })
+        .catch((error) => {
+          setFrontMessage(
+            `Error deleting front of card image: ${error.message}`,
+          );
+        });
 
       const backImageRef = ref(storage, `images/${tradingCard._id}-back`);
 
-      deleteObject(backImageRef).then(() => {
-        setBackMessage(`Deleted back of card image`);
-      }).catch((error) => {
-        setBackMessage(`Error deleting back of card image: ${error.message}`);
-      });
+      deleteObject(backImageRef)
+        .then(() => {
+          setBackMessage(`Deleted back of card image`);
+        })
+        .catch((error) => {
+          setBackMessage(`Error deleting back of card image: ${error.message}`);
+        });
 
       setResultMessage(
         `Deleted ${tradingCard.gradingCompany} ${tradingCard.certificationNumber}`,
