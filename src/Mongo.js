@@ -72,6 +72,21 @@ class Mongo {
       },
     });
   }
+
+  deleteCard(cardId) {
+    let urlDeleteCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/` +
+        cardId,
+    );
+    return fetch(urlDeleteCard, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+      },
+    });
+  }
 }
 
 export default Mongo;
