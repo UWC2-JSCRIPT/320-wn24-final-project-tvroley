@@ -30,7 +30,7 @@ function AllCollections({}) {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
@@ -77,7 +77,7 @@ function AllCollections({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -104,7 +104,7 @@ function AllCollections({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",

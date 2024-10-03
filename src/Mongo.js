@@ -51,7 +51,7 @@ class Mongo {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -68,7 +68,7 @@ class Mongo {
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
     });
   }
@@ -82,7 +82,7 @@ class Mongo {
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
     });
   }
@@ -98,7 +98,7 @@ class Mongo {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -117,7 +117,7 @@ class Mongo {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",

@@ -13,7 +13,7 @@ function CardCollection({}) {
   const [collectionId, setCollectionId] = useState("");
   const [collectionTitle, setCollectionTitle] = useState("");
   const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+    sessionStorage.getItem("cardsUsername"),
   );
   const [collections, setCollections] = useState([]);
   const [currentCollection, setCurrentCollection] = useState({});
@@ -44,7 +44,7 @@ function CardCollection({}) {
           credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+            Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
           },
           redirect: "follow",
           referrerPolicy: "no-referrer",
@@ -75,7 +75,7 @@ function CardCollection({}) {
               credentials: "same-origin",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+                Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
               },
               redirect: "follow",
               referrerPolicy: "no-referrer",
@@ -133,7 +133,7 @@ function CardCollection({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -163,7 +163,7 @@ function CardCollection({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -204,7 +204,7 @@ function CardCollection({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
@@ -221,7 +221,7 @@ function CardCollection({}) {
 
   const saveLocal = () => {
     const cardsWord = JSON.stringify(tradingCardCollection);
-    localStorage.setItem("cards", cardsWord);
+    sessionStorage.setItem("cards", cardsWord);
   };
 
   const searchCollection = async (event) => {
@@ -239,7 +239,7 @@ function CardCollection({}) {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",

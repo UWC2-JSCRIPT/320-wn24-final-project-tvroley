@@ -5,7 +5,7 @@ function ManageCollections({}) {
   const [resultMessage, setResultMessage] = useState([]);
   const [collections, setCollections] = useState([]);
   const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+    sessionStorage.getItem("cardsUsername"),
   );
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function ManageCollections({}) {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
@@ -68,7 +68,7 @@ function ManageCollections({}) {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
       });
       if (responseDeleteCollections.status === 200) {

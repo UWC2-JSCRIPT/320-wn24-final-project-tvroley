@@ -28,8 +28,8 @@ export default function Home() {
         if (response.status === 200) {
           response.json().then((data) => {
             setToken(data.token);
-            localStorage.setItem("cardsToken", data.token);
-            localStorage.setItem("cardsUsername", data.username);
+            sessionStorage.setItem("cardsToken", data.token);
+            sessionStorage.setItem("cardsUsername", data.username);
             setResultMessage(`Welcome ${data.username}`);
             setPassword(``);
             setUsername(``);
@@ -51,8 +51,8 @@ export default function Home() {
                 if (loginResponse.status === 200) {
                   loginResponse.json().then((data) => {
                     setToken(data.token);
-                    localStorage.setItem("cardsToken", data.token);
-                    localStorage.setItem("cardsUsername", data.username);
+                    sessionStorage.setItem("cardsToken", data.token);
+                    sessionStorage.setItem("cardsUsername", data.username);
                     setResultMessage(`Welcome ${data.username}`);
                     setPassword(``);
                     setUsername(``);
@@ -95,8 +95,8 @@ export default function Home() {
   };
 
   const logout = () => {
-    localStorage.removeItem("cardsToken");
-    localStorage.removeItem("cardsUsername");
+    sessionStorage.removeItem("cardsToken");
+    sessionStorage.removeItem("cardsUsername");
     const auth = getAuth(firebaseApp);
     signOut(auth)
       .then((result) => {

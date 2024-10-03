@@ -68,8 +68,8 @@ export default function Account() {
                   );
                   if (response.status === 200) {
                     response.json().then((data) => {
-                      localStorage.setItem("cardsToken", data.token);
-                      localStorage.setItem("cardsUsername", data.username);
+                      sessionStorage.setItem("cardsToken", data.token);
+                      sessionStorage.setItem("cardsUsername", data.username);
                       setResultMessage("Password successfully changed");
                     });
                   } else {

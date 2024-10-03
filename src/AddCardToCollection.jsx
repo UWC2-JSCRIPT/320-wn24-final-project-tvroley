@@ -13,7 +13,7 @@ function AddCardToCollection({}) {
   const collections = myCollections;
   const [collectionsForCard, setCollectionsForCard] = useState([]);
   const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+    sessionStorage.getItem("cardsUsername"),
   );
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function AddCardToCollection({}) {
           credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+            Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
           },
           redirect: "follow",
           referrerPolicy: "no-referrer",
@@ -102,7 +102,7 @@ function AddCardToCollection({}) {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         body: JSON.stringify(cardIdObj),
       });
@@ -139,7 +139,7 @@ function AddCardToCollection({}) {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
       });
       if (responseDeleteCollections.status === 200) {
