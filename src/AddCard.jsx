@@ -87,7 +87,7 @@ function AddCard({}) {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
@@ -163,7 +163,7 @@ function AddCard({}) {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         body: JSON.stringify(card),
       });
@@ -202,7 +202,7 @@ function AddCard({}) {
               mode: "cors",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+                Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
               },
             });
 
@@ -242,7 +242,7 @@ function AddCard({}) {
                   headers: {
                     "Content-Type": "application/json",
                     Authorization:
-                      "Bearer " + localStorage.getItem("cardsToken"),
+                      "Bearer " + sessionStorage.getItem("cardsToken"),
                   },
                 });
 
@@ -343,7 +343,7 @@ function AddCard({}) {
     <>
       <div className="div-add-cards">
         <h3>
-          Add card to {localStorage.getItem("cardsUsername")} base collection
+          Add card to {sessionStorage.getItem("cardsUsername")} base collection
         </h3>
         <form id="card-form" className="form-card">
           <div className="div-input-group">

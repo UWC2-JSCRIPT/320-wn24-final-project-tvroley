@@ -44,8 +44,8 @@ export default function DeleteAccount() {
             const deleteResponse = await server.deleteAccount();
             if (deleteResponse.status === 200) {
               setResultMessage("Your account was successfully deleted");
-              localStorage.removeItem("cardsToken");
-              localStorage.removeItem("cardsUsername");
+              sessionStorage.removeItem("cardsToken");
+              sessionStorage.removeItem("cardsUsername");
               navigate("/");
             } else {
               setResultMessage(

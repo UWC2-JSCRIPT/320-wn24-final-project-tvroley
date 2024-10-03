@@ -10,7 +10,7 @@ function FindAnyCard({}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [offset, setOffset] = useState(0);
   const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+    sessionStorage.getItem("cardsUsername"),
   );
   const server = new Mongo();
 

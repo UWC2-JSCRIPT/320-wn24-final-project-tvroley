@@ -26,7 +26,7 @@ function EditCard({}) {
     location.state.frontCardImageURL,
   );
   const [username, setUsername] = useState(
-    localStorage.getItem("cardsUsername"),
+    sessionStorage.getItem("cardsUsername"),
   );
   let uid;
   const fiveMB = 5 * 1024 * 1024;
@@ -48,7 +48,7 @@ function EditCard({}) {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
@@ -148,7 +148,7 @@ function EditCard({}) {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("cardsToken"),
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
         },
         redirect: "follow",
         referrerPolicy: "no-referrer",
