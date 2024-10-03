@@ -249,6 +249,9 @@ function CardCollection({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
       setOffset(0);
+      if(responseData.tradingCards.length > 0){
+        document.getElementById("card-collection-div").scrollIntoView();
+      }
     } else {
       setErrorMessage(`Error: failed to search for cards`);
     }
@@ -342,7 +345,7 @@ function CardCollection({}) {
         setTradingCardCollection={setTradingCardCollection}
         setOffset={setOffset}
       />
-      <div className="div-cards">
+      <div className="div-cards" id="card-collection-div">
         {tradingCardCollection.map((card, index) => {
           if (
             index < offset ||
