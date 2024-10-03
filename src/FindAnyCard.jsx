@@ -47,6 +47,9 @@ function FindAnyCard({}) {
       const responseData = await response.json();
       setTradingCards(responseData.cards);
       setOffset(0);
+      if(responseData.cards.length > 0){
+        document.getElementById("card-collection-div").scrollIntoView();
+      }
     } else {
       setErrorMessage(`Error: failed to search for cards`);
     }
@@ -101,7 +104,7 @@ function FindAnyCard({}) {
           <button onClick={searchAllCards}>Search</button>
         </div>
       </div>
-      <div className="div-cards">
+      <div id="card-collection-div" className="div-cards">
         {tradingCards.map((card, index) => {
           if (
             index < offset ||
