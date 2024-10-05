@@ -5,10 +5,21 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signOut,
 } from "firebase/auth";
 import Mongo from "./Mongo";
 import firebaseApp from "./firebaseApp";
+import db from "./db";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  collection,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -17,6 +28,8 @@ export default function Home() {
   const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
   const [logoutMessage, setLogoutMessage] = useState(``);
+  const [passwordResetMessage, setPasswordResetMessage] = useState(``);
+  const [passwordResetEmail, setPasswordResetEmail] = useState(``);
   const mongo = new Mongo();
 
   const login = async (event) => {
@@ -47,29 +60,100 @@ export default function Home() {
             );
             if (signUpResponse.status === 200) {
               signUpResponse.json().then(async (signUpData) => {
-                const loginResponse = await mongo.login(email, password);
-                if (loginResponse.status === 200) {
-                  loginResponse.json().then((data) => {
-                    setToken(data.token);
-                    sessionStorage.setItem("cardsToken", data.token);
-                    sessionStorage.setItem("cardsUsername", data.username);
-                    setResultMessage(`Welcome ${data.username}`);
-                    setPassword(``);
-                    setUsername(``);
-                    setLogoutMessage(``);
-                    setEmail(``);
-                    goCollection();
+                setDoc(doc(db, "users", userCredential.user.uid), {
+                  mongoPassword: password,
+                })
+                  .then(async () => {
+                    const loginResponse = await mongo.login(email, password);
+                    if (loginResponse.status === 200) {
+                      loginResponse.json().then((data) => {
+                        setToken(data.token);
+                        sessionStorage.setItem("cardsToken", data.token);
+                        sessionStorage.setItem("cardsUsername", data.username);
+                        setResultMessage(`Welcome ${data.username}`);
+                        setPassword(``);
+                        setUsername(``);
+                        setLogoutMessage(``);
+                        setEmail(``);
+                        goCollection();
+                      });
+                    } else {
+                      setResultMessage(
+                        `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    setResultMessage(
+                      `Error logging in for the first time.  Please try again or contact website admin ${error.status} ${error.statusText}`,
+                    );
+                  });
+              });
+            } else {
+              let mongoPassword;
+              const docref = doc(db, "users", auth.currentUser.uid);
+              const docsnap = await getDoc(docref);
+              if (docsnap.exists()) {
+                mongoPassword = docsnap.data().mongoPassword;
+              } else {
+                setResultMessage(`Error logging in with new password`);
+              }
+              if (mongoPassword) {
+                const mongoLoginResponse = await mongo.login(
+                  email,
+                  mongoPassword,
+                );
+                if (mongoLoginResponse.status === 200) {
+                  mongoLoginResponse.json().then(async (data) => {
+                    const mongoToken = data.token;
+                    const changePasswordResp =
+                      await mongo.changePasswordWithToken(password, mongoToken);
+                    if (changePasswordResp.status === 200) {
+                      setDoc(doc(db, "users", auth.currentUser.uid), {
+                        mongoPassword: password,
+                      })
+                        .then(() => {})
+                        .catch((error) => {
+                          setResultMessage(
+                            `Error logging in with new password: ${error.message}`,
+                          );
+                        });
+                      const secondLoginResponse = await mongo.login(
+                        email,
+                        password,
+                      );
+                      if (secondLoginResponse.status === 200) {
+                        secondLoginResponse.json().then((data) => {
+                          setToken(data.token);
+                          sessionStorage.setItem("cardsToken", data.token);
+                          sessionStorage.setItem(
+                            "cardsUsername",
+                            data.username,
+                          );
+                          setResultMessage(`Welcome ${data.username}`);
+                          setPassword(``);
+                          setUsername(``);
+                          setLogoutMessage(``);
+                          setEmail(``);
+                          goCollection();
+                        });
+                      } else {
+                        setResultMessage(
+                          `Error logging in: ${secondLoginResponse.status} ${secondLoginResponse.statusText}`,
+                        );
+                      }
+                    } else {
+                      setResultMessage(
+                        `Error logging in with new password: ${changePasswordResp.status}`,
+                      );
+                    }
                   });
                 } else {
                   setResultMessage(
-                    `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                    `Error logging in: ${signUpResponse.status} ${signUpResponse.statusText}`,
                   );
                 }
-              });
-            } else {
-              setResultMessage(
-                `Error setting up account for first time login: ${signUpResponse.status} ${signUpResponse.statusText}`,
-              );
+              }
             }
           } else {
             sendEmailVerification(userCredential.user)
@@ -121,9 +205,23 @@ export default function Home() {
     navigate("/allcollections");
   };
 
+  const sendPasswordEmail = () => {
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, passwordResetEmail)
+      .then(() => {
+        setPasswordResetMessage(
+          `Password reset email sent to ${passwordResetEmail}`,
+        );
+      })
+      .catch((error) => {
+        setPasswordResetMessage(`Error sending password reset`);
+      });
+  };
+
   return (
     <>
       <h2>Welcome To Card Collections!</h2>
+      <h3>Log In</h3>
       <p>
         If you have an account, login and go to "My Collection" to manage and
         view your collection
@@ -172,6 +270,28 @@ export default function Home() {
           My Collection
         </button>
       </div>
+      <h3>Forgot Password?</h3>
+      <div className="div-login">
+        <div className="div-enter-collection">
+          <label htmlFor="password-reset-email-input">Email:</label>
+          <input
+            id="password-reset-email-input"
+            type="text"
+            min="1"
+            max="50"
+            onChange={(e) => setPasswordResetEmail(e.target.value)}
+            value={passwordResetEmail}
+            required
+          />
+        </div>
+        <div className="div-input-group">
+          <button id="password-reset-email-btn" onClick={sendPasswordEmail}>
+            Send Reset Password Email
+          </button>
+        </div>
+      </div>
+      <p>{passwordResetMessage}</p>
+      <h3>Sign Up</h3>
       <p>
         If you would like an account for your trading card collections, sign up
         below
@@ -193,7 +313,9 @@ export default function Home() {
         </div>
       </div>
       <div className="div-logout">
-        <button onClick={logout}>Logout</button>
+        <button onClick={logout} id="logout-btn">
+          Logout
+        </button>
       </div>
       <p>{logoutMessage}</p>
       <Nav />
