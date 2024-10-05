@@ -11,6 +11,8 @@ import {
   updatePassword,
 } from "firebase/auth";
 import Mongo from "./Mongo";
+import { doc, setDoc } from "firebase/firestore";
+import db from "./db";
 
 export default function Account() {
   const [oldPassword, setOldPassword] = useState("");
@@ -60,27 +62,44 @@ export default function Account() {
           .then(async () => {
             const responsePassword = await server.changePassword(newPassword);
             if (responsePassword.status === 200) {
-              signInWithEmailAndPassword(auth, currentUser.email, newPassword)
-                .then(async (userCredential) => {
-                  const response = await server.login(
+              setDoc(doc(db, "users", currentUser.uid), {
+                mongoPassword: newPassword,
+              })
+                .then(() => {
+                  signInWithEmailAndPassword(
+                    auth,
                     currentUser.email,
                     newPassword,
-                  );
-                  if (response.status === 200) {
-                    response.json().then((data) => {
-                      sessionStorage.setItem("cardsToken", data.token);
-                      sessionStorage.setItem("cardsUsername", data.username);
-                      setResultMessage("Password successfully changed");
+                  )
+                    .then(async (userCredential) => {
+                      const response = await server.login(
+                        currentUser.email,
+                        newPassword,
+                      );
+                      if (response.status === 200) {
+                        response.json().then((data) => {
+                          sessionStorage.setItem("cardsToken", data.token);
+                          sessionStorage.setItem(
+                            "cardsUsername",
+                            data.username,
+                          );
+                          setResultMessage("Password successfully changed");
+                        });
+                      } else {
+                        setResultMessage(
+                          `Error singing in with new password: ${response.status} ${response.statusText}`,
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      setResultMessage(
+                        `Error logging in with new password: ${error.code} ${error.message}`,
+                      );
                     });
-                  } else {
-                    setResultMessage(
-                      `Error singing in with new password: ${response.status} ${response.statusText}`,
-                    );
-                  }
                 })
                 .catch((error) => {
                   setResultMessage(
-                    `Error logging in with new password: ${error.code} ${error.message}`,
+                    `Error setting new password: ${error.code} ${error.message}`,
                   );
                 });
             } else {

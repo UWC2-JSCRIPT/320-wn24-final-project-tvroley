@@ -47,7 +47,7 @@ function FindAnyCard({}) {
       const responseData = await response.json();
       setTradingCards(responseData.cards);
       setOffset(0);
-      if(responseData.cards.length > 0){
+      if (responseData.cards.length > 0) {
         document.getElementById("card-collection-div").scrollIntoView();
       }
     } else {

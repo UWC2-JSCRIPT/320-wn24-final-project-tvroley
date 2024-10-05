@@ -249,7 +249,7 @@ function CardCollection({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
       setOffset(0);
-      if(responseData.tradingCards.length > 0){
+      if (responseData.tradingCards.length > 0) {
         document.getElementById("card-collection-div").scrollIntoView();
       }
     } else {
