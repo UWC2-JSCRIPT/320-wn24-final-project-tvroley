@@ -22,7 +22,7 @@ export default function Account() {
   const [resultMessage, setResultMessage] = useState(``);
   const server = new Mongo();
   const navigate = useNavigate();
-  const secret = import.meta.env.CRYPTO_SECRET;
+  const secret = import.meta.env.VITE_CRYPTO_SECRET;
   let currentUser;
 
   onAuthStateChanged(getAuth(firebaseApp), (user) => {
