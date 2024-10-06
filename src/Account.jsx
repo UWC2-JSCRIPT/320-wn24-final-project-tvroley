@@ -13,6 +13,7 @@ import {
 import Mongo from "./Mongo";
 import { doc, setDoc } from "firebase/firestore";
 import db from "./db";
+import { encrypt } from "sjcl";
 
 export default function Account() {
   const [oldPassword, setOldPassword] = useState("");
@@ -21,6 +22,7 @@ export default function Account() {
   const [resultMessage, setResultMessage] = useState(``);
   const server = new Mongo();
   const navigate = useNavigate();
+  const secret = import.meta.env.CRYPTO_SECRET;
   let currentUser;
 
   onAuthStateChanged(getAuth(firebaseApp), (user) => {
@@ -62,8 +64,9 @@ export default function Account() {
           .then(async () => {
             const responsePassword = await server.changePassword(newPassword);
             if (responsePassword.status === 200) {
+              const codedObj = encrypt(secret, newPassword);
               setDoc(doc(db, "users", currentUser.uid), {
-                mongoPassword: newPassword,
+                mongoPassword: codedObj,
               })
                 .then(() => {
                   signInWithEmailAndPassword(

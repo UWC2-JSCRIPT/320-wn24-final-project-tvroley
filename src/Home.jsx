@@ -11,15 +11,8 @@ import {
 import Mongo from "./Mongo";
 import firebaseApp from "./firebaseApp";
 import db from "./db";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  query,
-  collection,
-  onSnapshot,
-  where,
-} from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { encrypt, decrypt } from "sjcl";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -31,6 +24,7 @@ export default function Home() {
   const [passwordResetMessage, setPasswordResetMessage] = useState(``);
   const [passwordResetEmail, setPasswordResetEmail] = useState(``);
   const mongo = new Mongo();
+  const secret = import.meta.env.CRYPTO_SECRET;
 
   const login = async (event) => {
     event.preventDefault();
@@ -60,8 +54,9 @@ export default function Home() {
             );
             if (signUpResponse.status === 200) {
               signUpResponse.json().then(async (signUpData) => {
+                const codedObj = encrypt(secret, password);
                 setDoc(doc(db, "users", userCredential.user.uid), {
-                  mongoPassword: password,
+                  mongoPassword: codedObj,
                 })
                   .then(async () => {
                     const loginResponse = await mongo.login(email, password);
@@ -94,7 +89,8 @@ export default function Home() {
               const docref = doc(db, "users", auth.currentUser.uid);
               const docsnap = await getDoc(docref);
               if (docsnap.exists()) {
-                mongoPassword = docsnap.data().mongoPassword;
+                const coded = docsnap.data().mongoPassword;
+                mongoPassword = decrypt(secret, coded);
               } else {
                 setResultMessage(`Error logging in with new password`);
               }
@@ -109,8 +105,9 @@ export default function Home() {
                     const changePasswordResp =
                       await mongo.changePasswordWithToken(password, mongoToken);
                     if (changePasswordResp.status === 200) {
+                      const codedObj = encrypt(secret, password);
                       setDoc(doc(db, "users", auth.currentUser.uid), {
-                        mongoPassword: password,
+                        mongoPassword: codedObj,
                       })
                         .then(() => {})
                         .catch((error) => {
