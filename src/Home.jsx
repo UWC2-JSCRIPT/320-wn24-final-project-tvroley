@@ -24,7 +24,7 @@ export default function Home() {
   const [passwordResetMessage, setPasswordResetMessage] = useState(``);
   const [passwordResetEmail, setPasswordResetEmail] = useState(``);
   const mongo = new Mongo();
-  const secret = import.meta.env.CRYPTO_SECRET;
+  const secret = import.meta.env.VITE_CRYPTO_SECRET;
 
   const login = async (event) => {
     event.preventDefault();
