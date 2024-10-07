@@ -134,7 +134,7 @@ export default function Account() {
 
   return (
     <>
-      <h1>My Account</h1>
+      <h1>Account</h1>
       <div>
         <h2>Change Password</h2>
         <form id="password-form" className="form-card">

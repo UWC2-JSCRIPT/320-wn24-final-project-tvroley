@@ -100,6 +100,7 @@ export default function SignUp() {
   return (
     <>
       <form id="signup-form" className="form-card">
+        <h2>Sign Up</h2>
         <p>
           If you would like an account for your trading card collections, sign
           up below

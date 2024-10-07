@@ -262,11 +262,6 @@ export default function Home() {
         </div>
       </form>
       <p>{resultMessage}</p>
-      <div className="div-home-buttons">
-        <button id="collection-button" onClick={goCollection}>
-          My Collection
-        </button>
-      </div>
       <h3>Forgot Password?</h3>
       <div className="div-login">
         <div className="div-enter-collection">
@@ -297,17 +292,6 @@ export default function Home() {
         <button id="signup-button" onClick={goSignUp}>
           Sign Up
         </button>
-      </div>
-      <div>
-        <p>
-          If you don't have an account, and would like to view collections, go
-          to "All Collections"
-        </p>
-        <div className="div-home-buttons">
-          <button id="all-collections-button" onClick={goAllCollections}>
-            All Collections
-          </button>
-        </div>
       </div>
       <div className="div-logout">
         <button onClick={logout} id="logout-btn">

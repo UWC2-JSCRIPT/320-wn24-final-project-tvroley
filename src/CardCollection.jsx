@@ -275,7 +275,7 @@ function CardCollection({}) {
 
   return (
     <>
-      <h2>My Collections</h2>
+      <h2>My Collection</h2>
       <h3>{collectionTitle.toUpperCase()}</h3>
       <h4>{tradingCardCollection.length} Cards</h4>
       <p>{errorMessage}</p>
