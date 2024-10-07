@@ -98,7 +98,7 @@ function AllCollections({}) {
   };
 
   const collectionSearch = async (event) => {
-    if(!searchQuery || !username){
+    if (!searchQuery || !username) {
       return;
     }
     let url = new URL(

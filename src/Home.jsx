@@ -15,10 +15,8 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { encrypt, decrypt } from "sjcl";
 
 export default function Home() {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
   const [logoutMessage, setLogoutMessage] = useState(``);
   const [passwordResetMessage, setPasswordResetMessage] = useState(``);
@@ -34,12 +32,10 @@ export default function Home() {
         const response = await mongo.login(email, password);
         if (response.status === 200) {
           response.json().then((data) => {
-            setToken(data.token);
             sessionStorage.setItem("cardsToken", data.token);
             sessionStorage.setItem("cardsUsername", data.username);
             setResultMessage(`Welcome ${data.username}`);
             setPassword(``);
-            setUsername(``);
             setLogoutMessage(``);
             setEmail(``);
             goCollection();
@@ -62,12 +58,10 @@ export default function Home() {
                     const loginResponse = await mongo.login(email, password);
                     if (loginResponse.status === 200) {
                       loginResponse.json().then((data) => {
-                        setToken(data.token);
                         sessionStorage.setItem("cardsToken", data.token);
                         sessionStorage.setItem("cardsUsername", data.username);
                         setResultMessage(`Welcome ${data.username}`);
                         setPassword(``);
-                        setUsername(``);
                         setLogoutMessage(``);
                         setEmail(``);
                         goCollection();
@@ -121,7 +115,6 @@ export default function Home() {
                       );
                       if (secondLoginResponse.status === 200) {
                         secondLoginResponse.json().then((data) => {
-                          setToken(data.token);
                           sessionStorage.setItem("cardsToken", data.token);
                           sessionStorage.setItem(
                             "cardsUsername",
@@ -129,7 +122,6 @@ export default function Home() {
                           );
                           setResultMessage(`Welcome ${data.username}`);
                           setPassword(``);
-                          setUsername(``);
                           setLogoutMessage(``);
                           setEmail(``);
                           goCollection();
@@ -198,11 +190,10 @@ export default function Home() {
     navigate("/signup");
   };
 
-  const goAllCollections = () => {
-    navigate("/allcollections");
-  };
-
   const sendPasswordEmail = () => {
+    if (!passwordResetEmail) {
+      return;
+    }
     const auth = getAuth();
     sendPasswordResetEmail(auth, passwordResetEmail)
       .then(() => {

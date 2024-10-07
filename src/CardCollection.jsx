@@ -99,7 +99,7 @@ function CardCollection({}) {
   }, []);
 
   const goAdd = () => {
-    if(!username){
+    if (!username) {
       return;
     }
     navigate(`/collection/add`, {
@@ -108,7 +108,7 @@ function CardCollection({}) {
   };
 
   const goManageCollections = () => {
-    if(!username){
+    if (!username) {
       return;
     }
     navigate(`/collection/manage`);
@@ -127,7 +127,7 @@ function CardCollection({}) {
   };
 
   const addCollection = async (event) => {
-    if(!username || !addedCollection){
+    if (!username || !addedCollection) {
       return;
     }
     let countUrl = new URL(
@@ -190,7 +190,7 @@ function CardCollection({}) {
   };
 
   const changeCollection = async (event) => {
-    if(!username){
+    if (!username) {
       return;
     }
     setOffset(0);
@@ -230,7 +230,7 @@ function CardCollection({}) {
   };
 
   const searchCollection = async (event) => {
-    if(!username || !searchQuery){
+    if (!username || !searchQuery) {
       return;
     }
     setOffset(0);
