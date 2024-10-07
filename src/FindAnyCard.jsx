@@ -37,8 +37,7 @@ function FindAnyCard({}) {
   }, []);
 
   const searchAllCards = async (event) => {
-    if (!username) {
-      setErrorMessage("You need to login to search for any card");
+    if (!username || !searchQuery) {
       return;
     }
     const response = await server.searchAllCards(searchQuery);
