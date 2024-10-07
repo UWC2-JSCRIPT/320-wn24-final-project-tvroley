@@ -217,7 +217,7 @@ export default function Home() {
 
   return (
     <>
-      <h2>Welcome To Card Collections!</h2>
+      <h2>Welcome To Card Show Off!</h2>
       <h3>Log In</h3>
       <p>
         If you have an account, login and go to "My Collection" to manage and

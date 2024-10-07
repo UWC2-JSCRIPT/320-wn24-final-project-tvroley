@@ -17,7 +17,7 @@ import DeleteAccount from "./DeleteAccount";
 function App() {
   return (
     <div>
-      <h1>Card Collections</h1>
+      <h1>Card Show Off</h1>
       <p>version: {import.meta.env.VITE_APP_VERSION}</p>
       <Nav />
       <Routes>
