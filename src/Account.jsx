@@ -13,7 +13,6 @@ import {
 import Mongo from "./Mongo";
 import { doc, setDoc } from "firebase/firestore";
 import db from "./db";
-import { encrypt } from "sjcl";
 
 export default function Account() {
   const [oldPassword, setOldPassword] = useState("");
@@ -22,7 +21,6 @@ export default function Account() {
   const [resultMessage, setResultMessage] = useState(``);
   const server = new Mongo();
   const navigate = useNavigate();
-  const secret = import.meta.env.VITE_CRYPTO_SECRET;
   let currentUser;
 
   onAuthStateChanged(getAuth(firebaseApp), (user) => {
@@ -64,47 +62,56 @@ export default function Account() {
           .then(async () => {
             const responsePassword = await server.changePassword(newPassword);
             if (responsePassword.status === 200) {
-              const codedObj = encrypt(secret, newPassword);
-              setDoc(doc(db, "users", currentUser.uid), {
-                mongoPassword: codedObj,
-              })
-                .then(() => {
-                  signInWithEmailAndPassword(
-                    auth,
-                    currentUser.email,
-                    newPassword,
-                  )
-                    .then(async (userCredential) => {
-                      const response = await server.login(
+              const encryptResponse = await server.encrypt(newPassword);
+              if (encryptResponse.status === 200) {
+                encryptResponse.json().then((data) => {
+                  const coded = data.encrypted;
+                  setDoc(doc(db, "users", currentUser.uid), {
+                    mongoPassword: coded,
+                  })
+                    .then(() => {
+                      signInWithEmailAndPassword(
+                        auth,
                         currentUser.email,
                         newPassword,
-                      );
-                      if (response.status === 200) {
-                        response.json().then((data) => {
-                          sessionStorage.setItem("cardsToken", data.token);
-                          sessionStorage.setItem(
-                            "cardsUsername",
-                            data.username,
+                      )
+                        .then(async () => {
+                          const response = await server.login(
+                            currentUser.email,
+                            newPassword,
                           );
-                          setResultMessage("Password successfully changed");
+                          if (response.status === 200) {
+                            response.json().then((data) => {
+                              sessionStorage.setItem("cardsToken", data.token);
+                              sessionStorage.setItem(
+                                "cardsUsername",
+                                data.username,
+                              );
+                              setResultMessage("Password successfully changed");
+                            });
+                          } else {
+                            setResultMessage(
+                              `Error singing in with new password: ${response.status} ${response.statusText}`,
+                            );
+                          }
+                        })
+                        .catch((error) => {
+                          setResultMessage(
+                            `Error logging in with new password: ${error.code} ${error.message}`,
+                          );
                         });
-                      } else {
-                        setResultMessage(
-                          `Error singing in with new password: ${response.status} ${response.statusText}`,
-                        );
-                      }
                     })
                     .catch((error) => {
                       setResultMessage(
-                        `Error logging in with new password: ${error.code} ${error.message}`,
+                        `Error setting new password: ${error.code} ${error.message}`,
                       );
                     });
-                })
-                .catch((error) => {
-                  setResultMessage(
-                    `Error setting new password: ${error.code} ${error.message}`,
-                  );
                 });
+              } else {
+                setResultMessage(
+                  `Error changing password, please try again or contact website admin ${hashResponse.status} ${hashResponse.statusText}`,
+                );
+              }
             } else {
               setResultMessage(
                 `Error changing password, please try again or contact website admin ${responsePassword.status} ${responsePassword.statusText}`,

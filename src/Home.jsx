@@ -12,7 +12,6 @@ import Mongo from "./Mongo";
 import firebaseApp from "./firebaseApp";
 import db from "./db";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { encrypt, decrypt } from "sjcl";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -49,97 +48,137 @@ export default function Home() {
               password,
             );
             if (signUpResponse.status === 200) {
-              signUpResponse.json().then(async (signUpData) => {
-                const codedObj = encrypt(secret, password);
-                setDoc(doc(db, "users", userCredential.user.uid), {
-                  mongoPassword: codedObj,
-                })
-                  .then(async () => {
-                    const loginResponse = await mongo.login(email, password);
-                    if (loginResponse.status === 200) {
-                      loginResponse.json().then((data) => {
-                        sessionStorage.setItem("cardsToken", data.token);
-                        sessionStorage.setItem("cardsUsername", data.username);
-                        setResultMessage(`Welcome ${data.username}`);
-                        setPassword(``);
-                        setLogoutMessage(``);
-                        setEmail(``);
-                        goCollection();
+              signUpResponse.json().then(async () => {
+                const encryptResponse = await mongo.encrypt(password);
+                if (encryptResponse.status === 200) {
+                  encryptResponse.json().then((encryptData) => {
+                    const coded = encryptData.encrypted;
+                    setDoc(doc(db, "users", userCredential.user.uid), {
+                      mongoPassword: coded,
+                    })
+                      .then(async () => {
+                        const loginResponse = await mongo.login(
+                          email,
+                          password,
+                        );
+                        if (loginResponse.status === 200) {
+                          loginResponse.json().then((data) => {
+                            sessionStorage.setItem("cardsToken", data.token);
+                            sessionStorage.setItem(
+                              "cardsUsername",
+                              data.username,
+                            );
+                            setResultMessage(`Welcome ${data.username}`);
+                            setPassword(``);
+                            setLogoutMessage(``);
+                            setEmail(``);
+                            goCollection();
+                          });
+                        } else {
+                          setResultMessage(
+                            `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                          );
+                        }
+                      })
+                      .catch((error) => {
+                        setResultMessage(
+                          `Error logging in for the first time.  Please try again or contact website admin ${error.status} ${error.statusText}`,
+                        );
                       });
-                    } else {
-                      setResultMessage(
-                        `Error logging in for the first time: ${signUpResponse.status} ${signUpResponse.statusText}`,
-                      );
-                    }
-                  })
-                  .catch((error) => {
-                    setResultMessage(
-                      `Error logging in for the first time.  Please try again or contact website admin ${error.status} ${error.statusText}`,
-                    );
                   });
+                } else {
+                  setResultMessage(
+                    `Error logging in for the first time: ${encryptResponse.status} ${encryptResponse.statusText}`,
+                  );
+                }
               });
             } else {
               let mongoPassword;
               const docref = doc(db, "users", auth.currentUser.uid);
               const docsnap = await getDoc(docref);
               if (docsnap.exists()) {
-                const coded = docsnap.data().mongoPassword;
-                mongoPassword = decrypt(secret, coded);
+                mongoPassword = docsnap.data().mongoPassword;
               } else {
                 setResultMessage(`Error logging in with new password`);
               }
               if (mongoPassword) {
-                const mongoLoginResponse = await mongo.login(
-                  email,
-                  mongoPassword,
-                );
-                if (mongoLoginResponse.status === 200) {
-                  mongoLoginResponse.json().then(async (data) => {
-                    const mongoToken = data.token;
-                    const changePasswordResp =
-                      await mongo.changePasswordWithToken(password, mongoToken);
-                    if (changePasswordResp.status === 200) {
-                      const codedObj = encrypt(secret, password);
-                      setDoc(doc(db, "users", auth.currentUser.uid), {
-                        mongoPassword: codedObj,
-                      })
-                        .then(() => {})
-                        .catch((error) => {
+                const decryptResponse = await mongo.decrypt(mongoPassword);
+                if (decryptResponse.status === 200) {
+                  decryptResponse.json().then(async (decryptData) => {
+                    const plainText = decryptData.reversed;
+                    const mongoLoginResponse = await mongo.login(
+                      email,
+                      plainText,
+                    );
+                    if (mongoLoginResponse.status === 200) {
+                      mongoLoginResponse.json().then(async (data) => {
+                        const mongoToken = data.token;
+                        const changePasswordResp =
+                          await mongo.changePasswordWithToken(
+                            password,
+                            mongoToken,
+                          );
+                        if (changePasswordResp.status === 200) {
+                          const encryptResponse =
+                            await mongo.encrypt(password);
+                          if (encryptResponse.status === 200) {
+                            encryptResponse.json().then(async (encryptData) => {
+                              const coded = encryptData.encrypted;
+                              setDoc(doc(db, "users", auth.currentUser.uid), {
+                                mongoPassword: coded,
+                              })
+                                .then(() => {})
+                                .catch((error) => {
+                                  setResultMessage(
+                                    `Error logging in with new password: ${error.message}`,
+                                  );
+                                });
+                              const secondLoginResponse = await mongo.login(
+                                email,
+                                password,
+                              );
+                              if (secondLoginResponse.status === 200) {
+                                secondLoginResponse.json().then((data) => {
+                                  sessionStorage.setItem(
+                                    "cardsToken",
+                                    data.token,
+                                  );
+                                  sessionStorage.setItem(
+                                    "cardsUsername",
+                                    data.username,
+                                  );
+                                  setResultMessage(`Welcome ${data.username}`);
+                                  setPassword(``);
+                                  setLogoutMessage(``);
+                                  setEmail(``);
+                                  goCollection();
+                                });
+                              } else {
+                                setResultMessage(
+                                  `Error logging in: ${secondLoginResponse.status} ${secondLoginResponse.statusText}`,
+                                );
+                              }
+                            });
+                          } else {
+                            setResultMessage(
+                              `Error updating new password: ${hashResponse.status} ${hashResponse.statusText}`,
+                            );
+                          }
+                        } else {
                           setResultMessage(
-                            `Error logging in with new password: ${error.message}`,
+                            `Error logging in with new password: ${changePasswordResp.status}`,
                           );
-                        });
-                      const secondLoginResponse = await mongo.login(
-                        email,
-                        password,
-                      );
-                      if (secondLoginResponse.status === 200) {
-                        secondLoginResponse.json().then((data) => {
-                          sessionStorage.setItem("cardsToken", data.token);
-                          sessionStorage.setItem(
-                            "cardsUsername",
-                            data.username,
-                          );
-                          setResultMessage(`Welcome ${data.username}`);
-                          setPassword(``);
-                          setLogoutMessage(``);
-                          setEmail(``);
-                          goCollection();
-                        });
-                      } else {
-                        setResultMessage(
-                          `Error logging in: ${secondLoginResponse.status} ${secondLoginResponse.statusText}`,
-                        );
-                      }
+                        }
+                      });
                     } else {
                       setResultMessage(
-                        `Error logging in with new password: ${changePasswordResp.status}`,
+                        `Error logging in: ${signUpResponse.status} ${signUpResponse.statusText}`,
                       );
                     }
                   });
                 } else {
                   setResultMessage(
-                    `Error logging in: ${signUpResponse.status} ${signUpResponse.statusText}`,
+                    `Error setting up changed: ${decryptResponse.status} ${decryptResponse.statusText}`,
                   );
                 }
               }

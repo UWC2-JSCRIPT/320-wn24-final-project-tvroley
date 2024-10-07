@@ -142,6 +142,64 @@ class Mongo {
       referrerPolicy: "no-referrer",
     });
   }
+
+  hash(password) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/hash`,
+    );
+    url.searchParams.append("password", password);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  encrypt(password) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/encrypt`,
+    );
+    url.searchParams.append("password", password);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  decrypt(password) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/encrypt`,
+    );
+    url.searchParams.append("password", encodeURIComponent(password));
+    url.searchParams.append("option", "reverse");
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
 }
 
 export default Mongo;
