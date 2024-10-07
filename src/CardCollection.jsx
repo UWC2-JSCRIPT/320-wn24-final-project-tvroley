@@ -99,12 +99,18 @@ function CardCollection({}) {
   }, []);
 
   const goAdd = () => {
+    if(!username){
+      return;
+    }
     navigate(`/collection/add`, {
       state: { baseCollectionId: baseCollectionId },
     });
   };
 
   const goManageCollections = () => {
+    if(!username){
+      return;
+    }
     navigate(`/collection/manage`);
   };
 
@@ -121,6 +127,9 @@ function CardCollection({}) {
   };
 
   const addCollection = async (event) => {
+    if(!username || !addedCollection){
+      return;
+    }
     let countUrl = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
     );
@@ -181,6 +190,9 @@ function CardCollection({}) {
   };
 
   const changeCollection = async (event) => {
+    if(!username){
+      return;
+    }
     setOffset(0);
     const buttonCollection = event.target.innerText;
     const buttonCollectionArray = collections.filter(
@@ -217,12 +229,10 @@ function CardCollection({}) {
     }
   };
 
-  const saveLocal = () => {
-    const cardsWord = JSON.stringify(tradingCardCollection);
-    sessionStorage.setItem("cards", cardsWord);
-  };
-
   const searchCollection = async (event) => {
+    if(!username || !searchQuery){
+      return;
+    }
     setOffset(0);
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
@@ -382,9 +392,6 @@ function CardCollection({}) {
         setTradingCardCollection={setTradingCardCollection}
         setOffset={setOffset}
       />
-      <div className="div-restore-buttons">
-        <button onClick={saveLocal}>Save Cards Locally In Browser</button>
-      </div>
       <Nav />
     </>
   );
