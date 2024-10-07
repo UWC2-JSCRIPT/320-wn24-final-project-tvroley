@@ -29,9 +29,7 @@ function CardCollection({}) {
     const getData = async () => {
       setOffset(0);
       if (!username) {
-        setErrorMessage(
-          "You need to login to view your collections, or you can view the All Collections page to view collections of existing users",
-        );
+        setErrorMessage("You need to login to view your collections");
       } else {
         let urlGetCollections = new URL(
           `https://trading-cards-backend-production.up.railway.app/collections`,

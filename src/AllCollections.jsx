@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./App.css";
 import Nav from "./Nav";
 import TradingCard from "./TradingCard";
@@ -14,11 +13,17 @@ function AllCollections({}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedCollections, setSearchedCollections] = useState([]);
   const [offset, setOffset] = useState(0);
-
-  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [username, setUsername] = useState(
+    sessionStorage.getItem("cardsUsername"),
+  );
 
   useEffect(() => {
     const getData = async () => {
+      if (!username) {
+        setErrorMessage("You need to login to view All Collections");
+        return;
+      }
       let urlGetCollections = new URL(
         `https://trading-cards-backend-production.up.railway.app/collections`,
       );
@@ -93,6 +98,9 @@ function AllCollections({}) {
   };
 
   const collectionSearch = async (event) => {
+    if(!searchQuery || !username){
+      return;
+    }
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/search`,
     );
@@ -152,6 +160,7 @@ function AllCollections({}) {
       <h2>All Collections</h2>
       <h3>{collectionTitle.toUpperCase()}</h3>
       <h4>{tradingCardCollection.length} Cards</h4>
+      <p>{errorMessage}</p>
       <div>
         <div>
           <p className="p-instructions">Click on card images for full size</p>
