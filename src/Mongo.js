@@ -239,6 +239,24 @@ class Mongo {
       referrerPolicy: "no-referrer",
     });
   }
+
+  getCollectionsCount(){
+    let countUrl = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
+    );
+    return fetch(countUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
 }
 
 export default Mongo;

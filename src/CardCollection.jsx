@@ -100,22 +100,7 @@ function CardCollection({}) {
     if (!username || !addedCollection) {
       return;
     }
-    let countUrl = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
-    );
-    const countResponse = await fetch(countUrl, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
-
+    const countResponse = await server.getCollectionsCount();
     if (countResponse.status === 200) {
       const responseData = await countResponse.json();
       const count = responseData.count;
