@@ -257,6 +257,26 @@ class Mongo {
       referrerPolicy: "no-referrer",
     });
   }
+
+  addCollection(addedCollection){
+    const titleObj = { collectionTitle: addedCollection };
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/`,
+    );
+    return fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(titleObj),
+    });
+  }
 }
 
 export default Mongo;

@@ -114,23 +114,7 @@ function CardCollection({}) {
       setAddCollectionResult(`Could not count current collections`);
       return;
     }
-    const titleObj = { collectionTitle: addedCollection };
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/`,
-    );
-    const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(titleObj),
-    });
+    const response = await server.addCollection(addedCollection);
 
     if (response.status === 200) {
       const responseData = await response.json();
