@@ -4,6 +4,7 @@ import TradingCard from "./TradingCard";
 import { useNavigate } from "react-router-dom";
 import SortButtons from "./SortButtons";
 import Nav from "./Nav";
+import Mongo from "./Mongo";
 
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -24,6 +25,7 @@ function CardCollection({}) {
   const [offset, setOffset] = useState(0);
 
   const navigate = useNavigate();
+  const server = new Mongo();
 
   useEffect(() => {
     const getData = async () => {
@@ -31,22 +33,7 @@ function CardCollection({}) {
       if (!username) {
         setErrorMessage("You need to login to view your collections");
       } else {
-        let urlGetCollections = new URL(
-          `https://trading-cards-backend-production.up.railway.app/collections`,
-        );
-        urlGetCollections.searchParams.append("ownerName", username);
-        const responseGetCollections = await fetch(urlGetCollections, {
-          method: "GET",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-          },
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-        });
+        const responseGetCollections = await server.getCollections(username);
         if (responseGetCollections.status === 200) {
           const data = await responseGetCollections.json();
           const myCollections = data.collections;

@@ -200,6 +200,25 @@ class Mongo {
       referrerPolicy: "no-referrer",
     });
   }
+
+  getCollections(username){
+    let urlGetCollections = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections`,
+    );
+    urlGetCollections.searchParams.append("ownerName", username);
+    return fetch(urlGetCollections, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
 }
 
 export default Mongo;
