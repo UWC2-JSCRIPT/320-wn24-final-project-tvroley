@@ -48,26 +48,9 @@ function CardCollection({}) {
             setCollectionTitle(baseCollection.title);
             setCollections(myCollections);
 
-            let url = new URL(
-              `https://trading-cards-backend-production.up.railway.app/collections/` +
-                baseCollection._id,
-            );
-            url.searchParams.append("verbose", "true");
-            const response = await fetch(url, {
-              method: "GET",
-              mode: "cors",
-              cache: "no-cache",
-              credentials: "same-origin",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-              },
-              redirect: "follow",
-              referrerPolicy: "no-referrer",
-            });
-
-            const responseData = await response.json();
+            const response = await server.getCardsInCollection(baseCollection._id);
             if (response.status === 200) {
+              const responseData = await response.json();
               setTradingCardCollection(responseData.tradingCards);
             } else {
               setErrorMessage("Could not retrieve base collection");
