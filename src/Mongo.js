@@ -261,6 +261,26 @@ class Mongo {
     });
   }
 
+  getCardsCount(baseCollectionId){
+    let urlGetCardCount = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` +
+        baseCollectionId,
+    );
+
+    return fetch(urlGetCardCount, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
   getCollectionsCount(){
     let countUrl = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
@@ -276,6 +296,21 @@ class Mongo {
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
+    });
+  }
+
+  addCard(card){
+    let urlPostCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/`,
+    );
+    return fetch(urlPostCard, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      body: JSON.stringify(card),
     });
   }
 

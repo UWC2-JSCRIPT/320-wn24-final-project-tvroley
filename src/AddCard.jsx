@@ -5,6 +5,7 @@ import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Mongo from "./Mongo";
 
 function AddCard({}) {
   const [year, setYear] = useState(0);
@@ -21,6 +22,7 @@ function AddCard({}) {
   const location = useLocation();
   const baseCollectionId = location.state.baseCollectionId;
   const fiveMB = 5 * 1024 * 1024;
+  const server = new Mongo();
   let uid;
 
   const handleCheck = () => {
@@ -75,23 +77,7 @@ function AddCard({}) {
       backCardImageFileEl.classList.remove("invalid");
       frontCardImageFileEl.classList.remove("invalid");
 
-      let urlGetCardCount = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` +
-          baseCollectionId,
-      );
-
-      const responseGetCardCount = await fetch(urlGetCardCount, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
+      const responseGetCardCount = await server.getCardsCount(baseCollectionId);
       if (responseGetCardCount.status === 200) {
         const data = await responseGetCardCount.json();
         const cardCount = data.count;
@@ -155,18 +141,7 @@ function AddCard({}) {
         certificationNumber: certificationNumber,
         sold: false,
       };
-      let urlPostCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/`,
-      );
-      const responseAddCard = await fetch(urlPostCard, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        body: JSON.stringify(card),
-      });
+      const responseAddCard = await server.addCard(card);
       if (responseAddCard.status === 200) {
         const data = await responseAddCard.json();
         const cardId = data.card._id;
@@ -193,18 +168,7 @@ function AddCard({}) {
             }
           },
           async (error) => {
-            let urlDeleteCard = new URL(
-              `https://trading-cards-backend-production.up.railway.app/cards/` +
-                cardId,
-            );
-            await fetch(urlDeleteCard, {
-              method: "DELETE",
-              mode: "cors",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-              },
-            });
+            await server.deleteCard(cardId);
 
             setResultMessage(`Error uploading front card image: ${error}`);
           },
@@ -232,20 +196,7 @@ function AddCard({}) {
                 }
               },
               async (error) => {
-                let urlDeleteCard = new URL(
-                  `https://trading-cards-backend-production.up.railway.app/cards/` +
-                    cardId,
-                );
-                await fetch(urlDeleteCard, {
-                  method: "DELETE",
-                  mode: "cors",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization:
-                      "Bearer " + sessionStorage.getItem("cardsToken"),
-                  },
-                });
-
+                await server.deleteCard(cardId);
                 setResultMessage(`Error uploading back card image: ${error}`);
               },
               async () => {
