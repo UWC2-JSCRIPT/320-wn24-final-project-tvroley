@@ -241,6 +241,27 @@ class Mongo {
     });
   }
 
+  getCollectionsForCard(cardId){
+    let urlGetCollectionsForCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
+    );
+    return fetch(
+      urlGetCollectionsForCard,
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+      },
+    );
+  }
+
   getCardsInCollection(collectionId){
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
@@ -311,6 +332,39 @@ class Mongo {
         Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
       body: JSON.stringify(card),
+    });
+  }
+
+  removeCardFromCollection(collectionId, cardId){
+    let urlDeleteCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/forcard/`,
+    );
+    urlDeleteCard.searchParams.append("card", cardId);
+    urlDeleteCard.searchParams.append("collection", collectionId);
+    return fetch(urlDeleteCard, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+    });
+  }
+
+  addCardToCollection(collectionId, cardId){
+    let urlPostCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    const cardIdObj = { cardId: cardId };
+    return fetch(urlPostCard, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      body: JSON.stringify(cardIdObj),
     });
   }
 
