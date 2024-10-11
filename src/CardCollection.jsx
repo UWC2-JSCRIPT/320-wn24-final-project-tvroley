@@ -156,25 +156,7 @@ function CardCollection({}) {
       return;
     }
     setOffset(0);
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/` +
-        collectionId,
-    );
-    url.searchParams.append("verbose", "true");
-    url.searchParams.append("search", searchQuery);
-    const response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
-
+    const response = await server.searchCardsInCollection(collectionId, searchQuery);
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
