@@ -1,6 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import Mongo from "./Mongo";
 
 function AddCardToCollection({}) {
   const cardId = useLocation().pathname.split("/")[3];
@@ -15,27 +16,11 @@ function AddCardToCollection({}) {
   const [username, setUsername] = useState(
     sessionStorage.getItem("cardsUsername"),
   );
+  const server = new Mongo();
 
   useEffect(() => {
     const getData = async () => {
-      let urlGetCollectionsForCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
-      );
-      const responseGetCollectionsForCard = await fetch(
-        urlGetCollectionsForCard,
-        {
-          method: "GET",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-          },
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-        },
-      );
+      const responseGetCollectionsForCard = await server.getCollectionsForCard(cardId);
       let myCollectionsForCard = [];
       if (responseGetCollectionsForCard.status === 200) {
         const data = await responseGetCollectionsForCard.json();
@@ -92,21 +77,9 @@ function AddCardToCollection({}) {
     });
     collectionsToAddObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
-      let urlPostCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/` +
-          collectObj._id,
-      );
-      const cardIdObj = { cardId: cardId };
-      const responseGetCollections = await fetch(urlPostCard, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        body: JSON.stringify(cardIdObj),
-      });
-      if (responseGetCollections.status === 200) {
+      const collectionId = collectObj._id;
+      const respAddCardToCollect = await server.addCardToCollection(collectionId, cardId);
+      if (respAddCardToCollect.status === 200) {
         totalResultMessage.push(
           `Card successfully added to ${collectObj.title} collection`,
         );
@@ -129,19 +102,8 @@ function AddCardToCollection({}) {
     });
     collectionsToRemoveObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
-      let urlDeleteCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/forcard/`,
-      );
-      urlDeleteCard.searchParams.append("card", cardId);
-      urlDeleteCard.searchParams.append("collection", collectObj._id);
-      const responseDeleteCollections = await fetch(urlDeleteCard, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-      });
+      const collectionId = collectObj._id;
+      const responseDeleteCollections = await server.removeCardFromCollection(collectionId, cardId);
       if (responseDeleteCollections.status === 200) {
         totalResultMessage.push(
           `Card successfully removed from ${collectObj.title} collection`,

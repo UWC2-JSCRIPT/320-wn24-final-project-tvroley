@@ -231,9 +231,9 @@ function CardCollection({}) {
           />
           <button onClick={addCollection}>Submit</button>
         </div>
-        <p>{addCollectionResult}</p>
       </div>
-      <p>Choose Your Collection</p>
+      <p>{addCollectionResult}</p>
+      <h4>Choose Your Collection</h4>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
