@@ -4,6 +4,7 @@ import TradingCard from "./TradingCard";
 import { useNavigate } from "react-router-dom";
 import SortButtons from "./SortButtons";
 import Nav from "./Nav";
+import Mongo from "./Mongo";
 
 function CardCollection({}) {
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
@@ -24,6 +25,7 @@ function CardCollection({}) {
   const [offset, setOffset] = useState(0);
 
   const navigate = useNavigate();
+  const server = new Mongo();
 
   useEffect(() => {
     const getData = async () => {
@@ -31,22 +33,7 @@ function CardCollection({}) {
       if (!username) {
         setErrorMessage("You need to login to view your collections");
       } else {
-        let urlGetCollections = new URL(
-          `https://trading-cards-backend-production.up.railway.app/collections`,
-        );
-        urlGetCollections.searchParams.append("ownerName", username);
-        const responseGetCollections = await fetch(urlGetCollections, {
-          method: "GET",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-          },
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-        });
+        const responseGetCollections = await server.getCollections(username);
         if (responseGetCollections.status === 200) {
           const data = await responseGetCollections.json();
           const myCollections = data.collections;
@@ -61,26 +48,9 @@ function CardCollection({}) {
             setCollectionTitle(baseCollection.title);
             setCollections(myCollections);
 
-            let url = new URL(
-              `https://trading-cards-backend-production.up.railway.app/collections/` +
-                baseCollection._id,
-            );
-            url.searchParams.append("verbose", "true");
-            const response = await fetch(url, {
-              method: "GET",
-              mode: "cors",
-              cache: "no-cache",
-              credentials: "same-origin",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-              },
-              redirect: "follow",
-              referrerPolicy: "no-referrer",
-            });
-
-            const responseData = await response.json();
+            const response = await server.getCardsInCollection(baseCollection._id);
             if (response.status === 200) {
+              const responseData = await response.json();
               setTradingCardCollection(responseData.tradingCards);
             } else {
               setErrorMessage("Could not retrieve base collection");
@@ -130,22 +100,7 @@ function CardCollection({}) {
     if (!username || !addedCollection) {
       return;
     }
-    let countUrl = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
-    );
-    const countResponse = await fetch(countUrl, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
-
+    const countResponse = await server.getCollectionsCount();
     if (countResponse.status === 200) {
       const responseData = await countResponse.json();
       const count = responseData.count;
@@ -159,23 +114,7 @@ function CardCollection({}) {
       setAddCollectionResult(`Could not count current collections`);
       return;
     }
-    const titleObj = { collectionTitle: addedCollection };
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/`,
-    );
-    const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(titleObj),
-    });
+    const response = await server.addCollection(addedCollection);
 
     if (response.status === 200) {
       const responseData = await response.json();
@@ -202,24 +141,7 @@ function CardCollection({}) {
     setCollectionId(myCollection._id);
     setCollectionTitle(myCollection.title);
     setCurrentCollection(myCollection);
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/` +
-        myCollection._id,
-    );
-    url.searchParams.append("verbose", "true");
-    const response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
-
+    const response = await server.getCardsInCollection(myCollection._id);
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
@@ -234,25 +156,7 @@ function CardCollection({}) {
       return;
     }
     setOffset(0);
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/` +
-        collectionId,
-    );
-    url.searchParams.append("verbose", "true");
-    url.searchParams.append("search", searchQuery);
-    const response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
-
+    const response = await server.searchCardsInCollection(collectionId, searchQuery);
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);

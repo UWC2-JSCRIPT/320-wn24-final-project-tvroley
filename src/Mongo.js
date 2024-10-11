@@ -124,6 +124,27 @@ class Mongo {
     });
   }
 
+  searchCardsInCollection(collectionId, searchQuery){
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    url.searchParams.append("verbose", "true");
+    url.searchParams.append("search", searchQuery);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
   searchAllCards(searchQuery) {
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/cards/search`,
@@ -198,6 +219,118 @@ class Mongo {
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
+    });
+  }
+
+  getCollections(username){
+    let urlGetCollections = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections`,
+    );
+    urlGetCollections.searchParams.append("ownerName", username);
+    return fetch(urlGetCollections, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  getCardsInCollection(collectionId){
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    url.searchParams.append("verbose", "true");
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  getCardsCount(baseCollectionId){
+    let urlGetCardCount = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` +
+        baseCollectionId,
+    );
+
+    return fetch(urlGetCardCount, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  getCollectionsCount(){
+    let countUrl = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
+    );
+    return fetch(countUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  addCard(card){
+    let urlPostCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/`,
+    );
+    return fetch(urlPostCard, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      body: JSON.stringify(card),
+    });
+  }
+
+  addCollection(addedCollection){
+    const titleObj = { collectionTitle: addedCollection };
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/`,
+    );
+    return fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(titleObj),
     });
   }
 }
