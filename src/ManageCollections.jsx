@@ -1,5 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+import Mongo from "./Mongo";
 
 function ManageCollections({}) {
   const [resultMessage, setResultMessage] = useState([]);
@@ -7,25 +8,11 @@ function ManageCollections({}) {
   const [username, setUsername] = useState(
     sessionStorage.getItem("cardsUsername"),
   );
+  const server = new Mongo();
 
   useEffect(() => {
     const getData = async () => {
-      let urlGetCollections = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections`,
-      );
-      urlGetCollections.searchParams.append("ownerName", username);
-      const responseGetCollections = await fetch(urlGetCollections, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
+      const responseGetCollections = await server.getCollections(username);
       if (responseGetCollections.status === 200) {
         const data = await responseGetCollections.json();
         const myCollections = data.collections;
@@ -58,19 +45,7 @@ function ManageCollections({}) {
     });
     collectionsToRemoveObjs.map(async (collectObj) => {
       const collectionId = collectObj._id;
-      let urlDeleteCollection = new URL(
-        `https://trading-cards-backend-production.up.railway.app/collections/` +
-          collectionId,
-      );
-      urlDeleteCollection.searchParams.append("collection", collectionId);
-      const responseDeleteCollections = await fetch(urlDeleteCollection, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-      });
+      const responseDeleteCollections = await server.deleteCollection(collectionId);
       if (responseDeleteCollections.status === 200) {
         totalResultMessage.push(
           `${collectObj.title} collection successfully deleted`,
