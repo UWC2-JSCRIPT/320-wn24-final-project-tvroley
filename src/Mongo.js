@@ -260,6 +260,43 @@ class Mongo {
     });
   }
 
+  sort(collectionId, sortBy, currentAsc) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    url.searchParams.append("verbose", "true");
+    url.searchParams.append("sortBy", sortBy);
+    url.searchParams.append("ascDesc", currentAsc);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  deleteCollection(collectionId) {
+    let urlDeleteCollection = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    return fetch(urlDeleteCollection, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+    });
+  }
+
   getCollections(username){
     let urlGetCollections = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections`,
@@ -298,6 +335,43 @@ class Mongo {
         referrerPolicy: "no-referrer",
       },
     );
+  }
+
+  editCard(cardId, myCard){
+    let urlEditCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
+    );
+    return fetch(urlEditCard, {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(myCard),
+    });
+  }
+
+  getCard(cardId) {
+    let urlGetCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
+    );
+    return fetch(urlGetCard, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
   }
 
   getCardsInCollection(collectionId){
