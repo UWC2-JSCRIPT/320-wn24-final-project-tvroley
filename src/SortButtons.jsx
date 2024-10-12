@@ -1,6 +1,7 @@
 import "./App.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import Mongo from "./Mongo";
 
 function SortButtons({ collectionId, setTradingCardCollection, setOffset }) {
   const [certAsc, setCertAsc] = useState("ASC");
@@ -9,6 +10,7 @@ function SortButtons({ collectionId, setTradingCardCollection, setOffset }) {
   const [soldAsc, setSoldAsc] = useState("ASC");
   const [brandAsc, setBrandAsc] = useState("ASC");
   const [setAsc, setSetAsc] = useState("ASC");
+  const server = new Mongo();
   const sortCards = async (event) => {
     let sortBy = "year";
     const buttonId = event.target.id;
@@ -72,26 +74,7 @@ function SortButtons({ collectionId, setTradingCardCollection, setOffset }) {
         console.log("unkown button pressed");
         return;
     }
-
-    let url = new URL(
-      `https://trading-cards-backend-production.up.railway.app/collections/` +
-        collectionId,
-    );
-    url.searchParams.append("verbose", "true");
-    url.searchParams.append("sortBy", sortBy);
-    url.searchParams.append("ascDesc", currentAsc);
-    const response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    });
+    const response = await server.sort(collectionId, sortBy, currentAsc);
 
     if (response.status === 200) {
       const data = await response.json();

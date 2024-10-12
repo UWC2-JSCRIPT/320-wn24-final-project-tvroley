@@ -260,6 +260,28 @@ class Mongo {
     });
   }
 
+  sort(collectionId, sortBy, currentAsc) {
+    let url = new URL(
+      `https://trading-cards-backend-production.up.railway.app/collections/` +
+        collectionId,
+    );
+    url.searchParams.append("verbose", "true");
+    url.searchParams.append("sortBy", sortBy);
+    url.searchParams.append("ascDesc", currentAsc);
+    return fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
   deleteCollection(collectionId) {
     let urlDeleteCollection = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
