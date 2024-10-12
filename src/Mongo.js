@@ -300,6 +300,43 @@ class Mongo {
     );
   }
 
+  editCard(cardId, myCard){
+    let urlEditCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
+    );
+    return fetch(urlEditCard, {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(myCard),
+    });
+  }
+
+  getCard(cardId) {
+    let urlGetCard = new URL(
+      `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
+    );
+    return fetch(urlGetCard, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
   getCardsInCollection(collectionId){
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +

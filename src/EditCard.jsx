@@ -5,6 +5,7 @@ import firebaseApp from "./firebaseApp";
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import Nav from "./Nav";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Mongo from "./Mongo";
 
 function EditCard({}) {
   const [tradingCard, setTradingCard] = useState({});
@@ -30,6 +31,7 @@ function EditCard({}) {
   );
   let uid;
   const fiveMB = 5 * 1024 * 1024;
+  const server = new Mongo();
 
   const handleCheck = () => {
     setSold(!sold);
@@ -38,21 +40,7 @@ function EditCard({}) {
 
   useEffect(() => {
     const getData = async () => {
-      let urlGetCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
-      );
-      const responseGetCard = await fetch(urlGetCard, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      });
+      const responseGetCard = await server.getCard(cardId);
       if (responseGetCard.status === 200) {
         const data = await responseGetCard.json();
         setTradingCard(data.card);
@@ -138,22 +126,7 @@ function EditCard({}) {
         certificationNumber: certificationNumber,
         sold: Boolean(sold),
       };
-      let urlEditCard = new URL(
-        `https://trading-cards-backend-production.up.railway.app/cards/${tradingCard._id}`,
-      );
-      const responseEditCard = await fetch(urlEditCard, {
-        method: "PUT",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify(myCard),
-      });
+      const responseEditCard = await server.editCard(tradingCard._id, myCard);
       if (responseEditCard.status === 200) {
         const data = await responseEditCard.json();
         setResultMessage(`Card information updated`);
