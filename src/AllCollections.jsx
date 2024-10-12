@@ -62,6 +62,7 @@ function AllCollections({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
       setOffset(0);
+      document.getElementById("cards-div").scrollIntoView();
     } else {
       console.log(`Error: could not get cards`);
     }
@@ -171,7 +172,7 @@ function AllCollections({}) {
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
       />
-      <div className="div-cards">
+      <div id="cards-div" className="div-cards">
         {tradingCardCollection.map((card, index) => {
           if (
             index < offset ||

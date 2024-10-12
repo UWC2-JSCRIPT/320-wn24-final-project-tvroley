@@ -146,6 +146,7 @@ function CardCollection({}) {
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);
       setOffset(0);
+      document.getElementById("card-collection-div").scrollIntoView();
     } else {
       setErrorMessage(`Error: could not get cards when changing collection`);
     }
