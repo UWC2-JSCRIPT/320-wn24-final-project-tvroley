@@ -125,6 +125,7 @@ function AllCollections({}) {
           <p className="unsold p-legend">NOT SOLD</p>
         </div>
       </div>
+      <h4>Search</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">
@@ -143,19 +144,21 @@ function AllCollections({}) {
         <div className="div-sort-buttons">
           <button onClick={collectionSearch}>Search</button>
         </div>
-        <div className="div-collections" id="search-collections-div">
-          {Array.from(searchedCollections).map((collect) => {
-            return (
-              <button
-                onClick={changeCollection}
-                key={`${collect.title}-${collect.ownerName}-search-button`}
-              >
-                {getCollectionButtonText(collect)}
-              </button>
-            );
-          })}
-        </div>
       </div>
+      <h4>Search Results</h4>
+      <div className="div-collections" id="search-collections-div">
+        {Array.from(searchedCollections).map((collect) => {
+          return (
+            <button
+              onClick={changeCollection}
+              key={`${collect.title}-${collect.ownerName}-search-button`}
+            >
+              {getCollectionButtonText(collect)}
+            </button>
+          );
+        })}
+      </div>
+      <h4>Collections</h4>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (

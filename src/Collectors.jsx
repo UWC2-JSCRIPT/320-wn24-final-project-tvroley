@@ -48,22 +48,21 @@ function Collectors({}) {
       const myCollections = data.collections;
       setCollections(myCollections);
       const baseCollectionArray = myCollections.filter(
-        (collect) =>
-          buttonUserText === collect.title,
+        (collect) => buttonUserText === collect.title,
       );
       const myCollection = baseCollectionArray[0];
-    setCollectionId(myCollection._id);
-    setCollectionTitle(myCollection.title);
-    setCurrentCollection(myCollection);
-    const response = await server.getCardsInCollection(myCollection._id);
-    const responseData = await response.json();
-    if (response.status === 200) {
-      setTradingCardCollection(responseData.tradingCards);
-      setOffset(0);
-      document.getElementById("cards-div").scrollIntoView();
-    } else {
-      setErrorMessage(`Error: could not get cards`);
-    }
+      setCollectionId(myCollection._id);
+      setCollectionTitle(myCollection.title);
+      setCurrentCollection(myCollection);
+      const response = await server.getCardsInCollection(myCollection._id);
+      const responseData = await response.json();
+      if (response.status === 200) {
+        setTradingCardCollection(responseData.tradingCards);
+        setOffset(0);
+        document.getElementById("cards-div").scrollIntoView();
+      } else {
+        setErrorMessage(`Error: could not get cards`);
+      }
     } else if (responseGetCollections.status === 401) {
       setErrorMessage(`Failed to authorize user`);
     } else {
@@ -74,8 +73,7 @@ function Collectors({}) {
   const changeCollection = async (event) => {
     const buttonCollectionText = event.target.innerText;
     const buttonCollectionArray = collections.filter(
-      (collect) =>
-        buttonCollectionText === collect.title,
+      (collect) => buttonCollectionText === collect.title,
     );
     const myCollection = buttonCollectionArray[0];
     setCollectionId(myCollection._id);
@@ -157,19 +155,18 @@ function Collectors({}) {
         <div className="div-sort-buttons">
           <button onClick={userSearch}>Search</button>
         </div>
-        <div className="div-collections" id="search-usernames-div">
+      </div>
+      <h4>Search Results</h4>
+      <div className="div-collections" id="search-usernames-div">
           {Array.from(searchedUsernames).map((username) => {
             return (
-              <button
-                onClick={changeUser}
-                key={`${username}-search-button`}
-              >
+              <button onClick={changeUser} key={`${username}-search-button`}>
                 {username}
               </button>
             );
           })}
-        </div>
       </div>
+      <h4>Collectors</h4>
       <div className="div-collections" id="usernames-div">
         {Array.from(usernames).map((username) => {
           return (
@@ -179,13 +176,11 @@ function Collectors({}) {
           );
         })}
       </div>
+      <h4>Collections</h4>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
-            <button
-              onClick={changeCollection}
-              key={`${collect.title}-button`}
-            >
+            <button onClick={changeCollection} key={`${collect.title}-button`}>
               {collect.title}
             </button>
           );
