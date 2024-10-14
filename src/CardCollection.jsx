@@ -206,10 +206,11 @@ function CardCollection({}) {
           <p className="unsold p-legend">NOT SOLD</p>
         </div>
       </div>
+      <h4>Search</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">
-            Search For A Card In Collection
+            Search for a card in the currently selected collection
           </label>
           <input
             id="card-search-input"
@@ -223,9 +224,10 @@ function CardCollection({}) {
           <button onClick={searchCollection}>Search</button>
         </div>
       </div>
+      <h4>Add Collection</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="collection-input">Add Collection</label>
+          <label htmlFor="collection-input">Create a new collection with a specific theme</label>
           <input
             id="collection-input"
             type="text"

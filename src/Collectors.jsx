@@ -139,6 +139,7 @@ function Collectors({}) {
           <p className="unsold p-legend">NOT SOLD</p>
         </div>
       </div>
+      <h4>Search</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">Search For A Collector</label>
@@ -151,8 +152,6 @@ function Collectors({}) {
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
-        </div>
-        <div className="div-sort-buttons">
           <button onClick={userSearch}>Search</button>
         </div>
       </div>

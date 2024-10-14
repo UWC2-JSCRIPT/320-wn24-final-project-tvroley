@@ -88,9 +88,10 @@ function FindAnyCard({}) {
           <p className="unsold p-legend">NOT SOLD</p>
         </div>
       </div>
+      <h4>Search</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="card-search-input">Search For Any Card</label>
+          <label htmlFor="card-search-input">Search for any card</label>
           <input
             id="card-search-input"
             type="text"

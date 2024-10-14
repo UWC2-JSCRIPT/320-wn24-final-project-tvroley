@@ -129,7 +129,7 @@ function AllCollections({}) {
       <div className="div-add-collection">
         <div className="div-enter-collection">
           <label htmlFor="card-search-input">
-            Search For A Collection By Title
+            Search for a collection by title
           </label>
           <input
             id="card-search-input"
@@ -140,8 +140,6 @@ function AllCollections({}) {
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
-        </div>
-        <div className="div-sort-buttons">
           <button onClick={collectionSearch}>Search</button>
         </div>
       </div>
