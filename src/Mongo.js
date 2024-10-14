@@ -106,6 +106,43 @@ class Mongo {
     });
   }
 
+  getAllUsernames() {
+    const urlGetAllUsernames = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/usernames`,
+    );
+    return fetch(urlGetAllUsernames, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
+  searchUsernames(searchQuery) {
+    const urlSearchUsernames = new URL(
+      `https://trading-cards-backend-production.up.railway.app/auth/searchusernames`,
+    );
+    urlSearchUsernames.searchParams.append("search", searchQuery);
+    return fetch(urlSearchUsernames, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+  }
+
   getAllCards() {
     let urlGetAllCards = new URL(
       `https://trading-cards-backend-production.up.railway.app/cards/`,
@@ -162,7 +199,7 @@ class Mongo {
     });
   }
 
-  searchCardsInCollection(collectionId, searchQuery){
+  searchCardsInCollection(collectionId, searchQuery) {
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
         collectionId,
@@ -297,7 +334,7 @@ class Mongo {
     });
   }
 
-  getCollections(username){
+  getCollections(username) {
     let urlGetCollections = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections`,
     );
@@ -316,28 +353,25 @@ class Mongo {
     });
   }
 
-  getCollectionsForCard(cardId){
+  getCollectionsForCard(cardId) {
     let urlGetCollectionsForCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/forcard/${cardId}`,
     );
-    return fetch(
-      urlGetCollectionsForCard,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
+    return fetch(urlGetCollectionsForCard, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("cardsToken"),
       },
-    );
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
   }
 
-  editCard(cardId, myCard){
+  editCard(cardId, myCard) {
     let urlEditCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/cards/${cardId}`,
     );
@@ -374,7 +408,7 @@ class Mongo {
     });
   }
 
-  getCardsInCollection(collectionId){
+  getCardsInCollection(collectionId) {
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
         collectionId,
@@ -394,7 +428,7 @@ class Mongo {
     });
   }
 
-  getCardsCount(baseCollectionId){
+  getCardsCount(baseCollectionId) {
     let urlGetCardCount = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/cardcount/` +
         baseCollectionId,
@@ -414,7 +448,7 @@ class Mongo {
     });
   }
 
-  getCollectionsCount(){
+  getCollectionsCount() {
     let countUrl = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/collectionscount`,
     );
@@ -432,7 +466,7 @@ class Mongo {
     });
   }
 
-  addCard(card){
+  addCard(card) {
     let urlPostCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/cards/`,
     );
@@ -447,7 +481,7 @@ class Mongo {
     });
   }
 
-  removeCardFromCollection(collectionId, cardId){
+  removeCardFromCollection(collectionId, cardId) {
     let urlDeleteCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/forcard/`,
     );
@@ -463,7 +497,7 @@ class Mongo {
     });
   }
 
-  addCardToCollection(collectionId, cardId){
+  addCardToCollection(collectionId, cardId) {
     let urlPostCard = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/` +
         collectionId,
@@ -480,7 +514,7 @@ class Mongo {
     });
   }
 
-  addCollection(addedCollection){
+  addCollection(addedCollection) {
     const titleObj = { collectionTitle: addedCollection };
     let url = new URL(
       `https://trading-cards-backend-production.up.railway.app/collections/`,

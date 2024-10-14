@@ -7,6 +7,7 @@ export default function Nav() {
       <Link to="/account">Account</Link>
       <Link to="/signup">Sign Up</Link>
       <Link to="/collection">My Collection</Link>
+      <Link to="/collectors">Collectors</Link>
       <Link to="/allcollections">All Collections</Link>
       <Link to="/findanycard">Find Any Card</Link>
     </div>

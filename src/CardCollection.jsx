@@ -48,7 +48,9 @@ function CardCollection({}) {
             setCollectionTitle(baseCollection.title);
             setCollections(myCollections);
 
-            const response = await server.getCardsInCollection(baseCollection._id);
+            const response = await server.getCardsInCollection(
+              baseCollection._id,
+            );
             if (response.status === 200) {
               const responseData = await response.json();
               setTradingCardCollection(responseData.tradingCards);
@@ -157,7 +159,10 @@ function CardCollection({}) {
       return;
     }
     setOffset(0);
-    const response = await server.searchCardsInCollection(collectionId, searchQuery);
+    const response = await server.searchCardsInCollection(
+      collectionId,
+      searchQuery,
+    );
     const responseData = await response.json();
     if (response.status === 200) {
       setTradingCardCollection(responseData.tradingCards);

@@ -5,16 +5,18 @@ import TradingCard from "./TradingCard";
 import SortButtons from "./SortButtons";
 import Mongo from "./Mongo";
 
-function AllCollections({}) {
+function Collectors({}) {
   const [collections, setCollections] = useState([]);
   const [tradingCardCollection, setTradingCardCollection] = useState([]);
   const [collectionId, setCollectionId] = useState("");
   const [collectionTitle, setCollectionTitle] = useState("");
+  const [currentCollector, setCurrentCollector] = useState({});
   const [currentCollection, setCurrentCollection] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchedCollections, setSearchedCollections] = useState([]);
   const [offset, setOffset] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [usernames, setUsernames] = useState("");
+  const [searchedUsernames, setSearchedUsernames] = useState("");
   const [username, setUsername] = useState(
     sessionStorage.getItem("cardsUsername"),
   );
@@ -23,35 +25,57 @@ function AllCollections({}) {
   useEffect(() => {
     const getData = async () => {
       if (!username) {
-        setErrorMessage("You need to login to view All Collections");
+        setErrorMessage("You need to login to view the Collectors page");
         return;
       }
-      const responseGetCollections = await server.getAllCollections();
-      if (responseGetCollections.status === 200) {
-        const data = await responseGetCollections.json();
-        const myCollections = data.collections;
-        setCollections(myCollections);
+      const responseGetUsernames = await server.getAllUsernames();
+      if (responseGetUsernames.status === 200) {
+        const data = await responseGetUsernames.json();
+        setUsernames(data.usernames);
       } else {
-        setErrorMessage(`Error: could not get all collections`);
+        setErrorMessage(`Error: could not get collectors`);
       }
     };
     getData();
   }, []);
 
+  const changeUser = async (event) => {
+    const buttonUserText = event.target.innerText;
+    setCurrentCollector(buttonUserText);
+    const responseGetCollections = await server.getCollections(buttonUserText);
+    if (responseGetCollections.status === 200) {
+      const data = await responseGetCollections.json();
+      const myCollections = data.collections;
+      setCollections(myCollections);
+      const baseCollectionArray = myCollections.filter(
+        (collect) =>
+          buttonUserText === collect.title,
+      );
+      const myCollection = baseCollectionArray[0];
+    setCollectionId(myCollection._id);
+    setCollectionTitle(myCollection.title);
+    setCurrentCollection(myCollection);
+    const response = await server.getCardsInCollection(myCollection._id);
+    const responseData = await response.json();
+    if (response.status === 200) {
+      setTradingCardCollection(responseData.tradingCards);
+      setOffset(0);
+      document.getElementById("cards-div").scrollIntoView();
+    } else {
+      setErrorMessage(`Error: could not get cards`);
+    }
+    } else if (responseGetCollections.status === 401) {
+      setErrorMessage(`Failed to authorize user`);
+    } else {
+      setErrorMessage(`Could not get collections for user`);
+    }
+  };
+
   const changeCollection = async (event) => {
     const buttonCollectionText = event.target.innerText;
-    let collectionText = "";
-    let ownerText = "";
-    if (buttonCollectionText.indexOf("base collection") > 0) {
-      collectionText = buttonCollectionText.split(" base ")[0];
-      ownerText = buttonCollectionText.split(" base ")[0];
-    } else {
-      collectionText = buttonCollectionText.split(" by ")[0];
-      ownerText = buttonCollectionText.split(" by ")[1];
-    }
     const buttonCollectionArray = collections.filter(
       (collect) =>
-        collectionText === collect.title && ownerText === collect.ownerName,
+        buttonCollectionText === collect.title,
     );
     const myCollection = buttonCollectionArray[0];
     setCollectionId(myCollection._id);
@@ -68,26 +92,18 @@ function AllCollections({}) {
     }
   };
 
-  const collectionSearch = async (event) => {
+  const userSearch = async (event) => {
     if (!searchQuery || !username) {
       return;
     }
-    const response = await server.searchCollections(searchQuery);
+    const response = await server.searchUsernames(searchQuery);
     const responseData = await response.json();
     if (response.status === 200) {
-      setSearchedCollections(responseData.collections);
+      setSearchedUsernames(responseData.usernames);
       setOffset(0);
     } else {
       setErrorMessage(`No results found`);
     }
-  };
-
-  const getCollectionButtonText = (collect) => {
-    let collectionButtonText = `${collect.title} by ${collect.ownerName}`;
-    if (collect.title === collect.ownerName) {
-      collectionButtonText = `${collect.ownerName} base collection`;
-    }
-    return collectionButtonText;
   };
 
   const nextCards = () => {
@@ -112,9 +128,9 @@ function AllCollections({}) {
 
   return (
     <>
-      <h2>All Collections</h2>
+      <h2>Collectors</h2>
+      <h4>{usernames.length} Collectors</h4>
       <h3>{collectionTitle.toUpperCase()}</h3>
-      <h4>{tradingCardCollection.length} Cards</h4>
       <p>{errorMessage}</p>
       <div>
         <div>
@@ -127,9 +143,7 @@ function AllCollections({}) {
       </div>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="card-search-input">
-            Search For A Collection By Title
-          </label>
+          <label htmlFor="card-search-input">Search For A Collector</label>
           <input
             id="card-search-input"
             type="text"
@@ -141,29 +155,38 @@ function AllCollections({}) {
           />
         </div>
         <div className="div-sort-buttons">
-          <button onClick={collectionSearch}>Search</button>
+          <button onClick={userSearch}>Search</button>
         </div>
-        <div className="div-collections" id="search-collections-div">
-          {Array.from(searchedCollections).map((collect) => {
+        <div className="div-collections" id="search-usernames-div">
+          {Array.from(searchedUsernames).map((username) => {
             return (
               <button
-                onClick={changeCollection}
-                key={`${collect.title}-${collect.ownerName}-search-button`}
+                onClick={changeUser}
+                key={`${username}-search-button`}
               >
-                {getCollectionButtonText(collect)}
+                {username}
               </button>
             );
           })}
         </div>
+      </div>
+      <div className="div-collections" id="usernames-div">
+        {Array.from(usernames).map((username) => {
+          return (
+            <button onClick={changeUser} key={`${username}-button`}>
+              {username}
+            </button>
+          );
+        })}
       </div>
       <div className="div-collections" id="collections-div">
         {Array.from(collections).map((collect) => {
           return (
             <button
               onClick={changeCollection}
-              key={`${collect.title}-${collect.ownerName}-button`}
+              key={`${collect.title}-button`}
             >
-              {getCollectionButtonText(collect)}
+              {collect.title}
             </button>
           );
         })}
@@ -215,4 +238,4 @@ function AllCollections({}) {
   );
 }
 
-export default AllCollections;
+export default Collectors;

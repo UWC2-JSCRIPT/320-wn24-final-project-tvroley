@@ -13,6 +13,7 @@ import FindAnyCard from "./FindAnyCard";
 import SignUp from "./SignUp";
 import Account from "./Account";
 import DeleteAccount from "./DeleteAccount";
+import Collectors from "./Collectors";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="collection/add" element={<AddCard />} />
         <Route path="collection/manage" element={<ManageCollections />} />
         <Route path="allcollections" element={<AllCollections />} />
+        <Route path="collectors" element={<Collectors />} />
         <Route path="findanycard" element={<FindAnyCard />} />
         <Route path="signup" element={<SignUp />} />
         <Route
