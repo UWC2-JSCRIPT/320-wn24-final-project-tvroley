@@ -45,7 +45,8 @@ function ManageCollections({}) {
     });
     collectionsToRemoveObjs.map(async (collectObj) => {
       const collectionId = collectObj._id;
-      const responseDeleteCollections = await server.deleteCollection(collectionId);
+      const responseDeleteCollections =
+        await server.deleteCollection(collectionId);
       if (responseDeleteCollections.status === 200) {
         totalResultMessage.push(
           `${collectObj.title} collection successfully deleted`,

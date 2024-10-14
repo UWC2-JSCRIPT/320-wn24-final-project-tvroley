@@ -119,8 +119,7 @@ export default function Home() {
                             mongoToken,
                           );
                         if (changePasswordResp.status === 200) {
-                          const encryptResponse =
-                            await mongo.encrypt(password);
+                          const encryptResponse = await mongo.encrypt(password);
                           if (encryptResponse.status === 200) {
                             encryptResponse.json().then(async (encryptData) => {
                               const coded = encryptData.encrypted;

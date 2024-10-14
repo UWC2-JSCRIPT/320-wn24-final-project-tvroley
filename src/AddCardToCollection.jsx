@@ -20,7 +20,8 @@ function AddCardToCollection({}) {
 
   useEffect(() => {
     const getData = async () => {
-      const responseGetCollectionsForCard = await server.getCollectionsForCard(cardId);
+      const responseGetCollectionsForCard =
+        await server.getCollectionsForCard(cardId);
       let myCollectionsForCard = [];
       if (responseGetCollectionsForCard.status === 200) {
         const data = await responseGetCollectionsForCard.json();
@@ -78,7 +79,10 @@ function AddCardToCollection({}) {
     collectionsToAddObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       const collectionId = collectObj._id;
-      const respAddCardToCollect = await server.addCardToCollection(collectionId, cardId);
+      const respAddCardToCollect = await server.addCardToCollection(
+        collectionId,
+        cardId,
+      );
       if (respAddCardToCollect.status === 200) {
         totalResultMessage.push(
           `Card successfully added to ${collectObj.title} collection`,
@@ -103,7 +107,10 @@ function AddCardToCollection({}) {
     collectionsToRemoveObjs.map(async (collectObj) => {
       const cardId = tradingCard._id;
       const collectionId = collectObj._id;
-      const responseDeleteCollections = await server.removeCardFromCollection(collectionId, cardId);
+      const responseDeleteCollections = await server.removeCardFromCollection(
+        collectionId,
+        cardId,
+      );
       if (responseDeleteCollections.status === 200) {
         totalResultMessage.push(
           `Card successfully removed from ${collectObj.title} collection`,
