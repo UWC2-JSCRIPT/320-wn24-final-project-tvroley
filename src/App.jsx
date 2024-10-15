@@ -29,7 +29,6 @@ function App() {
         <Route path="collection/manage" element={<ManageCollections />} />
         <Route path="allcollections" element={<AllCollections />} />
         <Route path="collectors" element={<Collectors />} />
-        <Route path="findanycard" element={<FindAnyCard />} />
         <Route path="signup" element={<SignUp />} />
         <Route
           path="collection/addtocollection/:cardid"
