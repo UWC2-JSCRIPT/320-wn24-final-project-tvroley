@@ -227,7 +227,9 @@ function CardCollection({}) {
       <h4>Add Collection</h4>
       <div className="div-add-collection">
         <div className="div-enter-collection">
-          <label htmlFor="collection-input">Create a new collection with a specific theme</label>
+          <label htmlFor="collection-input">
+            Create a new collection with a specific theme
+          </label>
           <input
             id="collection-input"
             type="text"

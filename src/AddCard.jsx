@@ -19,10 +19,13 @@ function AddCard({}) {
   const [certificationNumber, setCertificationNumber] = useState("");
   const [sold, setSold] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
+  const [frontCardImageFile, setFrontCardImageFile] = useState("");
+  const [backCardImageFile, setBackCardImageFile] = useState("");
   const location = useLocation();
   const baseCollectionId = location.state.baseCollectionId;
-  const fiveMB = 5 * 1024 * 1024;
   const server = new Mongo();
+  const maxHeight = 1008;
+  const maxWidth = 600;
   let uid;
 
   const handleCheck = () => {
@@ -37,15 +40,6 @@ function AddCard({}) {
 
   const addCard = async (event) => {
     event.preventDefault();
-
-    const frontCardImageFileEl = document.getElementById(
-      "front-image-file-input",
-    );
-    const frontCardImageFile = frontCardImageFileEl.files[0];
-    const backCardImageFileEl = document.getElementById(
-      "back-image-file-input",
-    );
-    const backCardImageFile = backCardImageFileEl.files[0];
 
     if (
       frontCardImageFile &&
@@ -74,8 +68,6 @@ function AddCard({}) {
       gradeEl.classList.remove("invalid");
       const certEl = document.getElementById("certification-number-input");
       certEl.classList.remove("invalid");
-      backCardImageFileEl.classList.remove("invalid");
-      frontCardImageFileEl.classList.remove("invalid");
 
       const responseGetCardCount = await server.getCardsCount(baseCollectionId);
       if (responseGetCardCount.status === 200) {
@@ -93,29 +85,6 @@ function AddCard({}) {
         );
       }
 
-      if (
-        (frontCardImageFile.type !== "image/jpeg" &&
-          frontCardImageFile.type !== "image/png") ||
-        frontCardImageFile.size > fiveMB
-      ) {
-        frontCardImageFileEl.classList.add("invalid");
-        setResultMessage(
-          `Front image file must be a jpeg or png and smaller than 5MB`,
-        );
-        return;
-      }
-
-      if (
-        (backCardImageFile.type !== "image/jpeg" &&
-          backCardImageFile.type !== "image/png") ||
-        backCardImageFile.size > fiveMB
-      ) {
-        backCardImageFileEl.classList.add("invalid");
-        setResultMessage(
-          `Back image file must be a jpeg or png and smaller than 5MB`,
-        );
-        return;
-      }
       const frontMetaData = {
         contentType: frontCardImageFile.type,
         customMetadata: {
@@ -169,11 +138,9 @@ function AddCard({}) {
           },
           async (error) => {
             await server.deleteCard(cardId);
-
             setResultMessage(`Error uploading front card image: ${error}`);
           },
           () => {
-            frontCardImageFileEl.classList.remove("invalid");
             const backCardImageRef = ref(storage, `images/${cardId}-back`);
             const uploadBackTask = uploadBytesResumable(
               backCardImageRef,
@@ -210,6 +177,8 @@ function AddCard({}) {
                 setGradingCompany("");
                 setGrade("");
                 setCertificationNumber("");
+                document.getElementById("back-image-file-input").value = "";
+                document.getElementById("front-image-file-input").value = "";
               },
             );
           },
@@ -280,14 +249,67 @@ function AddCard({}) {
     }
   };
 
-  const checkFileSize = (event) => {
+  const convertImage = (event) => {
     const el = event.target;
-    if (el.files[0] && el.files[0].size > 4000000) {
-      el.value = "";
-      setResultMessage("Error: Card image size is too big to upload");
-    } else {
-      setResultMessage("");
+    let side = "front";
+    if (el.id === "back-image-file-input") {
+      side = "back";
     }
+    const chosenImageFile = el.files[0];
+    if (
+      chosenImageFile.type !== "image/jpeg" &&
+      chosenImageFile.type !== "image/png"
+    ) {
+      setResultMessage(`${side} image file must be a jpeg or png`);
+      el.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const image = new Image();
+      image.onload = (imageEvent) => {
+        const canvas = document.createElement("canvas");
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        const arr = dataUrl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[arr.length - 1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const myFile = new File([u8arr], "temp", { type: mime });
+        if (side === "front") {
+          setFrontCardImageFile(myFile);
+        } else {
+          setBackCardImageFile(myFile);
+        }
+      };
+      image.onerror = (imageError) => {
+        setResultMessage(`Error converting image for uploading: ${imageError}`);
+      }
+      image.src = readerEvent.target.result;
+    };
+    reader.onerror = (readerError) => {
+      setResultMessage(`Error converting image for uploading: ${readerError}`);
+    }
+    reader.readAsDataURL(chosenImageFile);
   };
 
   return (
@@ -421,7 +443,7 @@ function AddCard({}) {
                 type="file"
                 id="front-image-file-input"
                 accept=".jpg,.png"
-                onChange={checkFileSize}
+                onChange={convertImage}
               ></input>
             </div>
             <div className="div-input-label">
@@ -430,7 +452,7 @@ function AddCard({}) {
                 type="file"
                 id="back-image-file-input"
                 accept=".jpg,.png"
-                onChange={checkFileSize}
+                onChange={convertImage}
               ></input>
             </div>
             <div className="div-input-label">
