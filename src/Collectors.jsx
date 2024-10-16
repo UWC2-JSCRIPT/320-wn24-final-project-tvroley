@@ -157,13 +157,13 @@ function Collectors({}) {
       </div>
       <h4>Search Results</h4>
       <div className="div-collections" id="search-usernames-div">
-          {Array.from(searchedUsernames).map((username) => {
-            return (
-              <button onClick={changeUser} key={`${username}-search-button`}>
-                {username}
-              </button>
-            );
-          })}
+        {Array.from(searchedUsernames).map((username) => {
+          return (
+            <button onClick={changeUser} key={`${username}-search-button`}>
+              {username}
+            </button>
+          );
+        })}
       </div>
       <h4>Collectors</h4>
       <div className="div-collections" id="usernames-div">
