@@ -23,10 +23,9 @@ function AddCard({}) {
   const [backCardImageFile, setBackCardImageFile] = useState("");
   const location = useLocation();
   const baseCollectionId = location.state.baseCollectionId;
-  const fiveMB = 5 * 1024 * 1024;
   const server = new Mongo();
-  const maxHeight = 504;
-  const maxWidth = 300;
+  const maxHeight = 1008;
+  const maxWidth = 600;
   let uid;
 
   const handleCheck = () => {
@@ -178,6 +177,8 @@ function AddCard({}) {
                 setGradingCompany("");
                 setGrade("");
                 setCertificationNumber("");
+                document.getElementById("back-image-file-input").value = "";
+                document.getElementById("front-image-file-input").value = "";
               },
             );
           },
@@ -248,7 +249,7 @@ function AddCard({}) {
     }
   };
 
-  const checkFileSize = (event) => {
+  const convertImage = (event) => {
     const el = event.target;
     let side = "front";
     if (el.id === "back-image-file-input") {
@@ -300,8 +301,14 @@ function AddCard({}) {
           setBackCardImageFile(myFile);
         }
       };
+      image.onerror = (imageError) => {
+        setResultMessage(`Error converting image for uploading: ${imageError}`);
+      }
       image.src = readerEvent.target.result;
     };
+    reader.onerror = (readerError) => {
+      setResultMessage(`Error converting image for uploading: ${readerError}`);
+    }
     reader.readAsDataURL(chosenImageFile);
   };
 
@@ -436,7 +443,7 @@ function AddCard({}) {
                 type="file"
                 id="front-image-file-input"
                 accept=".jpg,.png"
-                onChange={checkFileSize}
+                onChange={convertImage}
               ></input>
             </div>
             <div className="div-input-label">
@@ -445,7 +452,7 @@ function AddCard({}) {
                 type="file"
                 id="back-image-file-input"
                 accept=".jpg,.png"
-                onChange={checkFileSize}
+                onChange={convertImage}
               ></input>
             </div>
             <div className="div-input-label">

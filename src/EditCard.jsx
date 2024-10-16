@@ -22,6 +22,10 @@ function EditCard({}) {
   const [resultMessage, setResultMessage] = useState("");
   const [frontResultMessage, setFrontResultMessage] = useState("");
   const [backResultMessage, setBackResultMessage] = useState("");
+  const [frontCardImageFile, setFrontCardImageFile] = useState("");
+  const [backCardImageFile, setBackCardImageFile] = useState("");
+  const maxHeight = 1008;
+  const maxWidth = 600;
   const location = useLocation();
   const [frontCardImageURL, setFrontCardImageURL] = useState(
     location.state.frontCardImageURL,
@@ -73,15 +77,6 @@ function EditCard({}) {
   const editCard = async (event) => {
     event.preventDefault();
 
-    const frontCardImageFileEl = document.getElementById(
-      "front-image-file-input",
-    );
-    const frontCardImageFile = frontCardImageFileEl.files[0];
-    const backCardImageFileEl = document.getElementById(
-      "back-image-file-input",
-    );
-    const backCardImageFile = backCardImageFileEl.files[0];
-
     if (
       year &&
       brand &&
@@ -93,27 +88,6 @@ function EditCard({}) {
       frontCardImageFile &&
       backCardImageFile
     ) {
-      if (
-        (frontCardImageFile.type !== "image/jpeg" &&
-          frontCardImageFile.type !== "image/png") ||
-        frontCardImageFile.size > fiveMB
-      ) {
-        setResultMessage(
-          `Front image file must be a jpeg or png and smaller than 5MB`,
-        );
-        return;
-      }
-
-      if (
-        (backCardImageFile.type !== "image/jpeg" &&
-          backCardImageFile.type !== "image/png") ||
-        backCardImageFile.size > fiveMB
-      ) {
-        setResultMessage(
-          `Back image file must be a jpeg or png and smaller than 5MB`,
-        );
-        return;
-      }
       const myCard = {
         year: Number(year),
         brand: brand,
@@ -174,7 +148,6 @@ function EditCard({}) {
         },
         () => {
           setFrontResultMessage(`Card front image successfully updated`);
-          frontCardImageFileEl.classList.remove("invalid");
         },
       );
 
@@ -290,6 +263,69 @@ function EditCard({}) {
         setResultMessage(`Please select an image for the back of this card`);
       }
     }
+  };
+
+  const convertImage = (event) => {
+    const el = event.target;
+    let side = "front";
+    if (el.id === "back-image-file-input") {
+      side = "back";
+    }
+    const chosenImageFile = el.files[0];
+    if (
+      chosenImageFile.type !== "image/jpeg" &&
+      chosenImageFile.type !== "image/png"
+    ) {
+      setResultMessage(`${side} image file must be a jpeg or png`);
+      el.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const image = new Image();
+      image.onload = (imageEvent) => {
+        const canvas = document.createElement("canvas");
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        const arr = dataUrl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[arr.length - 1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const myFile = new File([u8arr], "temp", { type: mime });
+        if (side === "front") {
+          setFrontCardImageFile(myFile);
+        } else {
+          setBackCardImageFile(myFile);
+        }
+      };
+      image.onerror = (imageError) => {
+        setResultMessage(`Error converting image for uploading: ${imageError}`);
+      }
+      image.src = readerEvent.target.result;
+    };
+    reader.onerror = (readerError) => {
+      setResultMessage(`Error converting image for uploading: ${readerError}`);
+    }
+    reader.readAsDataURL(chosenImageFile);
   };
 
   return (
@@ -429,11 +465,11 @@ function EditCard({}) {
           <div className="div-input-group">
             <div className="div-input-label">
               <label htmlFor="front-image-file-input">Front Image Link</label>
-              <input type="file" id="front-image-file-input"></input>
+              <input type="file" id="front-image-file-input" onChange={convertImage}></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="back-image-file-input">Back Image Link</label>
-              <input type="file" id="back-image-file-input"></input>
+              <input type="file" id="back-image-file-input" onChange={convertImage}></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="sold-input">Sold</label>
