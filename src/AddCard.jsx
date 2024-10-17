@@ -303,12 +303,12 @@ function AddCard({}) {
       };
       image.onerror = (imageError) => {
         setResultMessage(`Error converting image for uploading: ${imageError}`);
-      }
+      };
       image.src = readerEvent.target.result;
     };
     reader.onerror = (readerError) => {
       setResultMessage(`Error converting image for uploading: ${readerError}`);
-    }
+    };
     reader.readAsDataURL(chosenImageFile);
   };
 

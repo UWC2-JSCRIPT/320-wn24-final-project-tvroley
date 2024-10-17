@@ -319,12 +319,12 @@ function EditCard({}) {
       };
       image.onerror = (imageError) => {
         setResultMessage(`Error converting image for uploading: ${imageError}`);
-      }
+      };
       image.src = readerEvent.target.result;
     };
     reader.onerror = (readerError) => {
       setResultMessage(`Error converting image for uploading: ${readerError}`);
-    }
+    };
     reader.readAsDataURL(chosenImageFile);
   };
 
@@ -465,11 +465,19 @@ function EditCard({}) {
           <div className="div-input-group">
             <div className="div-input-label">
               <label htmlFor="front-image-file-input">Front Image Link</label>
-              <input type="file" id="front-image-file-input" onChange={convertImage}></input>
+              <input
+                type="file"
+                id="front-image-file-input"
+                onChange={convertImage}
+              ></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="back-image-file-input">Back Image Link</label>
-              <input type="file" id="back-image-file-input" onChange={convertImage}></input>
+              <input
+                type="file"
+                id="back-image-file-input"
+                onChange={convertImage}
+              ></input>
             </div>
             <div className="div-input-label">
               <label htmlFor="sold-input">Sold</label>

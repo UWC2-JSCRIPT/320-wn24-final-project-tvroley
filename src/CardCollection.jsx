@@ -3,6 +3,8 @@ import "./App.css";
 import TradingCard from "./TradingCard";
 import { useNavigate } from "react-router-dom";
 import SortButtons from "./SortButtons";
+import firebaseApp from "./firebaseApp";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import Nav from "./Nav";
 import Mongo from "./Mongo";
 
@@ -23,7 +25,7 @@ function CardCollection({}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [addCollectionResult, setAddCollectionResult] = useState("");
   const [offset, setOffset] = useState(0);
-
+  const storage = getStorage(firebaseApp);
   const navigate = useNavigate();
   const server = new Mongo();
 
@@ -175,6 +177,94 @@ function CardCollection({}) {
     }
   };
 
+  const convertImages = (event) => {
+    tradingCardCollection.map((tradingCard) => {
+      const frontCardImageRef = ref(storage, `images/${tradingCard._id}-front`);
+      let frontCardImageURL;
+      getDownloadURL(frontCardImageRef)
+        .then((url) => {
+          frontCardImageURL = url;
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = "blob";
+          xhr.onload = (event) => {
+            const file = xhr.response;
+            console.log(file);
+          };
+          xhr.open("GET", url);
+          xhr.send();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const backCardImageRef = ref(storage, `images/${tradingCard._id}-back`);
+      let backCardImageURL;
+      getDownloadURL(backCardImageRef)
+        .then((url) => {
+          backCardImageURL = url;
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = "blob";
+          xhr.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:5173/");
+          xhr.onload = (event) => {
+            const file = xhr.response;
+            console.log(file);
+          };
+          xhr.open("GET", url);
+          xhr.send();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      /*const chosenImageFile = el.files[0];
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const image = new Image();
+      image.onload = (imageEvent) => {
+        const canvas = document.createElement("canvas");
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        const arr = dataUrl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[arr.length - 1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const myFile = new File([u8arr], "temp", { type: mime });
+        if (side === "front") {
+          setFrontCardImageFile(myFile);
+        } else {
+          setBackCardImageFile(myFile);
+        }
+      };
+      image.onerror = (imageError) => {
+        setResultMessage(`Error converting image for uploading: ${imageError}`);
+      }
+      image.src = readerEvent.target.result;
+    };
+    reader.onerror = (readerError) => {
+      setResultMessage(`Error converting image for uploading: ${readerError}`);
+    }
+    reader.readAsDataURL(chosenImageFile);*/
+    });
+  };
+
   const getLastCard = () => {
     if (offset + 51 > tradingCardCollection.length) {
       return tradingCardCollection.length;
@@ -261,6 +351,9 @@ function CardCollection({}) {
       </div>
       <div className="div-add-button">
         <button onClick={goAdd}>Add Card</button>
+      </div>
+      <div className="div-add-button">
+        <button onClick={convertImages}>Downgrade</button>
       </div>
       <SortButtons
         collectionId={collectionId}
