@@ -23,6 +23,7 @@ function CardCollection({}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [addCollectionResult, setAddCollectionResult] = useState("");
   const [offset, setOffset] = useState(0);
+  const cardsPerPage = 50;
 
   const navigate = useNavigate();
   const server = new Mongo();
@@ -87,14 +88,14 @@ function CardCollection({}) {
   };
 
   const nextCards = () => {
-    if (offset + 50 < tradingCardCollection.length) {
-      setOffset(offset + 50);
+    if (offset + cardsPerPage < tradingCardCollection.length) {
+      setOffset(offset + cardsPerPage);
     }
   };
 
   const previousCards = () => {
-    if (offset - 50 >= 0) {
-      setOffset(offset - 50);
+    if (offset - cardsPerPage >= 0) {
+      setOffset(offset - cardsPerPage);
     }
   };
 
@@ -176,10 +177,10 @@ function CardCollection({}) {
   };
 
   const getLastCard = () => {
-    if (offset + 51 > tradingCardCollection.length) {
+    if (offset + cardsPerPage + 1 > tradingCardCollection.length) {
       return tradingCardCollection.length;
     } else {
-      return offset + 51;
+      return offset + cardsPerPage;
     }
   };
 
@@ -271,7 +272,7 @@ function CardCollection({}) {
         {tradingCardCollection.map((card, index) => {
           if (
             index < offset ||
-            index >= 50 + offset ||
+            index >= cardsPerPage + offset ||
             index >= tradingCardCollection.length ||
             !card.hasOwnProperty("year")
           ) {

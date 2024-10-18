@@ -20,6 +20,7 @@ function Collectors({}) {
   const [username, setUsername] = useState(
     sessionStorage.getItem("cardsUsername"),
   );
+  const cardsPerPage = 50;
   const server = new Mongo();
 
   useEffect(() => {
@@ -105,22 +106,22 @@ function Collectors({}) {
   };
 
   const nextCards = () => {
-    if (offset + 50 < tradingCardCollection.length) {
-      setOffset(offset + 50);
+    if (offset + cardsPerPage < tradingCardCollection.length) {
+      setOffset(offset + cardsPerPage);
     }
   };
 
   const previousCards = () => {
-    if (offset - 50 >= 0) {
-      setOffset(offset - 50);
+    if (offset - cardsPerPage >= 0) {
+      setOffset(offset - cardsPerPage);
     }
   };
 
   const getLastCard = () => {
-    if (offset + 51 > tradingCardCollection.length) {
+    if (offset + cardsPerPage + 1 > tradingCardCollection.length) {
       return tradingCardCollection.length;
     } else {
-      return offset + 51;
+      return offset + cardsPerPage;
     }
   };
 
@@ -193,7 +194,7 @@ function Collectors({}) {
         {tradingCardCollection.map((card, index) => {
           if (
             index < offset ||
-            index >= 50 + offset ||
+            index >= cardsPerPage + offset ||
             index >= tradingCardCollection.length ||
             !card.hasOwnProperty("year")
           ) {

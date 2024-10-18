@@ -13,6 +13,7 @@ function FindAnyCard({}) {
     sessionStorage.getItem("cardsUsername"),
   );
   const server = new Mongo();
+  const cardsPerPage = 50;
 
   useEffect(() => {
     const getData = async () => {
@@ -55,22 +56,22 @@ function FindAnyCard({}) {
   };
 
   const nextCards = () => {
-    if (offset + 50 < tradingCards.length) {
-      setOffset(offset + 50);
+    if (offset + cardsPerPage < tradingCards.length) {
+      setOffset(offset + cardsPerPage);
     }
   };
 
   const previousCards = () => {
-    if (offset - 50 >= 0) {
-      setOffset(offset - 50);
+    if (offset - cardsPerPage >= 0) {
+      setOffset(offset - cardsPerPage);
     }
   };
 
   const getLastCard = () => {
-    if (offset + 51 > tradingCards.length) {
+    if (offset + cardsPerPage + 1 > tradingCards.length) {
       return tradingCards.length;
     } else {
-      return offset + 51;
+      return offset + cardsPerPage;
     }
   };
 
@@ -108,7 +109,7 @@ function FindAnyCard({}) {
         {tradingCards.map((card, index) => {
           if (
             index < offset ||
-            index >= 50 + offset ||
+            index >= cardsPerPage + offset ||
             index >= tradingCards.length ||
             !card.hasOwnProperty("year")
           ) {
