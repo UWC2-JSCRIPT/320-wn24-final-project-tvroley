@@ -322,6 +322,7 @@ export default function Home() {
           Sign Up
         </button>
       </div>
+      <h3>Logout</h3>
       <div className="div-logout">
         <button onClick={logout} id="logout-btn">
           Logout
