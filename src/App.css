@@ -161,6 +161,17 @@
   margin-bottom: 1em;
 }
 
+.div-next-button {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: lightsteelblue;
+  padding: 0.5rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 .div-delete {
   display: flex;
   flex-direction: row;

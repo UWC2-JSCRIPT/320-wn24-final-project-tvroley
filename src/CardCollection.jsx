@@ -90,12 +90,14 @@ function CardCollection({}) {
   const nextCards = () => {
     if (offset + cardsPerPage < tradingCardCollection.length) {
       setOffset(offset + cardsPerPage);
+      document.getElementById("card-collection-div").scrollIntoView();
     }
   };
 
   const previousCards = () => {
     if (offset - cardsPerPage >= 0) {
       setOffset(offset - cardsPerPage);
+      document.getElementById("card-collection-div").scrollIntoView();
     }
   };
 
@@ -268,6 +270,14 @@ function CardCollection({}) {
         setTradingCardCollection={setTradingCardCollection}
         setOffset={setOffset}
       />
+      <p>
+        Showing cards {offset + 1} through {getLastCard()} of{" "}
+        {tradingCardCollection.length}
+      </p>
+      <div className="div-next-button">
+        <button onClick={previousCards}>Previous</button>
+        <button onClick={nextCards}>Next</button>
+      </div>
       <div className="div-cards" id="card-collection-div">
         {tradingCardCollection.map((card, index) => {
           if (
@@ -298,7 +308,7 @@ function CardCollection({}) {
         Showing cards {offset + 1} through {getLastCard()} of{" "}
         {tradingCardCollection.length}
       </p>
-      <div className="div-add-button">
+      <div className="div-next-button">
         <button onClick={previousCards}>Previous</button>
         <button onClick={nextCards}>Next</button>
       </div>
