@@ -3,6 +3,7 @@ import "./App.css";
 import Nav from "./Nav";
 import TradingCard from "./TradingCard";
 import SortButtons from "./SortButtons";
+import NextPrevButtons from "./NextPrevButtons";
 import Mongo from "./Mongo";
 
 function Collectors({}) {
@@ -105,26 +106,6 @@ function Collectors({}) {
     }
   };
 
-  const nextCards = () => {
-    if (offset + cardsPerPage < tradingCardCollection.length) {
-      setOffset(offset + cardsPerPage);
-    }
-  };
-
-  const previousCards = () => {
-    if (offset - cardsPerPage >= 0) {
-      setOffset(offset - cardsPerPage);
-    }
-  };
-
-  const getLastCard = () => {
-    if (offset + cardsPerPage + 1 > tradingCardCollection.length) {
-      return tradingCardCollection.length;
-    } else {
-      return offset + cardsPerPage;
-    }
-  };
-
   return (
     <>
       <h2>Collectors</h2>
@@ -190,6 +171,12 @@ function Collectors({}) {
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
       />
+      <NextPrevButtons
+        collectionLength={tradingCardCollection.length}
+        setOffset={setOffset}
+        cardsPerPage={cardsPerPage}
+        offset={offset}
+      />
       <div id="cards-div" className="div-cards">
         {tradingCardCollection.map((card, index) => {
           if (
@@ -216,14 +203,12 @@ function Collectors({}) {
           }
         })}
       </div>
-      <p>
-        Showing cards {offset + 1} through {getLastCard()} of{" "}
-        {tradingCardCollection.length}
-      </p>
-      <div className="div-add-button">
-        <button onClick={previousCards}>Previous</button>
-        <button onClick={nextCards}>Next</button>
-      </div>
+      <NextPrevButtons
+        collectionLength={tradingCardCollection.length}
+        setOffset={setOffset}
+        cardsPerPage={cardsPerPage}
+        offset={offset}
+      />
       <SortButtons
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}

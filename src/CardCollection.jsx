@@ -3,6 +3,7 @@ import "./App.css";
 import TradingCard from "./TradingCard";
 import { useNavigate } from "react-router-dom";
 import SortButtons from "./SortButtons";
+import NextPrevButtons from "./NextPrevButtons";
 import Nav from "./Nav";
 import Mongo from "./Mongo";
 
@@ -90,12 +91,14 @@ function CardCollection({}) {
   const nextCards = () => {
     if (offset + cardsPerPage < tradingCardCollection.length) {
       setOffset(offset + cardsPerPage);
+      document.getElementById("card-collection-div").scrollIntoView();
     }
   };
 
   const previousCards = () => {
     if (offset - cardsPerPage >= 0) {
       setOffset(offset - cardsPerPage);
+      document.getElementById("card-collection-div").scrollIntoView();
     }
   };
 
@@ -173,14 +176,6 @@ function CardCollection({}) {
       }
     } else {
       setErrorMessage(`Error: failed to search for cards`);
-    }
-  };
-
-  const getLastCard = () => {
-    if (offset + cardsPerPage + 1 > tradingCardCollection.length) {
-      return tradingCardCollection.length;
-    } else {
-      return offset + cardsPerPage;
     }
   };
 
@@ -268,6 +263,12 @@ function CardCollection({}) {
         setTradingCardCollection={setTradingCardCollection}
         setOffset={setOffset}
       />
+      <NextPrevButtons
+        collectionLength={tradingCardCollection.length}
+        setOffset={setOffset}
+        cardsPerPage={cardsPerPage}
+        offset={offset}
+      />
       <div className="div-cards" id="card-collection-div">
         {tradingCardCollection.map((card, index) => {
           if (
@@ -294,14 +295,12 @@ function CardCollection({}) {
           }
         })}
       </div>
-      <p>
-        Showing cards {offset + 1} through {getLastCard()} of{" "}
-        {tradingCardCollection.length}
-      </p>
-      <div className="div-add-button">
-        <button onClick={previousCards}>Previous</button>
-        <button onClick={nextCards}>Next</button>
-      </div>
+      <NextPrevButtons
+        collectionLength={tradingCardCollection.length}
+        setOffset={setOffset}
+        cardsPerPage={cardsPerPage}
+        offset={offset}
+      />
       <SortButtons
         collectionId={collectionId}
         setTradingCardCollection={setTradingCardCollection}
