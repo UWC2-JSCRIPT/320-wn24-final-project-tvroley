@@ -195,7 +195,7 @@ function CardCollection({}) {
       <p>{errorMessage}</p>
       <div>
         <div>
-          <p className="p-instructions">Click on card images for bigger size</p>
+          <p className="p-instructions">Click on card images for larger size</p>
         </div>
         <div className="div-sold-legend">
           <p className="sold p-legend">SOLD</p>
