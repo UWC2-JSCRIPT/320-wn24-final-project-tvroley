@@ -218,6 +218,7 @@ export default function SignUp() {
                   type="submit"
                   value="Sign Up"
                   onClick={signUp}
+                  disabled
                 />
               </div>
             </div>
