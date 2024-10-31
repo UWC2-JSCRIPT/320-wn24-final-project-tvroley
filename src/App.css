@@ -115,10 +115,12 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  background-color: lightgray;
+  background-color: oldlace;
   padding: 0.5rem;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
+  position: sticky;
+  top: 10px;
 }
 
 .div-sort-buttons {
